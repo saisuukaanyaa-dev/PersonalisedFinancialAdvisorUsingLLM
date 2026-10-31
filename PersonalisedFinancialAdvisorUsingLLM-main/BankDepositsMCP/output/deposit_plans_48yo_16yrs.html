@@ -1,0 +1,72 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Optimal action diagrams</title></head><body><h1>Optimal action diagrams</h1>
+<h2>Fixed Deposit Plan</h2>
+<pre class="mermaid">graph TD;
+    n0[&quot;balance: 100000.00, date: 2026-10-10&quot;];
+    n1[&quot;balance: 204132.01, date: 2036-10-07&quot;];
+    n2[&quot;balance: 290973.11, date: 2041-09-11&quot;];
+    n3[&quot;balance: 311882.16, date: 2042-09-11&quot;];
+    n0 --&gt;|&quot;HDFC Bank HDFC Bank HealthCover FD — 120 months x1&quot;| n1;
+    n1 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n2;
+    n2 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n3;
+    classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+    class n3 leaf;
+    classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+    class n0,n1,n2 inner;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+    n0[&quot;balance: 100000.00, date: 2026-10-10&quot;];
+    n1[&quot;balance: 204132.01, date: 2036-10-07&quot;];
+    n2[&quot;balance: 290973.11, date: 2041-09-11&quot;];
+    n3[&quot;balance: 311882.16, date: 2042-09-11&quot;];
+    n0 --&gt;|&quot;HDFC Bank HDFC Bank HealthCover FD — 120 months x1&quot;| n1;
+    n1 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n2;
+    n2 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n3;
+    classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+    class n3 leaf;
+    classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+    class n0,n1,n2 inner;</pre></details>
+<h2>Recurring Deposit + Reinvestments Plan</h2>
+<pre class="mermaid">graph TD;
+    n0[&quot;balance: 1000.00, date: 2026-10-10&quot;];
+    n1[&quot;balance: 71459.95, date: 2031-10-09&quot;];
+    n2[&quot;balance: 71459.95, date: 2036-10-07&quot;];
+    n3[&quot;balance: 71459.95, date: 2041-10-06&quot;];
+    n4[&quot;balance: 145872.64, date: 2041-10-06&quot;];
+    n5[&quot;balance: 156354.90, date: 2042-10-06&quot;];
+    n6[&quot;balance: 101860.18, date: 2041-09-11&quot;];
+    n7[&quot;balance: 109179.76, date: 2042-09-11&quot;];
+    n8[&quot;balance: 76594.99, date: 2042-10-06&quot;];
+    n0 --&gt;|&quot;State Bank of India SBI RD — 36–60 months band (60m) x1&quot;| n1;
+    n1 --&gt;|&quot;State Bank of India SBI RD — 36–60 months band (60m) x1&quot;| n2;
+    n1 --&gt;|&quot;HDFC Bank HDFC Bank HealthCover FD — 120 months x1&quot;| n4;
+    n2 --&gt;|&quot;State Bank of India SBI RD — 36–60 months band (60m) x1&quot;| n3;
+    n2 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n6;
+    n3 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n8;
+    n4 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n5;
+    n6 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n7;
+    classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+    class n5,n7,n8 leaf;
+    classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+    class n0,n1,n2,n3,n4,n6 inner;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+    n0[&quot;balance: 1000.00, date: 2026-10-10&quot;];
+    n1[&quot;balance: 71459.95, date: 2031-10-09&quot;];
+    n2[&quot;balance: 71459.95, date: 2036-10-07&quot;];
+    n3[&quot;balance: 71459.95, date: 2041-10-06&quot;];
+    n4[&quot;balance: 145872.64, date: 2041-10-06&quot;];
+    n5[&quot;balance: 156354.90, date: 2042-10-06&quot;];
+    n6[&quot;balance: 101860.18, date: 2041-09-11&quot;];
+    n7[&quot;balance: 109179.76, date: 2042-09-11&quot;];
+    n8[&quot;balance: 76594.99, date: 2042-10-06&quot;];
+    n0 --&gt;|&quot;State Bank of India SBI RD — 36–60 months band (60m) x1&quot;| n1;
+    n1 --&gt;|&quot;State Bank of India SBI RD — 36–60 months band (60m) x1&quot;| n2;
+    n1 --&gt;|&quot;HDFC Bank HDFC Bank HealthCover FD — 120 months x1&quot;| n4;
+    n2 --&gt;|&quot;State Bank of India SBI RD — 36–60 months band (60m) x1&quot;| n3;
+    n2 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n6;
+    n3 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n8;
+    n4 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n5;
+    n6 --&gt;|&quot;Kotak Mahindra Bank ActiveMoney (Dynamic Sweep-In) — 6 months x2&quot;| n7;
+    classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+    class n5,n7,n8 leaf;
+    classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+    class n0,n1,n2,n3,n4,n6 inner;</pre></details>
+<script type='module'>import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad: true});</script></body></html>

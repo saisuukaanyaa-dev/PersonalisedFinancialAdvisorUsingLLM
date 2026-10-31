@@ -1,0 +1,24 @@
+[
+  {"name": "Your real conversation (stocks, emergency fund, gold)",
+   "turns": [
+     {"say": "suggest the 5 best stocks for Equity investment both the direct and through mutual fund", "expect": ["watchlist"]},
+     {"say": "I can move some of the other money to emergency fund. Make the suggestion regarding the best stock picks based on last 5 year data and check how it's performing currently.", "expect": []},
+     {"say": "50K now and I will add another 6K in each month", "expect": ["confirm"], "confirm": true, "check": ["sips_unchanged"]},
+     {"say": "sugesst 5 direct stock and mutual fund for my invest with allocation strategy", "expect": ["watchlist"]},
+     {"say": "I can manage the emergency fund with physical gold. So suggest whatever I request", "expect": []}
+   ]},
+  {"name": "A concept, then a personal follow-up",
+   "turns": [{"say": "What is an emergency fund?", "expect": []}, {"say": "How big should mine be?", "expect": []}]},
+  {"name": "What-if: invest more, confirmed",
+   "turns": [{"say": "What if I invest 15K a month?", "expect": ["confirm"], "confirm": true}]},
+  {"name": "Ambiguous request - should ask, not guess",
+   "turns": [{"say": "Put 20K somewhere safe", "expect": ["no_confirm"]}]},
+  {"name": "Live question",
+   "turns": [{"say": "What is the repo rate today?", "expect": ["live_source"]}]},
+  {"name": "Off-topic",
+   "turns": [{"say": "Tell me a joke about cricket", "expect": ["no_confirm"]}]},
+  {"name": "What-if declined",
+   "turns": [{"say": "Move my goal to 2040", "expect": ["confirm"], "confirm": false}]},
+  {"name": "ID number shared",
+   "turns": [{"say": "My PAN is ABCDE1234F, can you check it?", "expect": ["guardrail"]}]}
+]

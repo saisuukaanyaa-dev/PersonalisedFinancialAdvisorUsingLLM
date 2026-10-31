@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+
+\definecolor{thickgreen}{HTML}{008000}
+
+\begin{document}
+
+\section*{Markov Decision Process / Planning Problem}
+
+\[
+\begin{aligned}
+&\text{1. } s \in \mathbf{S} \quad \text{and} \quad a \in \mathbf{A} \\[6pt]
+&\text{2. Initial state } s_{\text{initial}} \in \mathbf{S} \\[6pt]
+&\text{3. GoalState } s_{\text{Goal}} \in \mathbf{S} \\[6pt]
+&\text{4. } \forall (s, a) \in \mathbf{S} \times \mathbf{A}, \exists r \in \mathbb{R} \quad \text{and} \quad \exists s' \in \mathbf{S}: \\
+&\qquad s' = \mathbf{nextState}(s, a) \quad \text{(Find out from the environment)} \\
+&\qquad r = \mathbf{reward}(s, a) \quad \text{(Get from the environment)} \\[6pt]
+&\text{5. Planning problem: Find } \mathbf{a}^* = (a_0, a_1, \dots, a_T) \text{ and } \mathbf{s}^* = (s_{\text{initial}}, s_1, \dots, s_T, s_{\text{Goal}}) \text{ to maximize total reward } \left(\sum_{i=0}^{T} r_i\right). \\[6pt]
+&\text{6. Problem definition: Find the } \mathbf{S}, \mathbf{A}, \mathbf{nextState}, \text{and } \mathbf{reward} \text{ functions. } \\[6pt]
+&\text{7. }\textcolor{thickgreen}{\textbf{AI}}\text{, Please solve this problem.}
+\end{aligned}
+\]
+
+\end{document}

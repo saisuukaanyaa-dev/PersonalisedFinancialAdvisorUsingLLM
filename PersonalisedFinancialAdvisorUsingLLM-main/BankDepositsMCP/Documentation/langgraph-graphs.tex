@@ -1,0 +1,214 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{margin=0.8in}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, shapes.misc}
+\usepackage{hyperref}
+
+% Real typewriter underscore (OT1 \_ is drawn as a thin rule).
+\newcommand{\ttus}{\char95}
+
+\title{\textbf{LangGraph Agent Graphs}}
+\author{Project Documentation}
+\date{\today}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    columns=fullflexible,
+    keepspaces=true,
+    showstringspaces=false
+}
+
+% Styles follow LangGraph's own Mermaid output: stadium-shaped
+% __start__/__end__, rectangular nodes, dashed conditional edges and
+% solid fixed edges.
+\tikzset{
+    terminal/.style={rounded rectangle, draw, fill=violet!15,
+                     minimum height=8mm, minimum width=22mm,
+                     font=\ttfamily\small},
+    graphnode/.style={rectangle, rounded corners=2pt, draw, fill=blue!8,
+                      minimum height=9mm, minimum width=30mm,
+                      font=\ttfamily\small},
+    toolnode/.style={graphnode, align=left, text width=62mm},
+    fixed/.style={-{Stealth[length=2.5mm]}, thick},
+    conditional/.style={-{Stealth[length=2.5mm]}, thick, dashed},
+    edgelabel/.style={font=\scriptsize\ttfamily, fill=white, inner sep=1pt}
+}
+
+% \agentgraph{<tool list, one per line separated by \\>}
+\newcommand{\agentgraph}[1]{%
+\begin{tikzpicture}[node distance=14mm and 18mm]
+    \node[terminal] (start) {\ttus{}\ttus{}start\ttus{}\ttus{}};
+    \node[graphnode, below=of start] (agent) {AdminAgent};
+    \node[toolnode, right=of agent] (tool)
+        {\textbf{tool}\\[2pt]{\scriptsize #1}};
+    \node[graphnode, below=of agent] (exit) {ExitGuardrail};
+    \node[terminal, below=of exit] (end) {\ttus{}\ttus{}end\ttus{}\ttus{}};
+
+    \draw[conditional] (start) -- node[edgelabel] {continue} (agent);
+    \draw[conditional] (start.west) -- ++(-18mm,0) |- node[edgelabel, pos=0.25] {end} (end.west);
+    \draw[conditional] (agent.20) -- node[edgelabel, above] {continue} (tool.west |- agent.20);
+    \draw[fixed] (tool.west |- agent.-20) -- (agent.-20);
+    \draw[conditional] (agent) -- node[edgelabel] {end} (exit);
+    \draw[fixed] (exit) -- (end);
+\end{tikzpicture}%
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview}
+The three LangGraph applications in this project are built by
+\texttt{buildAdminAgentGraph()} in their respective files. All three compile
+the same \texttt{StateGraph(AdminAgentState)} topology. Only the tools bound
+to the LLM and the model differ:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{File} & \textbf{LLM model} & \textbf{Tools} \\
+\midrule
+\texttt{DatabaseCreator.py}                    & \texttt{gpt-4.1-mini} & 6 \\
+\texttt{FinancialGeneralInformationChatBot.py} & \texttt{gpt-4.1}      & 2 \\
+\texttt{OptimalBankDepositFinderAgent.py}      & \texttt{gpt-5}        & 7 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Shared structure}
+\begin{itemize}\itemsep 0pt \parskip 0pt
+    \item \textbf{State}: \texttt{AdminAgentState} holds a single
+          \texttt{messages} list, merged with \texttt{operator.add}.
+    \item \textbf{Nodes}:
+          \begin{itemize}\itemsep 0pt \parskip 0pt
+              \item \texttt{AdminAgent} (\texttt{AdminAgentNode}): adds the
+                    system prompt once, then calls the tool-bound LLM.
+              \item \texttt{tool} (\texttt{ToolsNode}): runs every tool call
+                    in the last AI message and returns the
+                    \texttt{ToolMessage}s.
+              \item \texttt{ExitGuardrail} (\texttt{ExitGuardRailNode}):
+                    checks the final answer against the last human message,
+                    and replaces it with a refusal if it fails.
+          \end{itemize}
+    \item \textbf{Conditional edges} (dashed):
+          \begin{itemize}\itemsep 0pt \parskip 0pt
+              \item From \texttt{\ttus{}\ttus{}start\ttus{}\ttus{}}, \texttt{inputGuardRailCondition}
+                    returns \texttt{continue} (input passes the guardrail) or
+                    \texttt{end}.
+              \item From \texttt{AdminAgent}, \texttt{where\ttus{}to\ttus{}go} returns
+                    \texttt{continue} (the AI message has \texttt{tool\ttus{}calls})
+                    or \texttt{end}.
+          \end{itemize}
+    \item \textbf{Fixed edges} (solid): \texttt{tool} $\rightarrow$
+          \texttt{AdminAgent} and \texttt{ExitGuardrail} $\rightarrow$
+          \texttt{\ttus{}\ttus{}end\ttus{}\ttus{}}.
+\end{itemize}
+
+% ---------------------------------------------------------------------------
+\clearpage
+\section{\texorpdfstring{\texttt{DatabaseCreator.py}}{DatabaseCreator.py}}
+Admin agent that fills the SQLite database from the RAG stores
+(model \texttt{gpt-4.1-mini}).
+
+\begin{lstlisting}[caption={Mermaid: DatabaseCreator.py}]
+flowchart TD
+    __start__([__start__])
+    AdminAgent[AdminAgent]
+    tool["tool<br/>UpdateSqlLiteTableStructure<br/>GetSqlLiteTablesStructure<br/>UpdateSqlLiteTableData<br/>GetSqlLiteTableData<br/>GetRequiredBankDepositDataFromTheRagTool<br/>GetRequiredMutualFundDataFromTheRagTool"]
+    ExitGuardrail[ExitGuardrail]
+    __end__([__end__])
+
+    __start__ -. continue .-> AdminAgent
+    __start__ -. end .-> __end__
+    AdminAgent -. continue .-> tool
+    AdminAgent -. end .-> ExitGuardrail
+    tool --> AdminAgent
+    ExitGuardrail --> __end__
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\agentgraph{UpdateSqlLiteTableStructure\\
+            GetSqlLiteTablesStructure\\
+            UpdateSqlLiteTableData\\
+            GetSqlLiteTableData\\
+            GetRequiredBankDepositDataFromTheRagTool\\
+            GetRequiredMutualFundDataFromTheRagTool}
+\caption{Graph of \texttt{DatabaseCreator.py}}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\clearpage
+\section{\texorpdfstring{\texttt{FinancialGeneralInformationChatBot.py}}{FinancialGeneralInformationChatBot.py}}
+Chatbot that answers general bank deposit and mutual fund questions from the
+RAG stores (model \texttt{gpt-4.1}).
+
+\begin{lstlisting}[caption={Mermaid: FinancialGeneralInformationChatBot.py}]
+flowchart TD
+    __start__([__start__])
+    AdminAgent[AdminAgent]
+    tool["tool<br/>GetRequiredBankDepositDataFromTheRagTool<br/>GetRequiredMutualFundDataFromTheRagTool"]
+    ExitGuardrail[ExitGuardrail]
+    __end__([__end__])
+
+    __start__ -. continue .-> AdminAgent
+    __start__ -. end .-> __end__
+    AdminAgent -. continue .-> tool
+    AdminAgent -. end .-> ExitGuardrail
+    tool --> AdminAgent
+    ExitGuardrail --> __end__
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\agentgraph{GetRequiredBankDepositDataFromTheRagTool\\
+            GetRequiredMutualFundDataFromTheRagTool}
+\caption{Graph of \texttt{FinancialGeneralInformationChatBot.py}}
+\end{figure}
+
+% ---------------------------------------------------------------------------
+\clearpage
+\section{\texorpdfstring{\texttt{OptimalBankDepositFinderAgent.py}}{OptimalBankDepositFinderAgent.py}}
+Agent that reads the deposit schemes from SQLite and finds the optimal fixed
+and recurring deposit sequence for a goal (model \texttt{gpt-5}). The tool \texttt{WriteMermaidDiagramPage} renders
+mermaid descriptions of the result as diagrams in an HTML page in the
+\texttt{output} folder.
+
+\begin{lstlisting}[caption={Mermaid: OptimalBankDepositFinderAgent.py}]
+flowchart TD
+    __start__([__start__])
+    AdminAgent[AdminAgent]
+    tool["tool<br/>GetSqlLiteTablesStructure<br/>GetSqlLiteTableData<br/>OptimalActionFixedDepositTool<br/>OptimalActionRecurringDepositTool<br/>get_india_inflation<br/>GetFinalValueConsideringInflation<br/>WriteMermaidDiagramPage"]
+    ExitGuardrail[ExitGuardrail]
+    __end__([__end__])
+
+    __start__ -. continue .-> AdminAgent
+    __start__ -. end .-> __end__
+    AdminAgent -. continue .-> tool
+    AdminAgent -. end .-> ExitGuardrail
+    tool --> AdminAgent
+    ExitGuardrail --> __end__
+\end{lstlisting}
+
+\begin{figure}[h]
+\centering
+\agentgraph{GetSqlLiteTablesStructure\\
+            GetSqlLiteTableData\\
+            OptimalActionFixedDepositTool\\
+            OptimalActionRecurringDepositTool\\
+            get\ttus{}india\ttus{}inflation\\
+            GetFinalValueConsideringInflation\\
+            WriteMermaidDiagramPage}
+\caption{Graph of \texttt{OptimalBankDepositFinderAgent.py}}
+\end{figure}
+
+\end{document}

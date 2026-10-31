@@ -1,0 +1,651 @@
+year,symbol,company_name,sector,valid_from,valid_to
+2021,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2021-09-01,2022-03-30
+2021,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2021-09-01,2022-03-30
+2021,AXISBANK,Axis Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2021-09-01,2022-03-30
+2021,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2021-09-01,2022-03-30
+2021,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2021,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2021,CIPLA,Cipla Ltd.,Healthcare,2021-09-01,2022-03-30
+2021,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2021,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2021-09-01,2022-03-30
+2021,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2021-09-01,2022-03-30
+2021,EICHERMOT,Eicher Motors Ltd.,Automobile,2021-09-01,2022-03-30
+2021,GRASIM,Grasim Industries Ltd.,Construction Materials,2021-09-01,2022-03-30
+2021,HCLTECH,HCL Technologies Ltd.,Information Technology,2021-09-01,2022-03-30
+2021,HDFC,Housing Development Finance Corporation Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,HDFCBANK,HDFC Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2021-09-01,2022-03-30
+2021,HINDALCO,Hindalco Industries Ltd.,Metals,2021-09-01,2022-03-30
+2021,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2021,ICICIBANK,ICICI Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,INFY,Infosys Ltd.,Information Technology,2021-09-01,2022-03-30
+2021,IOC,Indian Oil Corporation Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2021,ITC,ITC Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2021,JSWSTEEL,JSW Steel Ltd.,Metals,2021-09-01,2022-03-30
+2021,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,LT,Larsen & Toubro Ltd.,Construction,2021-09-01,2022-03-30
+2021,M&M,Mahindra & Mahindra Ltd.,Automobile,2021-09-01,2022-03-30
+2021,MARUTI,Maruti Suzuki India Ltd.,Automobile,2021-09-01,2022-03-30
+2021,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2021,NTPC,NTPC Ltd.,Power,2021-09-01,2022-03-30
+2021,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2021,POWERGRID,Power Grid Corporation of India Ltd.,Power,2021-09-01,2022-03-30
+2021,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2021,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2021-09-01,2022-03-30
+2021,SBIN,State Bank of India,Financial Services,2021-09-01,2022-03-30
+2021,SHREECEM,Shree Cement Ltd.,Construction Materials,2021-09-01,2022-03-30
+2021,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2021-09-01,2022-03-30
+2021,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2021,TATAMOTORS,Tata Motors Ltd.,Automobile,2021-09-01,2022-03-30
+2021,TATASTEEL,Tata Steel Ltd.,Metals,2021-09-01,2022-03-30
+2021,TCS,Tata Consultancy Services Ltd.,Information Technology,2021-09-01,2022-03-30
+2021,TECHM,Tech Mahindra Ltd.,Information Technology,2021-09-01,2022-03-30
+2021,TITAN,Titan Company Ltd.,Consumer Durables,2021-09-01,2022-03-30
+2021,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2021-09-01,2022-03-30
+2021,UPL,UPL Ltd.,Chemicals,2021-09-01,2022-03-30
+2021,WIPRO,Wipro Ltd.,Information Technology,2021-09-01,2022-03-30
+2022,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2022-09-30,2023-07-12
+2022,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2021-09-01,2022-03-30
+2022,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2022-03-31,2022-09-29
+2022,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2022-09-30,2023-07-12
+2022,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2022-03-31,2022-09-29
+2022,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2022-09-30,2023-07-12
+2022,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2021-09-01,2022-03-30
+2022,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2022-03-31,2022-09-29
+2022,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2022-09-30,2023-07-12
+2022,AXISBANK,Axis Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,AXISBANK,Axis Bank Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,AXISBANK,Axis Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2021-09-01,2022-03-30
+2022,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2022-03-31,2022-09-29
+2022,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2022-09-30,2023-07-12
+2022,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2021-09-01,2022-03-30
+2022,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2022-03-31,2022-09-29
+2022,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2022-09-30,2023-07-12
+2022,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2022,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2022-03-31,2022-09-29
+2022,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2022,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2022,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2022-03-31,2022-09-29
+2022,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2022,CIPLA,Cipla Ltd.,Healthcare,2021-09-01,2022-03-30
+2022,CIPLA,Cipla Ltd.,Healthcare,2022-03-31,2022-09-29
+2022,CIPLA,Cipla Ltd.,Healthcare,2022-09-30,2023-07-12
+2022,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2022,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2022-03-31,2022-09-29
+2022,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2022,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2021-09-01,2022-03-30
+2022,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2022-03-31,2022-09-29
+2022,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2022-09-30,2023-07-12
+2022,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2021-09-01,2022-03-30
+2022,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2022-03-31,2022-09-29
+2022,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2022-09-30,2023-07-12
+2022,EICHERMOT,Eicher Motors Ltd.,Automobile,2021-09-01,2022-03-30
+2022,EICHERMOT,Eicher Motors Ltd.,Automobile,2022-03-31,2022-09-29
+2022,EICHERMOT,Eicher Motors Ltd.,Automobile,2022-09-30,2023-07-12
+2022,GRASIM,Grasim Industries Ltd.,Construction Materials,2021-09-01,2022-03-30
+2022,GRASIM,Grasim Industries Ltd.,Construction Materials,2022-03-31,2022-09-29
+2022,GRASIM,Grasim Industries Ltd.,Construction Materials,2022-09-30,2023-07-12
+2022,HCLTECH,HCL Technologies Ltd.,Information Technology,2021-09-01,2022-03-30
+2022,HCLTECH,HCL Technologies Ltd.,Information Technology,2022-03-31,2022-09-29
+2022,HCLTECH,HCL Technologies Ltd.,Information Technology,2022-09-30,2023-07-12
+2022,HDFC,Housing Development Finance Corporation Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,HDFC,Housing Development Finance Corporation Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,HDFC,Housing Development Finance Corporation Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,HDFCBANK,HDFC Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,HDFCBANK,HDFC Bank Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,HDFCBANK,HDFC Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2021-09-01,2022-03-30
+2022,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2022-03-31,2022-09-29
+2022,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2022-09-30,2023-07-12
+2022,HINDALCO,Hindalco Industries Ltd.,Metals,2021-09-01,2022-03-30
+2022,HINDALCO,Hindalco Industries Ltd.,Metals,2022-03-31,2022-09-29
+2022,HINDALCO,Hindalco Industries Ltd.,Metals,2022-09-30,2023-07-12
+2022,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2022,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2022-03-31,2022-09-29
+2022,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2022,ICICIBANK,ICICI Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,ICICIBANK,ICICI Bank Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,ICICIBANK,ICICI Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,INFY,Infosys Ltd.,Information Technology,2021-09-01,2022-03-30
+2022,INFY,Infosys Ltd.,Information Technology,2022-03-31,2022-09-29
+2022,INFY,Infosys Ltd.,Information Technology,2022-09-30,2023-07-12
+2022,IOC,Indian Oil Corporation Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2022,ITC,ITC Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2022,ITC,ITC Ltd.,Fast Moving Consumer Goods,2022-03-31,2022-09-29
+2022,ITC,ITC Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2022,JSWSTEEL,JSW Steel Ltd.,Metals,2021-09-01,2022-03-30
+2022,JSWSTEEL,JSW Steel Ltd.,Metals,2022-03-31,2022-09-29
+2022,JSWSTEEL,JSW Steel Ltd.,Metals,2022-09-30,2023-07-12
+2022,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,LT,Larsen & Toubro Ltd.,Construction,2021-09-01,2022-03-30
+2022,LT,Larsen & Toubro Ltd.,Construction,2022-03-31,2022-09-29
+2022,LT,Larsen & Toubro Ltd.,Construction,2022-09-30,2023-07-12
+2022,M&M,Mahindra & Mahindra Ltd.,Automobile,2021-09-01,2022-03-30
+2022,M&M,Mahindra & Mahindra Ltd.,Automobile,2022-03-31,2022-09-29
+2022,M&M,Mahindra & Mahindra Ltd.,Automobile,2022-09-30,2023-07-12
+2022,MARUTI,Maruti Suzuki India Ltd.,Automobile,2021-09-01,2022-03-30
+2022,MARUTI,Maruti Suzuki India Ltd.,Automobile,2022-03-31,2022-09-29
+2022,MARUTI,Maruti Suzuki India Ltd.,Automobile,2022-09-30,2023-07-12
+2022,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2022,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2022-03-31,2022-09-29
+2022,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2022,NTPC,NTPC Ltd.,Power,2021-09-01,2022-03-30
+2022,NTPC,NTPC Ltd.,Power,2022-03-31,2022-09-29
+2022,NTPC,NTPC Ltd.,Power,2022-09-30,2023-07-12
+2022,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2022,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2022-03-31,2022-09-29
+2022,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2022,POWERGRID,Power Grid Corporation of India Ltd.,Power,2021-09-01,2022-03-30
+2022,POWERGRID,Power Grid Corporation of India Ltd.,Power,2022-03-31,2022-09-29
+2022,POWERGRID,Power Grid Corporation of India Ltd.,Power,2022-09-30,2023-07-12
+2022,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2021-09-01,2022-03-30
+2022,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2022-03-31,2022-09-29
+2022,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2022,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2021-09-01,2022-03-30
+2022,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2022-03-31,2022-09-29
+2022,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2022-09-30,2023-07-12
+2022,SBIN,State Bank of India,Financial Services,2021-09-01,2022-03-30
+2022,SBIN,State Bank of India,Financial Services,2022-03-31,2022-09-29
+2022,SBIN,State Bank of India,Financial Services,2022-09-30,2023-07-12
+2022,SHREECEM,Shree Cement Ltd.,Construction Materials,2021-09-01,2022-03-30
+2022,SHREECEM,Shree Cement Ltd.,Construction Materials,2022-03-31,2022-09-29
+2022,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2021-09-01,2022-03-30
+2022,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2022-03-31,2022-09-29
+2022,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2022-09-30,2023-07-12
+2022,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2021-09-01,2022-03-30
+2022,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2022-03-31,2022-09-29
+2022,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2022,TATAMOTORS,Tata Motors Ltd.,Automobile,2021-09-01,2022-03-30
+2022,TATAMOTORS,Tata Motors Ltd.,Automobile,2022-03-31,2022-09-29
+2022,TATAMOTORS,Tata Motors Ltd.,Automobile,2022-09-30,2023-07-12
+2022,TATASTEEL,Tata Steel Ltd.,Metals,2021-09-01,2022-03-30
+2022,TATASTEEL,Tata Steel Ltd.,Metals,2022-03-31,2022-09-29
+2022,TATASTEEL,Tata Steel Ltd.,Metals,2022-09-30,2023-07-12
+2022,TCS,Tata Consultancy Services Ltd.,Information Technology,2021-09-01,2022-03-30
+2022,TCS,Tata Consultancy Services Ltd.,Information Technology,2022-03-31,2022-09-29
+2022,TCS,Tata Consultancy Services Ltd.,Information Technology,2022-09-30,2023-07-12
+2022,TECHM,Tech Mahindra Ltd.,Information Technology,2021-09-01,2022-03-30
+2022,TECHM,Tech Mahindra Ltd.,Information Technology,2022-03-31,2022-09-29
+2022,TECHM,Tech Mahindra Ltd.,Information Technology,2022-09-30,2023-07-12
+2022,TITAN,Titan Company Ltd.,Consumer Durables,2021-09-01,2022-03-30
+2022,TITAN,Titan Company Ltd.,Consumer Durables,2022-03-31,2022-09-29
+2022,TITAN,Titan Company Ltd.,Consumer Durables,2022-09-30,2023-07-12
+2022,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2021-09-01,2022-03-30
+2022,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2022-03-31,2022-09-29
+2022,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2022-09-30,2023-07-12
+2022,UPL,UPL Ltd.,Chemicals,2021-09-01,2022-03-30
+2022,UPL,UPL Ltd.,Chemicals,2022-03-31,2022-09-29
+2022,UPL,UPL Ltd.,Chemicals,2022-09-30,2023-07-12
+2022,WIPRO,Wipro Ltd.,Information Technology,2021-09-01,2022-03-30
+2022,WIPRO,Wipro Ltd.,Information Technology,2022-03-31,2022-09-29
+2022,WIPRO,Wipro Ltd.,Information Technology,2022-09-30,2023-07-12
+2023,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2022-09-30,2023-07-12
+2023,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2023-07-13,2024-03-27
+2023,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2022-09-30,2023-07-12
+2023,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2023-07-13,2024-03-27
+2023,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2022-09-30,2023-07-12
+2023,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2023-07-13,2024-03-27
+2023,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2022-09-30,2023-07-12
+2023,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2023-07-13,2024-03-27
+2023,AXISBANK,Axis Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,AXISBANK,Axis Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2022-09-30,2023-07-12
+2023,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2023-07-13,2024-03-27
+2023,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2022-09-30,2023-07-12
+2023,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2023-07-13,2024-03-27
+2023,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2023,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2023,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2023,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2023,CIPLA,Cipla Ltd.,Healthcare,2022-09-30,2023-07-12
+2023,CIPLA,Cipla Ltd.,Healthcare,2023-07-13,2024-03-27
+2023,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2023,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2023,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2022-09-30,2023-07-12
+2023,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2023-07-13,2024-03-27
+2023,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2022-09-30,2023-07-12
+2023,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2023-07-13,2024-03-27
+2023,EICHERMOT,Eicher Motors Ltd.,Automobile,2022-09-30,2023-07-12
+2023,EICHERMOT,Eicher Motors Ltd.,Automobile,2023-07-13,2024-03-27
+2023,GRASIM,Grasim Industries Ltd.,Construction Materials,2022-09-30,2023-07-12
+2023,GRASIM,Grasim Industries Ltd.,Construction Materials,2023-07-13,2024-03-27
+2023,HCLTECH,HCL Technologies Ltd.,Information Technology,2022-09-30,2023-07-12
+2023,HCLTECH,HCL Technologies Ltd.,Information Technology,2023-07-13,2024-03-27
+2023,HDFC,Housing Development Finance Corporation Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,HDFCBANK,HDFC Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,HDFCBANK,HDFC Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2022-09-30,2023-07-12
+2023,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2023-07-13,2024-03-27
+2023,HINDALCO,Hindalco Industries Ltd.,Metals,2022-09-30,2023-07-12
+2023,HINDALCO,Hindalco Industries Ltd.,Metals,2023-07-13,2024-03-27
+2023,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2023,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2023,ICICIBANK,ICICI Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,ICICIBANK,ICICI Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,INFY,Infosys Ltd.,Information Technology,2022-09-30,2023-07-12
+2023,INFY,Infosys Ltd.,Information Technology,2023-07-13,2024-03-27
+2023,ITC,ITC Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2023,ITC,ITC Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2023,JSWSTEEL,JSW Steel Ltd.,Metals,2022-09-30,2023-07-12
+2023,JSWSTEEL,JSW Steel Ltd.,Metals,2023-07-13,2024-03-27
+2023,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,LT,Larsen & Toubro Ltd.,Construction,2022-09-30,2023-07-12
+2023,LT,Larsen & Toubro Ltd.,Construction,2023-07-13,2024-03-27
+2023,LTIM,LTIMindtree Ltd.,Information Technology,2023-07-13,2024-03-27
+2023,M&M,Mahindra & Mahindra Ltd.,Automobile,2022-09-30,2023-07-12
+2023,M&M,Mahindra & Mahindra Ltd.,Automobile,2023-07-13,2024-03-27
+2023,MARUTI,Maruti Suzuki India Ltd.,Automobile,2022-09-30,2023-07-12
+2023,MARUTI,Maruti Suzuki India Ltd.,Automobile,2023-07-13,2024-03-27
+2023,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2023,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2023,NTPC,NTPC Ltd.,Power,2022-09-30,2023-07-12
+2023,NTPC,NTPC Ltd.,Power,2023-07-13,2024-03-27
+2023,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2023,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2023,POWERGRID,Power Grid Corporation of India Ltd.,Power,2022-09-30,2023-07-12
+2023,POWERGRID,Power Grid Corporation of India Ltd.,Power,2023-07-13,2024-03-27
+2023,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2022-09-30,2023-07-12
+2023,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2023,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2022-09-30,2023-07-12
+2023,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2023-07-13,2024-03-27
+2023,SBIN,State Bank of India,Financial Services,2022-09-30,2023-07-12
+2023,SBIN,State Bank of India,Financial Services,2023-07-13,2024-03-27
+2023,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2022-09-30,2023-07-12
+2023,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2023-07-13,2024-03-27
+2023,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2022-09-30,2023-07-12
+2023,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2023,TATAMOTORS,Tata Motors Ltd.,Automobile,2022-09-30,2023-07-12
+2023,TATAMOTORS,Tata Motors Ltd.,Automobile,2023-07-13,2024-03-27
+2023,TATASTEEL,Tata Steel Ltd.,Metals,2022-09-30,2023-07-12
+2023,TATASTEEL,Tata Steel Ltd.,Metals,2023-07-13,2024-03-27
+2023,TCS,Tata Consultancy Services Ltd.,Information Technology,2022-09-30,2023-07-12
+2023,TCS,Tata Consultancy Services Ltd.,Information Technology,2023-07-13,2024-03-27
+2023,TECHM,Tech Mahindra Ltd.,Information Technology,2022-09-30,2023-07-12
+2023,TECHM,Tech Mahindra Ltd.,Information Technology,2023-07-13,2024-03-27
+2023,TITAN,Titan Company Ltd.,Consumer Durables,2022-09-30,2023-07-12
+2023,TITAN,Titan Company Ltd.,Consumer Durables,2023-07-13,2024-03-27
+2023,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2022-09-30,2023-07-12
+2023,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2023-07-13,2024-03-27
+2023,UPL,UPL Ltd.,Chemicals,2022-09-30,2023-07-12
+2023,UPL,UPL Ltd.,Chemicals,2023-07-13,2024-03-27
+2023,WIPRO,Wipro Ltd.,Information Technology,2022-09-30,2023-07-12
+2023,WIPRO,Wipro Ltd.,Information Technology,2023-07-13,2024-03-27
+2024,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2023-07-13,2024-03-27
+2024,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2024-03-28,2024-09-29
+2024,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2024-09-30,2025-03-27
+2024,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2023-07-13,2024-03-27
+2024,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2024-03-28,2024-09-29
+2024,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2024-09-30,2025-03-27
+2024,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2023-07-13,2024-03-27
+2024,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2024-03-28,2024-09-29
+2024,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2024-09-30,2025-03-27
+2024,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2023-07-13,2024-03-27
+2024,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2024-03-28,2024-09-29
+2024,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2024-09-30,2025-03-27
+2024,AXISBANK,Axis Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,AXISBANK,Axis Bank Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,AXISBANK,Axis Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2023-07-13,2024-03-27
+2024,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2024-03-28,2024-09-29
+2024,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2024-09-30,2025-03-27
+2024,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,BEL,Bharat Electronics Ltd.,Capital Goods,2024-09-30,2025-03-27
+2024,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2023-07-13,2024-03-27
+2024,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2024-03-28,2024-09-29
+2024,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2024-09-30,2025-03-27
+2024,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2024,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2024-03-28,2024-09-29
+2024,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2024,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2024,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2024-03-28,2024-09-29
+2024,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2024,CIPLA,Cipla Ltd.,Healthcare,2023-07-13,2024-03-27
+2024,CIPLA,Cipla Ltd.,Healthcare,2024-03-28,2024-09-29
+2024,CIPLA,Cipla Ltd.,Healthcare,2024-09-30,2025-03-27
+2024,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2024,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2024-03-28,2024-09-29
+2024,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2024,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2023-07-13,2024-03-27
+2024,DIVISLAB,Divi's Laboratories Ltd.,Healthcare,2024-03-28,2024-09-29
+2024,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2023-07-13,2024-03-27
+2024,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2024-03-28,2024-09-29
+2024,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2024-09-30,2025-03-27
+2024,EICHERMOT,Eicher Motors Ltd.,Automobile,2023-07-13,2024-03-27
+2024,EICHERMOT,Eicher Motors Ltd.,Automobile,2024-03-28,2024-09-29
+2024,EICHERMOT,Eicher Motors Ltd.,Automobile,2024-09-30,2025-03-27
+2024,GRASIM,Grasim Industries Ltd.,Construction Materials,2023-07-13,2024-03-27
+2024,GRASIM,Grasim Industries Ltd.,Construction Materials,2024-03-28,2024-09-29
+2024,GRASIM,Grasim Industries Ltd.,Construction Materials,2024-09-30,2025-03-27
+2024,HCLTECH,HCL Technologies Ltd.,Information Technology,2023-07-13,2024-03-27
+2024,HCLTECH,HCL Technologies Ltd.,Information Technology,2024-03-28,2024-09-29
+2024,HCLTECH,HCL Technologies Ltd.,Information Technology,2024-09-30,2025-03-27
+2024,HDFCBANK,HDFC Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,HDFCBANK,HDFC Bank Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,HDFCBANK,HDFC Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2023-07-13,2024-03-27
+2024,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2024-03-28,2024-09-29
+2024,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2024-09-30,2025-03-27
+2024,HINDALCO,Hindalco Industries Ltd.,Metals,2023-07-13,2024-03-27
+2024,HINDALCO,Hindalco Industries Ltd.,Metals,2024-03-28,2024-09-29
+2024,HINDALCO,Hindalco Industries Ltd.,Metals,2024-09-30,2025-03-27
+2024,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2024,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2024-03-28,2024-09-29
+2024,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2024,ICICIBANK,ICICI Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,ICICIBANK,ICICI Bank Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,ICICIBANK,ICICI Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,INFY,Infosys Ltd.,Information Technology,2023-07-13,2024-03-27
+2024,INFY,Infosys Ltd.,Information Technology,2024-03-28,2024-09-29
+2024,INFY,Infosys Ltd.,Information Technology,2024-09-30,2025-03-27
+2024,ITC,ITC Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2024,ITC,ITC Ltd.,Fast Moving Consumer Goods,2024-03-28,2024-09-29
+2024,ITC,ITC Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2024,JSWSTEEL,JSW Steel Ltd.,Metals,2023-07-13,2024-03-27
+2024,JSWSTEEL,JSW Steel Ltd.,Metals,2024-03-28,2024-09-29
+2024,JSWSTEEL,JSW Steel Ltd.,Metals,2024-09-30,2025-03-27
+2024,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,LT,Larsen & Toubro Ltd.,Construction,2023-07-13,2024-03-27
+2024,LT,Larsen & Toubro Ltd.,Construction,2024-03-28,2024-09-29
+2024,LT,Larsen & Toubro Ltd.,Construction,2024-09-30,2025-03-27
+2024,LTIM,LTIMindtree Ltd.,Information Technology,2023-07-13,2024-03-27
+2024,LTIM,LTIMindtree Ltd.,Information Technology,2024-03-28,2024-09-29
+2024,M&M,Mahindra & Mahindra Ltd.,Automobile,2023-07-13,2024-03-27
+2024,M&M,Mahindra & Mahindra Ltd.,Automobile,2024-03-28,2024-09-29
+2024,M&M,Mahindra & Mahindra Ltd.,Automobile,2024-09-30,2025-03-27
+2024,MARUTI,Maruti Suzuki India Ltd.,Automobile,2023-07-13,2024-03-27
+2024,MARUTI,Maruti Suzuki India Ltd.,Automobile,2024-03-28,2024-09-29
+2024,MARUTI,Maruti Suzuki India Ltd.,Automobile,2024-09-30,2025-03-27
+2024,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2024,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2024-03-28,2024-09-29
+2024,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2024,NTPC,NTPC Ltd.,Power,2023-07-13,2024-03-27
+2024,NTPC,NTPC Ltd.,Power,2024-03-28,2024-09-29
+2024,NTPC,NTPC Ltd.,Power,2024-09-30,2025-03-27
+2024,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2024,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2024-03-28,2024-09-29
+2024,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2024,POWERGRID,Power Grid Corporation of India Ltd.,Power,2023-07-13,2024-03-27
+2024,POWERGRID,Power Grid Corporation of India Ltd.,Power,2024-03-28,2024-09-29
+2024,POWERGRID,Power Grid Corporation of India Ltd.,Power,2024-09-30,2025-03-27
+2024,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2023-07-13,2024-03-27
+2024,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2024-03-28,2024-09-29
+2024,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2024,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2023-07-13,2024-03-27
+2024,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,SBIN,State Bank of India,Financial Services,2023-07-13,2024-03-27
+2024,SBIN,State Bank of India,Financial Services,2024-03-28,2024-09-29
+2024,SBIN,State Bank of India,Financial Services,2024-09-30,2025-03-27
+2024,SHRIRAMFIN,Shriram Finance Ltd.,Financial Services,2024-03-28,2024-09-29
+2024,SHRIRAMFIN,Shriram Finance Ltd.,Financial Services,2024-09-30,2025-03-27
+2024,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2023-07-13,2024-03-27
+2024,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2024-03-28,2024-09-29
+2024,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2024-09-30,2025-03-27
+2024,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2023-07-13,2024-03-27
+2024,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2024-03-28,2024-09-29
+2024,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2024,TATAMOTORS,Tata Motors Ltd.,Automobile,2023-07-13,2024-03-27
+2024,TATAMOTORS,Tata Motors Ltd.,Automobile,2024-03-28,2024-09-29
+2024,TATAMOTORS,Tata Motors Ltd.,Automobile,2024-09-30,2025-03-27
+2024,TATASTEEL,Tata Steel Ltd.,Metals,2023-07-13,2024-03-27
+2024,TATASTEEL,Tata Steel Ltd.,Metals,2024-03-28,2024-09-29
+2024,TATASTEEL,Tata Steel Ltd.,Metals,2024-09-30,2025-03-27
+2024,TCS,Tata Consultancy Services Ltd.,Information Technology,2023-07-13,2024-03-27
+2024,TCS,Tata Consultancy Services Ltd.,Information Technology,2024-03-28,2024-09-29
+2024,TCS,Tata Consultancy Services Ltd.,Information Technology,2024-09-30,2025-03-27
+2024,TECHM,Tech Mahindra Ltd.,Information Technology,2023-07-13,2024-03-27
+2024,TECHM,Tech Mahindra Ltd.,Information Technology,2024-03-28,2024-09-29
+2024,TECHM,Tech Mahindra Ltd.,Information Technology,2024-09-30,2025-03-27
+2024,TITAN,Titan Company Ltd.,Consumer Durables,2023-07-13,2024-03-27
+2024,TITAN,Titan Company Ltd.,Consumer Durables,2024-03-28,2024-09-29
+2024,TITAN,Titan Company Ltd.,Consumer Durables,2024-09-30,2025-03-27
+2024,TRENT,Trent Ltd.,Consumer Services,2024-09-30,2025-03-27
+2024,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2023-07-13,2024-03-27
+2024,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2024-03-28,2024-09-29
+2024,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2024-09-30,2025-03-27
+2024,UPL,UPL Ltd.,Chemicals,2023-07-13,2024-03-27
+2024,WIPRO,Wipro Ltd.,Information Technology,2023-07-13,2024-03-27
+2024,WIPRO,Wipro Ltd.,Information Technology,2024-03-28,2024-09-29
+2024,WIPRO,Wipro Ltd.,Information Technology,2024-09-30,2025-03-27
+2025,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2024-09-30,2025-03-27
+2025,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2025-03-28,2025-09-29
+2025,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2025-09-30,2026-08-28
+2025,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2024-09-30,2025-03-27
+2025,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2025-03-28,2025-09-29
+2025,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2025-09-30,2026-08-28
+2025,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2024-09-30,2025-03-27
+2025,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2025-03-28,2025-09-29
+2025,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2025-09-30,2026-08-28
+2025,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2024-09-30,2025-03-27
+2025,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2025-03-28,2025-09-29
+2025,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2025-09-30,2026-08-28
+2025,AXISBANK,Axis Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,AXISBANK,Axis Bank Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,AXISBANK,Axis Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2024-09-30,2025-03-27
+2025,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2025-03-28,2025-09-29
+2025,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2025-09-30,2026-08-28
+2025,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,BEL,Bharat Electronics Ltd.,Capital Goods,2024-09-30,2025-03-27
+2025,BEL,Bharat Electronics Ltd.,Capital Goods,2025-03-28,2025-09-29
+2025,BEL,Bharat Electronics Ltd.,Capital Goods,2025-09-30,2026-08-28
+2025,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2024-09-30,2025-03-27
+2025,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2025-03-28,2025-09-29
+2025,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2025-09-30,2026-08-28
+2025,BPCL,Bharat Petroleum Corporation Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2025,BRITANNIA,Britannia Industries Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2025,CIPLA,Cipla Ltd.,Healthcare,2024-09-30,2025-03-27
+2025,CIPLA,Cipla Ltd.,Healthcare,2025-03-28,2025-09-29
+2025,CIPLA,Cipla Ltd.,Healthcare,2025-09-30,2026-08-28
+2025,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2025,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2025-03-28,2025-09-29
+2025,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2025-09-30,2026-08-28
+2025,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2024-09-30,2025-03-27
+2025,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2025-03-28,2025-09-29
+2025,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2025-09-30,2026-08-28
+2025,EICHERMOT,Eicher Motors Ltd.,Automobile,2024-09-30,2025-03-27
+2025,EICHERMOT,Eicher Motors Ltd.,Automobile,2025-03-28,2025-09-29
+2025,EICHERMOT,Eicher Motors Ltd.,Automobile,2025-09-30,2026-08-28
+2025,ETERNAL,Eternal Ltd. (formerly Zomato Ltd.),Consumer Services,2025-03-28,2025-09-29
+2025,ETERNAL,Eternal Ltd. (formerly Zomato Ltd.),Consumer Services,2025-09-30,2026-08-28
+2025,GRASIM,Grasim Industries Ltd.,Construction Materials,2024-09-30,2025-03-27
+2025,GRASIM,Grasim Industries Ltd.,Construction Materials,2025-03-28,2025-09-29
+2025,GRASIM,Grasim Industries Ltd.,Construction Materials,2025-09-30,2026-08-28
+2025,HCLTECH,HCL Technologies Ltd.,Information Technology,2024-09-30,2025-03-27
+2025,HCLTECH,HCL Technologies Ltd.,Information Technology,2025-03-28,2025-09-29
+2025,HCLTECH,HCL Technologies Ltd.,Information Technology,2025-09-30,2026-08-28
+2025,HDFCBANK,HDFC Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,HDFCBANK,HDFC Bank Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,HDFCBANK,HDFC Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2024-09-30,2025-03-27
+2025,HEROMOTOCO,Hero MotoCorp Ltd.,Automobile,2025-03-28,2025-09-29
+2025,HINDALCO,Hindalco Industries Ltd.,Metals,2024-09-30,2025-03-27
+2025,HINDALCO,Hindalco Industries Ltd.,Metals,2025-03-28,2025-09-29
+2025,HINDALCO,Hindalco Industries Ltd.,Metals,2025-09-30,2026-08-28
+2025,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2025,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2025-03-28,2025-09-29
+2025,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2025,ICICIBANK,ICICI Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,ICICIBANK,ICICI Bank Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,ICICIBANK,ICICI Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,INDIGO,InterGlobe Aviation Ltd.,Services,2025-09-30,2026-08-28
+2025,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,INDUSINDBK,IndusInd Bank Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,INFY,Infosys Ltd.,Information Technology,2024-09-30,2025-03-27
+2025,INFY,Infosys Ltd.,Information Technology,2025-03-28,2025-09-29
+2025,INFY,Infosys Ltd.,Information Technology,2025-09-30,2026-08-28
+2025,ITC,ITC Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2025,ITC,ITC Ltd.,Fast Moving Consumer Goods,2025-03-28,2025-09-29
+2025,ITC,ITC Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2025,JIOFIN,Jio Financial Services Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,JIOFIN,Jio Financial Services Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,JSWSTEEL,JSW Steel Ltd.,Metals,2024-09-30,2025-03-27
+2025,JSWSTEEL,JSW Steel Ltd.,Metals,2025-03-28,2025-09-29
+2025,JSWSTEEL,JSW Steel Ltd.,Metals,2025-09-30,2026-08-28
+2025,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,LT,Larsen & Toubro Ltd.,Construction,2024-09-30,2025-03-27
+2025,LT,Larsen & Toubro Ltd.,Construction,2025-03-28,2025-09-29
+2025,LT,Larsen & Toubro Ltd.,Construction,2025-09-30,2026-08-28
+2025,M&M,Mahindra & Mahindra Ltd.,Automobile,2024-09-30,2025-03-27
+2025,M&M,Mahindra & Mahindra Ltd.,Automobile,2025-03-28,2025-09-29
+2025,M&M,Mahindra & Mahindra Ltd.,Automobile,2025-09-30,2026-08-28
+2025,MARUTI,Maruti Suzuki India Ltd.,Automobile,2024-09-30,2025-03-27
+2025,MARUTI,Maruti Suzuki India Ltd.,Automobile,2025-03-28,2025-09-29
+2025,MARUTI,Maruti Suzuki India Ltd.,Automobile,2025-09-30,2026-08-28
+2025,MAXHEALTH,Max Healthcare Institute Ltd.,Healthcare,2025-09-30,2026-08-28
+2025,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2025,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2025-03-28,2025-09-29
+2025,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2025,NTPC,NTPC Ltd.,Power,2024-09-30,2025-03-27
+2025,NTPC,NTPC Ltd.,Power,2025-03-28,2025-09-29
+2025,NTPC,NTPC Ltd.,Power,2025-09-30,2026-08-28
+2025,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2025,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2025-03-28,2025-09-29
+2025,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2025-09-30,2026-08-28
+2025,POWERGRID,Power Grid Corporation of India Ltd.,Power,2024-09-30,2025-03-27
+2025,POWERGRID,Power Grid Corporation of India Ltd.,Power,2025-03-28,2025-09-29
+2025,POWERGRID,Power Grid Corporation of India Ltd.,Power,2025-09-30,2026-08-28
+2025,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2024-09-30,2025-03-27
+2025,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2025-03-28,2025-09-29
+2025,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2025-09-30,2026-08-28
+2025,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,SBIN,State Bank of India,Financial Services,2024-09-30,2025-03-27
+2025,SBIN,State Bank of India,Financial Services,2025-03-28,2025-09-29
+2025,SBIN,State Bank of India,Financial Services,2025-09-30,2026-08-28
+2025,SHRIRAMFIN,Shriram Finance Ltd.,Financial Services,2024-09-30,2025-03-27
+2025,SHRIRAMFIN,Shriram Finance Ltd.,Financial Services,2025-03-28,2025-09-29
+2025,SHRIRAMFIN,Shriram Finance Ltd.,Financial Services,2025-09-30,2026-08-28
+2025,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2024-09-30,2025-03-27
+2025,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2025-03-28,2025-09-29
+2025,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2025-09-30,2026-08-28
+2025,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2024-09-30,2025-03-27
+2025,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2025-03-28,2025-09-29
+2025,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2025,TATAMOTORS,Tata Motors Ltd.,Automobile,2024-09-30,2025-03-27
+2025,TATAMOTORS,Tata Motors Ltd.,Automobile,2025-03-28,2025-09-29
+2025,TATAMOTORS,Tata Motors Ltd.,Automobile,2025-09-30,2026-08-28
+2025,TATASTEEL,Tata Steel Ltd.,Metals,2024-09-30,2025-03-27
+2025,TATASTEEL,Tata Steel Ltd.,Metals,2025-03-28,2025-09-29
+2025,TATASTEEL,Tata Steel Ltd.,Metals,2025-09-30,2026-08-28
+2025,TCS,Tata Consultancy Services Ltd.,Information Technology,2024-09-30,2025-03-27
+2025,TCS,Tata Consultancy Services Ltd.,Information Technology,2025-03-28,2025-09-29
+2025,TCS,Tata Consultancy Services Ltd.,Information Technology,2025-09-30,2026-08-28
+2025,TECHM,Tech Mahindra Ltd.,Information Technology,2024-09-30,2025-03-27
+2025,TECHM,Tech Mahindra Ltd.,Information Technology,2025-03-28,2025-09-29
+2025,TECHM,Tech Mahindra Ltd.,Information Technology,2025-09-30,2026-08-28
+2025,TITAN,Titan Company Ltd.,Consumer Durables,2024-09-30,2025-03-27
+2025,TITAN,Titan Company Ltd.,Consumer Durables,2025-03-28,2025-09-29
+2025,TITAN,Titan Company Ltd.,Consumer Durables,2025-09-30,2026-08-28
+2025,TRENT,Trent Ltd.,Consumer Services,2024-09-30,2025-03-27
+2025,TRENT,Trent Ltd.,Consumer Services,2025-03-28,2025-09-29
+2025,TRENT,Trent Ltd.,Consumer Services,2025-09-30,2026-08-28
+2025,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2024-09-30,2025-03-27
+2025,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2025-03-28,2025-09-29
+2025,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2025-09-30,2026-08-28
+2025,WIPRO,Wipro Ltd.,Information Technology,2024-09-30,2025-03-27
+2025,WIPRO,Wipro Ltd.,Information Technology,2025-03-28,2025-09-29
+2025,WIPRO,Wipro Ltd.,Information Technology,2025-09-30,2026-08-28
+2026,ADANIENT,Adani Enterprises Ltd.,Metals & Mining,2025-09-30,2026-08-28
+2026,ADANIPORTS,Adani Ports and Special Economic Zone Ltd.,Services,2025-09-30,2026-08-28
+2026,APOLLOHOSP,Apollo Hospitals Enterprise Ltd.,Healthcare,2025-09-30,2026-08-28
+2026,ASIANPAINT,Asian Paints Ltd.,Consumer Durables,2025-09-30,2026-08-28
+2026,AXISBANK,Axis Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,BAJAJ-AUTO,Bajaj Auto Ltd.,Automobile,2025-09-30,2026-08-28
+2026,BAJAJFINSV,Bajaj Finserv Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,BAJFINANCE,Bajaj Finance Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,BEL,Bharat Electronics Ltd.,Capital Goods,2025-09-30,2026-08-28
+2026,BHARTIARTL,Bharti Airtel Ltd.,Telecommunication,2025-09-30,2026-08-28
+2026,CIPLA,Cipla Ltd.,Healthcare,2025-09-30,2026-08-28
+2026,COALINDIA,Coal India Ltd.,Oil Gas & Consumable Fuels,2025-09-30,2026-08-28
+2026,DRREDDY,Dr. Reddy's Laboratories Ltd.,Healthcare,2025-09-30,2026-08-28
+2026,EICHERMOT,Eicher Motors Ltd.,Automobile,2025-09-30,2026-08-28
+2026,ETERNAL,Eternal Ltd. (formerly Zomato Ltd.),Consumer Services,2025-09-30,2026-08-28
+2026,GRASIM,Grasim Industries Ltd.,Construction Materials,2025-09-30,2026-08-28
+2026,HCLTECH,HCL Technologies Ltd.,Information Technology,2025-09-30,2026-08-28
+2026,HDFCBANK,HDFC Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,HDFCLIFE,HDFC Life Insurance Company Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,HINDALCO,Hindalco Industries Ltd.,Metals,2025-09-30,2026-08-28
+2026,HINDUNILVR,Hindustan Unilever Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2026,ICICIBANK,ICICI Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,INDIGO,InterGlobe Aviation Ltd.,Services,2025-09-30,2026-08-28
+2026,INFY,Infosys Ltd.,Information Technology,2025-09-30,2026-08-28
+2026,ITC,ITC Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2026,JIOFIN,Jio Financial Services Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,JSWSTEEL,JSW Steel Ltd.,Metals,2025-09-30,2026-08-28
+2026,KOTAKBANK,Kotak Mahindra Bank Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,LT,Larsen & Toubro Ltd.,Construction,2025-09-30,2026-08-28
+2026,M&M,Mahindra & Mahindra Ltd.,Automobile,2025-09-30,2026-08-28
+2026,MARUTI,Maruti Suzuki India Ltd.,Automobile,2025-09-30,2026-08-28
+2026,MAXHEALTH,Max Healthcare Institute Ltd.,Healthcare,2025-09-30,2026-08-28
+2026,NESTLEIND,Nestle India Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2026,NTPC,NTPC Ltd.,Power,2025-09-30,2026-08-28
+2026,ONGC,Oil and Natural Gas Corporation Ltd.,Oil Gas & Consumable Fuels,2025-09-30,2026-08-28
+2026,POWERGRID,Power Grid Corporation of India Ltd.,Power,2025-09-30,2026-08-28
+2026,RELIANCE,Reliance Industries Ltd.,Oil Gas & Consumable Fuels,2025-09-30,2026-08-28
+2026,SBILIFE,SBI Life Insurance Company Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,SBIN,State Bank of India,Financial Services,2025-09-30,2026-08-28
+2026,SHRIRAMFIN,Shriram Finance Ltd.,Financial Services,2025-09-30,2026-08-28
+2026,SUNPHARMA,Sun Pharmaceutical Industries Ltd.,Healthcare,2025-09-30,2026-08-28
+2026,TATACONSUM,Tata Consumer Products Ltd.,Fast Moving Consumer Goods,2025-09-30,2026-08-28
+2026,TATAMOTORS,Tata Motors Ltd.,Automobile,2025-09-30,2026-08-28
+2026,TATASTEEL,Tata Steel Ltd.,Metals,2025-09-30,2026-08-28
+2026,TCS,Tata Consultancy Services Ltd.,Information Technology,2025-09-30,2026-08-28
+2026,TECHM,Tech Mahindra Ltd.,Information Technology,2025-09-30,2026-08-28
+2026,TITAN,Titan Company Ltd.,Consumer Durables,2025-09-30,2026-08-28
+2026,TRENT,Trent Ltd.,Consumer Services,2025-09-30,2026-08-28
+2026,ULTRACEMCO,UltraTech Cement Ltd.,Construction Materials,2025-09-30,2026-08-28
+2026,WIPRO,Wipro Ltd.,Information Technology,2025-09-30,2026-08-28

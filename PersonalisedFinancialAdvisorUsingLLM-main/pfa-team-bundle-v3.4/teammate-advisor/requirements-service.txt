@@ -1,0 +1,33 @@
+# What the teammate's code actually imports, at the versions from their working virtualenv.
+# (Their full requirements.txt is kept in teammate/ for reference; it also pulls LangGraph Studio,
+#  Ollama, weather/search clients and the 600 MB spaCy "lg" model, none of which the service uses.)
+# torch is installed first from the CPU-only index (see Dockerfile).
+openai==2.3.0
+langchain==0.3.28
+langchain-core==0.3.79
+langchain-community==0.3.31
+langchain-openai==0.3.35
+langchain-text-splitters==0.3.11
+langgraph==0.6.11
+chromadb==1.5.9
+sentence-transformers==5.1.1
+transformers==4.57.6
+spacy==3.8.16
+en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl
+rank-bm25==0.2.2
+numpy==2.4.6
+# llm-guard 0.0.2 is installed with --no-deps (its xformers pin is GPU-only and never imported);
+# these are the packages its scanners import when GaurdRails.py loads them:
+presidio-analyzer==2.2.364
+presidio-anonymizer==2.2.359
+nltk==3.10.3
+tiktoken==0.14.0
+mcp==1.30.0
+python-dotenv==1.2.4
+requests==2.34.2
+pydantic==2.13.5
+uvicorn
+# Tracing to Phoenix (LangChain / LangGraph spans with prompts, tokens and cost)
+openinference-instrumentation-langchain
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-http

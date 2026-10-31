@@ -1,0 +1,41 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Optimal action diagrams</title></head><body><h1>Optimal action diagrams</h1>
+<h2>Optimal Fixed + RD Actions</h2>
+<pre class="mermaid">graph TD;
+  subgraph Fixed Deposits
+    f0[&quot;Start: 2026-10-10 | Balance: ₹100,000&quot;]
+    f1[&quot;End: 2046-10-05 | Balance: ₹416,698.79&quot;]
+    f0 --&gt;|&quot;HDFC Bank Regular Fixed Deposit (Cumulative &amp; Non-Cumulative) x2 (10y + 10y)&quot;| f1
+  end
+  subgraph Recurring Deposits + Reinvestment
+    r0[&quot;Start: 2026-10-10 | RD Installment: ₹1,000/mo&quot;]
+    r1[&quot;RD Maturity: 2036-10-07 | Balance: ₹174,663.57&quot;]
+    r2[&quot;RD Continue: 2046-10-05 | Balance: ₹174,663.57&quot;]
+    r3[&quot;FD Reinvestment: 2046-10-05 | Balance: ₹356,544.26&quot;]
+    r0 --&gt;|&quot;HDFC Bank Standard Recurring Deposit (10y)&quot;| r1
+    r1 --&gt;|&quot;Continue RD (10y more)&quot;| r2
+    r1 --&gt;|&quot;Reinvest to HDFC Regular FD (10y)&quot;| r3
+  end
+  classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+  classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+  class f1,r2,r3 leaf;
+  class f0,r0,r1 inner;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+  subgraph Fixed Deposits
+    f0[&quot;Start: 2026-10-10 | Balance: ₹100,000&quot;]
+    f1[&quot;End: 2046-10-05 | Balance: ₹416,698.79&quot;]
+    f0 --&gt;|&quot;HDFC Bank Regular Fixed Deposit (Cumulative &amp; Non-Cumulative) x2 (10y + 10y)&quot;| f1
+  end
+  subgraph Recurring Deposits + Reinvestment
+    r0[&quot;Start: 2026-10-10 | RD Installment: ₹1,000/mo&quot;]
+    r1[&quot;RD Maturity: 2036-10-07 | Balance: ₹174,663.57&quot;]
+    r2[&quot;RD Continue: 2046-10-05 | Balance: ₹174,663.57&quot;]
+    r3[&quot;FD Reinvestment: 2046-10-05 | Balance: ₹356,544.26&quot;]
+    r0 --&gt;|&quot;HDFC Bank Standard Recurring Deposit (10y)&quot;| r1
+    r1 --&gt;|&quot;Continue RD (10y more)&quot;| r2
+    r1 --&gt;|&quot;Reinvest to HDFC Regular FD (10y)&quot;| r3
+  end
+  classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+  classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+  class f1,r2,r3 leaf;
+  class f0,r0,r1 inner;</pre></details>
+<script type='module'>import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad: true});</script></body></html>

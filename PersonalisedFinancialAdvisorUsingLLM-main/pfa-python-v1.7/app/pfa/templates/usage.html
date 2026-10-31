@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Usage · Finance Advisor{% endblock %}
+{% block content %}
+<main class="usage">
+  <h1>What your plans and questions cost</h1>
+  <p class="muted">Every OpenAI call is metered: tokens in and out, the price per token, and the time it took. Numbers and charts are computed in code and cost nothing.</p>
+  <div class="tiles">
+    <div class="utile"><span>Per plan (average)</span><b>{{ '₹%.2f'|format(s.plan_avg_inr) }}</b><small>{{ '{:,.0f}'.format(s.plan_avg_tokens) }} tokens · AI text in {{ '%.1f'|format(s.plan_avg_ms / 1000) }} s</small></div>
+    <div class="utile"><span>Per chat question (average)</span><b>{{ '₹%.2f'|format(s.chat_avg_inr) }}</b><small>{{ '{:,.0f}'.format(s.chat_avg_tokens) }} tokens · reply in {{ '%.1f'|format(s.chat_avg_ms / 1000) }} s</small></div>
+    <div class="utile"><span>Your total so far</span><b>{{ '₹%.2f'|format(s.total_inr) }}</b><small>{{ s.plans }} plans · {{ s.chats }} questions{% if s.blocked %} ({{ s.blocked }} answered locally, ₹0){% endif %}{% if s.intake.reads %} · intake chat {{ s.intake.reads }} AI read{{ 's' if s.intake.reads != 1 }} ({{ '₹%.2f'|format(s.intake.inr) }}){% endif %}{% if s.voice.stt or s.voice.tts %} · voice {{ s.voice.stt }} spoken + {{ s.voice.tts }} read aloud ({{ '₹%.2f'|format(s.voice.inr) }}){% endif %}</small></div>
+  </div>
+
+  <h2 class="section-label">Plans</h2>
+  <div class="table-card"><table>
+    <thead><tr><th>When</th><th>Started by</th><th class="num">Tokens</th><th class="num">AI time</th><th class="num">Cost</th></tr></thead>
+    <tbody>{% for p in plans %}<tr><td><a href="/report/{{ p.session_id }}">{{ p.created_at.strftime('%d %b, %H:%M') }}</a></td>
+      <td>{{ 'Chat: ' ~ p.question[6:60] if p.question and p.question.startswith('chat:') else 'Intake form' }}</td>
+      <td class="num">{{ '{:,}'.format(p.tokens) if p.tokens else '-' }}</td><td class="num">{{ '%.1f s'|format(p.ms / 1000) if p.ms else '-' }}</td>
+      <td class="num">{{ '₹%.3f'|format(p.inr) if p.inr is not none else 'not metered' }}</td></tr>
+    {% else %}<tr><td colspan="5" class="muted">No plans yet.</td></tr>{% endfor %}</tbody></table></div>
+
+  <h2 class="section-label">Chat questions</h2>
+  <div class="table-card"><table>
+    <thead><tr><th>When</th><th>Question</th><th>Result</th><th class="num">Tokens</th><th class="num">Time</th><th class="num">Cost</th></tr></thead>
+    <tbody>{% for c in chats %}<tr><td>{{ c.created_at.strftime('%d %b, %H:%M') }}</td><td>{{ (c.question or '')[:70] }}</td>
+      <td>{{ {'re_plan':'Updated plan','answer':'Answered','confirm':'Proposed a change','declined':'Kept as is','off_topic':'Off-topic','guardrail':'Blocked locally','error':'AI error','ai_off':'AI off'}.get(c.kind, c.kind) }}</td>
+      <td class="num">{{ '{:,}'.format(c.tokens) if c.tokens else '0' }}</td><td class="num">{{ '%.1f s'|format(c.ms / 1000) if c.ms is not none else '-' }}</td>
+      <td class="num">{{ '₹%.3f'|format(c.inr or 0) }}</td></tr>
+    {% else %}<tr><td colspan="6" class="muted">No questions yet.</td></tr>{% endfor %}</tbody></table></div>
+
+  <p class="fine">Prices: {{ model }} ${{ prices.chat_input }} input / ${{ prices.chat_cached }} cached input / ${{ prices.chat_output }} output per 1M tokens (reasoning tokens bill as output) · text-embedding-3-small ${{ prices.embed }} per 1M · $1 = ₹{{ usd_to_inr }}. Change them in <code>.env</code>. A chat question that updates the plan also creates a new plan, which is listed and costed under Plans.</p>
+</main>
+{% endblock %}

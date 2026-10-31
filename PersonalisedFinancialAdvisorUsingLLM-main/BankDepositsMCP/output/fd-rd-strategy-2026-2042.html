@@ -1,0 +1,85 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Optimal action diagrams</title></head><body><h1>Optimal action diagrams</h1>
+<h2>Optimal Fixed and Recurring Deposit Strategy (2026-10-10 to 2042-10-10)</h2>
+<pre class="mermaid">graph TD;
+  subgraph Fixed_Deposits
+    fn0[&quot;balance: 100000.00, date: 2026-10-10&quot;]
+    fn1[&quot;balance: 207161.56, date: 2036-10-07&quot;]
+    fn2[&quot;balance: 295291.48, date: 2041-09-11&quot;]
+    fn3[&quot;balance: 317133.43, date: 2042-09-11&quot;]
+    fn4[&quot;balance: 317726.39, date: 2042-10-03&quot;]
+    fn5[&quot;balance: 317924.29, date: 2042-10-10&quot;]
+    fn0 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months x1&quot;| fn1
+    fn1 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| fn2
+    fn2 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1&quot;| fn3
+    fn3 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x3&quot;| fn4
+    fn4 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x1&quot;| fn5
+  end
+  subgraph Recurring_Deposits_and_Reinvestments
+    rn0[&quot;installment: 1000.00, date: 2026-10-10&quot;]
+    rn1[&quot;balance: 71459.95, date: 2031-10-09&quot;]
+    rn2[&quot;balance: 71459.95, date: 2036-10-07&quot;]
+    rn3[&quot;balance: 71459.95, date: 2041-10-06&quot;]
+    rn4[&quot;balance: 148037.55, date: 2041-10-06&quot;]
+    rn5[&quot;balance: 158987.51, date: 2042-10-06&quot;]
+    rn6[&quot;balance: 101860.18, date: 2041-09-11&quot;]
+    rn7[&quot;balance: 109394.52, date: 2042-09-11&quot;]
+    rn8[&quot;balance: 109599.06, date: 2042-10-03&quot;]
+    rn9[&quot;balance: 109667.32, date: 2042-10-10&quot;]
+    rn10[&quot;balance: 76745.66, date: 2042-10-06&quot;]
+    rn0 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| rn1
+    rn1 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| rn2
+    rn2 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| rn3
+    rn1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months x1 (reinvestment)&quot;| rn4
+    rn4 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1 (reinvestment)&quot;| rn5
+    rn2 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4 (reinvestment)&quot;| rn6
+    rn6 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1 (reinvestment)&quot;| rn7
+    rn7 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x3 (reinvestment)&quot;| rn8
+    rn8 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x1 (reinvestment)&quot;| rn9
+    rn3 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1 (reinvestment)&quot;| rn10
+  end
+  classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+  class fn5,rn5,rn9,rn10 leaf;
+  classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+  class fn0,fn1,fn2,fn3,fn4,rn0,rn1,rn2,rn3,rn4,rn6,rn7,rn8 inner;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+  subgraph Fixed_Deposits
+    fn0[&quot;balance: 100000.00, date: 2026-10-10&quot;]
+    fn1[&quot;balance: 207161.56, date: 2036-10-07&quot;]
+    fn2[&quot;balance: 295291.48, date: 2041-09-11&quot;]
+    fn3[&quot;balance: 317133.43, date: 2042-09-11&quot;]
+    fn4[&quot;balance: 317726.39, date: 2042-10-03&quot;]
+    fn5[&quot;balance: 317924.29, date: 2042-10-10&quot;]
+    fn0 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months x1&quot;| fn1
+    fn1 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| fn2
+    fn2 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1&quot;| fn3
+    fn3 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x3&quot;| fn4
+    fn4 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x1&quot;| fn5
+  end
+  subgraph Recurring_Deposits_and_Reinvestments
+    rn0[&quot;installment: 1000.00, date: 2026-10-10&quot;]
+    rn1[&quot;balance: 71459.95, date: 2031-10-09&quot;]
+    rn2[&quot;balance: 71459.95, date: 2036-10-07&quot;]
+    rn3[&quot;balance: 71459.95, date: 2041-10-06&quot;]
+    rn4[&quot;balance: 148037.55, date: 2041-10-06&quot;]
+    rn5[&quot;balance: 158987.51, date: 2042-10-06&quot;]
+    rn6[&quot;balance: 101860.18, date: 2041-09-11&quot;]
+    rn7[&quot;balance: 109394.52, date: 2042-09-11&quot;]
+    rn8[&quot;balance: 109599.06, date: 2042-10-03&quot;]
+    rn9[&quot;balance: 109667.32, date: 2042-10-10&quot;]
+    rn10[&quot;balance: 76745.66, date: 2042-10-06&quot;]
+    rn0 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| rn1
+    rn1 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| rn2
+    rn2 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| rn3
+    rn1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months x1 (reinvestment)&quot;| rn4
+    rn4 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1 (reinvestment)&quot;| rn5
+    rn2 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4 (reinvestment)&quot;| rn6
+    rn6 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1 (reinvestment)&quot;| rn7
+    rn7 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x3 (reinvestment)&quot;| rn8
+    rn8 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable) — 0.25 months x1 (reinvestment)&quot;| rn9
+    rn3 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x1 (reinvestment)&quot;| rn10
+  end
+  classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+  class fn5,rn5,rn9,rn10 leaf;
+  classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+  class fn0,fn1,fn2,fn3,fn4,rn0,rn1,rn2,rn3,rn4,rn6,rn7,rn8 inner;</pre></details>
+<script type='module'>import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad: true});</script></body></html>

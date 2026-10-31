@@ -1,0 +1,357 @@
+﻿test_prompt,final_result
+"My age is 35 years. My present bank balance is 100000 rs and it should be 150000 rs after 10 years.
+Please consider the inflation as 0.
+Please give the optimal deposit actions to meet the goal.
+Please consider only fixed deposit products.
+please use the tool 'OptimalActionFixedDepositTool'","Thanks. I’ll use only fixed deposits, apply general (non-senior) rates for age 35, set inflation to 0 as requested, and optimize to your 10-year goal date.
+
+Inputs captured
+- Initial state: balance = 100000, time = 2026-10-07
+- Goal state: time = 2036-10-07 (goal amount not required for optimization; used a very large placeholder internally)
+- Product set: Fixed deposit schemes from the database (general rates only)
+
+Optimal fixed deposit action sequence
+- Action 1: Invest 100000 in Axis Bank — Fixed Deposit Plus (Non-Callable) — 120 months, 7.35% p.a., compounding quarterly.
+  - Start: 2026-10-07
+  - Maturity: 2036-10-04
+  - Maturity amount (from tool): 207161.55999921914
+
+Result vs your goal
+- Goal amount: 150000
+- Projected amount on/around goal date: 207161.55999921914
+- Shortfall: 0 (you meet and exceed the goal with the above FD plan)
+
+Final value considering inflation
+- Assumed inflation: 0%
+- Final value on goal date: 207161.55999921914
+
+Notes
+- Only fixed deposits were considered, as requested. No recurring deposit actions are needed since the goal is already achieved with the fixed deposit plan."
+"My age is 40 years. My installment amount is 1000 rs and it should be 150000 rs after 10 years.
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.
+Please consider only recurring deposit products.
+please use the tool 'OptimalActionRecurringDepositTool'","Thanks. I’ve used only recurring deposit products, applied general (non-senior) rates for your age 40, and targeted Rs 150,000 in 10 years with a monthly installment of Rs 1,000. Inflation considered: 0%.
+
+Data sources used:
+- Read deposit_schemes table metadata and filtered recurring deposit schemes from the SQLite database.
+- Ran OptimalActionRecurringDepositTool with only recurring deposits (no fixed deposits).
+
+Optimal recurring deposit action sequence (from the tool):
+- Do these back-to-back:
+  1) IDFC FIRST Bank — “IDFC FIRST Recurring Deposit with Zero Installment Penalty”
+     - Interest: 7.10% p.a., compounding quarterly
+     - Installment frequency: monthly
+     - Tenure: 3 years
+     - Repeat this 3 times (total 9 years)
+
+  2) State Bank of India — “Recurring Deposit (RD) Scheme”
+     - Interest: 6.05% p.a., compounding quarterly
+     - Installment frequency: monthly
+     - Tenure: 1 year
+     - Do this 1 time (final year)
+
+Tool’s projected timeline and balances:
+- Around 2035-10-05: Rs 120600.65286801403
+- Around 2036-10-04 (goal horizon): Rs 1495275.8888569078
+
+Reinvestments into fixed deposits:
+- None (as requested, only recurring deposit products were considered).
+
+Shortfall versus your goal:
+- None. The tool’s plan exceeds the target of Rs 150,000 by the goal horizon.
+
+Final value at goal date considering 0% inflation:
+- Rs 1495275.8888569078 (via GetFinalValueConsideringInflation)
+
+Notes:
+- General category rates were used based on age 40 (no senior/super-senior benefits).
+- If you want the plan to more tightly match Rs 150,000 instead of exceeding it, we can re-run with a lower monthly installment or shorter sequence."
+"My age is 41 years. My installment amount is 1000 rs and it should be 150000 rs after 10 years.
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.
+Please consider only recurring deposit products.
+please use the tool 'OptimalActionRecurringDepositTool'","Thanks. I’ve used the deposit schemes from the database and ran the OptimalActionRecurringDepositTool considering only recurring deposit products, your age (41, non–senior), your monthly installment of Rs 1,000, goal time of 10 years, and inflation = 0.
+
+Inputs interpreted
+- Age: 41 (general rates applied; no senior/super-senior rates)
+- Installment: Rs 1,000 per month
+- Start date: 2026-10-07
+- Goal date: 2036-10-07
+- Inflation: 0
+- Products considered: Recurring Deposits only (no Fixed Deposits)
+
+Optimal recurring deposit action sequence (from the tool)
+- Action 1: Open IDFC FIRST Bank – “IDFC FIRST Recurring Deposit with Zero Installment Penalty”
+  - Interest rate: 7.10% (general), compounding: quarterly
+  - Tenure: 3 years
+  - Monthly installment: Rs 1,000
+  - Repeat: 3 consecutive cycles back-to-back (total 9 years)
+  - Indicative timeline:
+    - Cycle 1: 2026-10-07 to 2029-10-06
+    - Cycle 2: 2029-10-06 to 2032-10-05
+    - Cycle 3: 2032-10-05 to 2035-10-05
+- Action 2: Open State Bank of India – “Recurring Deposit (RD) Scheme”
+  - Interest rate: 6.05% (general), compounding: quarterly
+  - Tenure: 1 year
+  - Monthly installment: Rs 1,000
+  - Repeat: 1 cycle
+  - Indicative timeline:
+    - 2035-10-05 to 2036-10-04
+
+Tool-projected maturity values and checkpoints
+- After 9 years (after completing the three 3-year IDFC FIRST RD cycles): Rs 120,600.65 on 2035-10-05
+- Final value near goal date (after the 1-year SBI RD): Rs 1,495,275.89 on 2036-10-04
+- With inflation set to 0, the real value equals the nominal value above.
+
+Notes
+- The sequence uses only recurring deposit products, as requested.
+- Rates and scheme details are taken from the database rows filtered for “recurring” and “RD,” applying general (non-senior) rates.
+- Based on the tool’s projection, this plan meets and exceeds your stated goal of Rs 150,000 within 10 years using Rs 1,000 monthly installments.
+- If you’d like me to fine-tune to target closer to exactly Rs 150,000 (e.g., adjust the last tenure or change the installment), I can rerun the tool with updated constraints."
+"My age is 42 years. My installment amount is 1000 rs and it should be 150000 rs after 9 years.
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.
+please use the tool 'OptimalActionRecurringDepositTool'","Thanks. I’ve used your inputs and the deposit_schemes database to compute the optimal plan.
+
+Inputs understood
+- Age: 42 (general citizen; senior/super-senior schemes not applied)
+- Installment: ₹1,000 per month
+- Goal time: 9 years from today (target date: 2035-10-07)
+- Goal amount: ₹1,50,000 (used only for reporting the shortfall/excess; optimization uses scheme data and goal time)
+- Inflation: 0%
+
+Database read
+- Table: deposit_schemes (schema fetched and data loaded)
+- Used pattern matching to identify “recurring” deposit schemes and general (non-senior) “fixed deposit” schemes for reinvestments
+
+Result 1: Fixed-deposit-only path
+- Not possible with current fixed deposits interest rates.
+
+Result 2: Optimal recurring deposit actions and reinvestment FDs
+Recurring Deposit actions (as returned by OptimalActionRecurringDepositTool)
+- State Bank of India — Recurring Deposit (RD) — 36–60 months (assumed 60 months)
+  - Interest: 6.75% p.a., compounding: quarterly, RD installment period: 1 month
+  - Duration: 5 years
+  - Count: x1
+- IDFC FIRST Bank — RD — 36 months
+  - Interest: 7.10% p.a., compounding: quarterly, RD installment period: 1 month
+  - Duration: 3 years
+  - Count: x1
+- State Bank of India — Recurring Deposit (RD) Scheme — 12 months
+  - Interest: 6.05% p.a., compounding: quarterly, RD installment period: 1 month
+  - Duration: 1 year
+  - Count: x1
+
+Reinvestment Fixed Deposit actions after RD maturities
+- IDFC FIRST Bank — Standard Fixed Deposit — 36 months
+  - Interest: 7.10% p.a., compounding: quarterly
+  - Duration: 3 years
+  - Count: x1
+- Kotak Mahindra Bank — ActiveMoney (Dynamic Sweep-In Program) — 6 months
+  - Interest: 7.00% p.a., compounding: quarterly
+  - Duration: 6 months
+  - Count: x2
+- Kotak Mahindra Bank — ActiveMoney (Dynamic Sweep-In Program) — 6 months
+  - Interest: 7.00% p.a., compounding: quarterly
+  - Duration: 6 months
+  - Count: x2
+
+Shortfall/excess versus your stated goal
+- Remaining amount to reach goal (tool output): -₹30,23,735.97
+- Interpretation: You exceed the goal by ₹30,23,735.97; shortfall = ₹0
+
+Final value on goal date considering inflation
+- Final balance on 2035-10-07 at 0% inflation: ₹31,73,735.97
+
+Notes
+- As you are 42, only general-citizen rates were applied; senior/super-senior premiums were not considered.
+- All actions, rates, durations, and compounding frequencies are taken from the deposit_schemes SQLite table via the tools, and the optimal sequence is computed by OptimalActionRecurringDepositTool."
+"My age is 43 years. My installment amount is 1000 rs and it should be 150000 rs after 8 years.
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.","Thanks. To build the optimal plan, I need a couple of clarifications:
+
+1) Do you have any lump-sum amount available today to put in a fixed deposit? If not, I will proceed with 0.
+2) Should I start the plan from today (2026-10-07), or a different start date?
+3) Is the 1000 rs installment frequency monthly? If different, please specify (e.g., weekly/quarterly). If not specified, I’ll assume monthly."
+"My age is 44 years. My installment amount is 1000 rs per month and it should be 150000 rs after 8 years.
+Please give the optimal deposit actions to meet the goal.","Thanks. To start, I need one detail to plan the fixed-deposit step first:
+
+- What is your current lump-sum bank balance available today to invest in a fixed deposit? If none, please reply 0.
+
+Assumptions I’ll use unless you say otherwise:
+- Start date: today (2026-10-07)
+- Goal date: 8 years from today (2034-10-07)
+- Goal amount: 150,000 INR
+- Monthly installment for RD planning: 1,000 INR
+- Age: 44 (non-senior category)
+
+Once you confirm the lump-sum amount (0 if none), I’ll fetch deposit schemes from the database and compute the optimal sequence."
+"My age is 45 years. My bank balance is 100000 rs. My installment amount is 1000 rs per month and it should be 300000 rs after 8 years.
+Please give the optimal deposit actions to meet the goal.","Thanks. I have your inputs:
+- Age: 45 (general citizen rates apply)
+- Initial bank balance (lump sum): Rs 100,000
+- Recurring installment: Rs 1,000/month
+- Goal time: 8 years from today (target date ≈ 2034-10-07)
+- Goal amount: Rs 300,000
+
+What I did
+- Read your deposit schemes from the sqlite database.
+- Optimized the fixed-deposit actions for your initial lump sum.
+- Computed the remaining shortfall to be met via recurring deposits.
+- Optimized the recurring-deposit actions and reinvestments (into FDs) for the remaining period.
+- Adjusted for inflation using the India inflation tool.
+
+Optimal actions from your lump sum (Fixed Deposits)
+- Objective used for optimizer: maximize value by goal date (goal amount not required by optimizer).
+- Sequence to follow (from database schemes; general rates):
+  1) IDFC FIRST Bank — “Standard Fixed Deposit (Cumulative & Non-Cumulative)” — 36 months, 7.10% p.a., compounding quarterly
+     - Open now for 36 months, then roll once more for another 36 months (total 6 years)
+     - Tenors: 2026-10-07 → 2029-10-06 → 2032-10-05
+  2) Kotak Mahindra Bank — “ActiveMoney (Dynamic Sweep-In Program)” — used as 6-month FD, 7.00% p.a., compounding quarterly
+     - After the above, place proceeds into four back-to-back 6-month terms (cover remaining ~24 months)
+     - Tenors: ~2032-10-05 → 2034-10-05
+- Expected maturity value on/around goal date from this leg: Rs 175,251.61
+
+Remaining amount to be met via monthly installments
+- Target remaining (to reach Rs 300,000): Rs 124,748.39 by the same goal date.
+
+Optimal actions for monthly installments (Recurring Deposits + reinvestment FDs)
+- Sequence to follow (from database schemes; general rates):
+  1) State Bank of India — “Recurring Deposit (RD) — 36–60 months” — 5 years, 6.75% p.a., compounding quarterly; monthly Rs 1,000
+     - Tenor: 2026-10-07 → 2031-10-06
+     - Maturity amount at 2031-10-06: Rs 71,459.95
+  2) Reinvest that 5-year RD maturity into an FD:
+     - IDFC FIRST Bank — “Standard Fixed Deposit — 36 months” — 7.10% p.a., compounding quarterly
+     - Tenor: 2031-10-06 → 2034-10-05
+  3) For the remaining 36 months (months 61–96), channel the ongoing monthly Rs 1,000 into:
+     - IDFC FIRST Bank — “IDFC FIRST RD — 36 months (Zero Installment Penalty)” — 7.10% p.a., compounding quarterly
+     - Tenor: 2031-10-07 → 2034-10-06
+- Expected combined maturity value from this RD leg (including the 3-year FD created from the 5-year RD proceeds): Rs 88,258.40
+- Shortfall remaining versus goal: Rs 36,489.99
+  - Tool result note: “Not possible with current recurring deposits interest rates.” would be shown if optimization failed; here it succeeded but leaves a shortfall at Rs 1,000/month.
+
+Combined outcome at goal date
+- Total expected maturity (FD lump sum + RD leg including reinvestment FD): Rs 263,510.01
+- Shortfall versus your desired Rs 300,000: Rs 36,489.99
+
+Inflation-adjusted value (using India inflation tool: 2.4% p.a.)
+- Present-value equivalent (as of 2026-10-07) of the total goal-date maturity:
+  - For FD lump sum leg (Rs 175,251.61): Rs 144,945.89
+  - For combined total (Rs 263,510.01): Rs 217,942.04
+
+Key scheme details (sourced from your sqlite database; general category, not senior):
+- IDFC FIRST Bank — Standard Fixed Deposit (Cumulative & Non-Cumulative): up to 7.10% (24–36 months), quarterly compounding.
+- Kotak Mahindra Bank — ActiveMoney (Dynamic Sweep-In Program): 7.00% for 6 months (quarterly), sweep FD units.
+- State Bank of India — Recurring Deposit: 6.75%–7.00% across 36–60 months buckets (general), quarterly compounding.
+- IDFC FIRST Bank — RD (Zero Installment Penalty): up to 7.10% for 36 months, quarterly compounding.
+
+What you need to do now
+- Move Rs 100,000 into the FD sequence:
+  - IDFC FIRST FD 36 months → roll over once more for 36 months → then Kotak ActiveMoney 6 months x 4 till goal date.
+- Keep paying Rs 1,000/month:
+  - SBI RD for 5 years (start now) → on 2031-10-06, put its maturity into IDFC FIRST 36-month FD → simultaneously, direct months 61–96 into IDFC FIRST 36-month RD.
+
+Closing the shortfall
+- With Rs 1,000/month, the optimized plan still falls short by ~Rs 36,489.99 at goal date.
+- To eliminate the gap, either:
+  - Increase the monthly installment (e.g., switch the second RD to a higher monthly amount), or
+  - Add an extra small lump sum now or at interim maturity points.
+- If you tell me the higher monthly amount or any extra lump sum you can add, I will re-run the optimizer and update the action plan accordingly."
+"My age is 48 years. My bank balance is 100000 rs. My installment amount is 1000 rs per month.
+Please give the optimal deposit actions to for a period of 13 years from now.","Thanks. I have your inputs as:
+- Age: 48 (general citizen rates apply; senior/super-senior rates not applicable)
+- Lumpsum/bank balance now: 100,000 INR
+- Planned recurring installment: 1,000 INR per month
+- Investment horizon: 13 years from today (goal date: 2039-10-07)
+
+I pulled the deposit schemes from the database and computed the optimal actions using the tools. Below is your action plan and outcomes.
+
+A) Optimal fixed-deposit (FD) actions for your current 100,000 INR
+- Action 1
+  - Scheme: Axis Bank — Fixed Deposit Plus (Non-Callable Bulk) — 120M
+  - Rate/Compounding/Duration: 7.35% p.a., quarterly, 10 years
+  - Dates/Amount: Invest on 2026-10-07 → matures around 2036-10-04 at 207,161.56 INR
+- Action 2 (reinvestment of maturity from Action 1)
+  - Scheme: IDFC FIRST Bank — Standard Fixed Deposit — 36M
+  - Rate/Compounding/Duration: 7.10% p.a., quarterly, 3 years
+  - Dates/Amount: Invest on 2036-10-04 → value around 2039-10-04 at 255,860.06 INR
+
+Outcome from FD plan by goal date: 255,860.06 INR
+
+B) Optimal recurring-deposit (RD) actions for your 1,000 INR/month
+- RD Action 1
+  - Scheme: HDFC Bank — Standard Recurring Deposit — 120M
+  - Rate/Compounding/Duration: 7.10% p.a., quarterly, 10 years
+- RD Action 2 (continue RD after Action 1)
+  - Scheme: State Bank of India — Recurring Deposit (12–24M)
+  - Rate/Compounding/Duration: 6.80% p.a., quarterly, 2 years
+- RD Action 3 (continue RD after Action 2)
+  - Scheme: State Bank of India — Recurring Deposit (12M)
+  - Rate/Compounding/Duration: 6.05% p.a., quarterly, 1 year
+- Reinvestment after RD fruition
+  - Scheme: IDFC FIRST Bank — Standard Fixed Deposit — 36M
+  - Rate/Compounding/Duration: 7.10% p.a., quarterly, 3 years
+
+Outcome from RD plan by goal date: 215,722.61 INR
+
+C) Combined outcomes at goal date (2039-10-07)
+- Total nominal amount (FD + RD): 471,582.67 INR
+- Inflation-adjusted value (India CPI 2.4% p.a. over 13 years):
+  - Real value of total: 346,396.70 INR
+  - (Breakdown: FD real ≈ 187,939.65; RD real ≈ 158,457.05)
+
+D) Shortfall versus goal amount
+- You did not specify a goal-amount; for optimization the system uses a very large placeholder. After executing both the FD and RD action sequences above, the tool-reported shortfall vs that placeholder goal is: 999,999,528,417.33 INR.
+- Note: This shortfall is only against the internal placeholder (not your real target). If you later set a concrete target amount, the plan can be re-run to show a meaningful shortfall.
+
+Notes
+- All schemes and rates are from the database; as you are 48, general citizen rates were used.
+- Compounding conventions per scheme are indicated above (mostly quarterly).
+- If any scheme has specific minimum/maximum or non-callable constraints per bank, please confirm eligibility with the bank before booking.
+
+Would you like me to export these actions as a dated task/checklist or re-run with a specific rupee target to get a real shortfall number?"
+"My age is 48 years. My bank balance is 100000 rs. My installment amount is 1000 rs per month.
+Please give the optimal deposit actions to for a period of 20 years from now.","Thanks. Here’s the optimal 20‑year plan I built using the deposit_schemes SQLite database and the optimization tools, based on:
+- Age: 48 (general citizen rates used; senior/super-senior schemes excluded)
+- Initial bank balance (lump sum): Rs 100,000
+- Planned recurring deposit installment: Rs 1,000 per month
+- Goal time: 20 years from today (goal date 2046-10-07). No goal amount provided; a very large placeholder was used internally only for optimization.
+
+A) Optimal Fixed Deposit (FD) actions for the lump sum (Rs 100,000)
+- Action sequence (from OptimalActionFixedDepositTool):
+  - Axis Bank — Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months, 7.35% p.a., Quarterly compounding
+    - Count: 2 sequential FDs of 10 years each (back-to-back)
+    - Approximate schedule:
+      - FD #1: 2026-10-07 to ~2036-10-02 (10 years)
+      - FD #2: ~2036-10-02 to ~2046-10-02 (10 years)
+- Projected balance from FD path at goal time: Rs 429,159.12
+
+B) Optimal Recurring Deposit (RD) plan and reinvestments for monthly Rs 1,000
+- Action sequence (from OptimalActionRecurringDepositTool):
+  - IDFC FIRST Bank — Recurring Deposit — 36 months, 7.10% p.a., Quarterly compounding, monthly installment frequency
+    - Repeat count: 6 cycles (covers 18 years)
+  - State Bank of India — RD — 24 months, 6.80% p.a., Quarterly compounding, monthly installment frequency
+    - Repeat count: 1 cycle (adds final 2 years to complete 20 years)
+  - Reinvestment of RD proceeds (as determined by the tool):
+    - Axis Bank — Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months, 7.35% p.a., Quarterly compounding
+    - Count: 1 (used to park an interim RD fruition; accrual considered up to goal date)
+- Projected balance from RD path at goal time: Rs 333,117.59
+
+C) Combined projection at the goal date (FD + RD)
+- Total projected balance by 2046-10-07: Rs 762,276.71
+
+D) Shortfall versus goal amount
+- Since you did not specify a rupee goal, an extremely large placeholder goal was used only for optimization. The plan’s shortfall relative to that placeholder is: Rs 999,999,237,723.29
+
+E) Inflation adjustment (India CPI via tool: 2.4% p.a.)
+- Inflation-adjusted value of your total balance on 2046-10-07 in today’s rupees: Rs 474,211.87
+  - For reference:
+    - FD path alone (real value today): Rs 266,979.62
+    - RD path alone (real value today): Rs 207,232.25
+
+Notes
+- Products selected are based strictly on the deposit_schemes database and your age (non-senior rates). Schemes tagged “Senior Citizen” or “Super Senior Citizen” were not used.
+- Non-callable FDs typically do not permit premature withdrawal; the tool nevertheless selected them for higher yield over the 20‑year horizon.
+
+If you want, I can export the action sequence as a checklist with tentative booking/maturity dates you can use to set reminders."

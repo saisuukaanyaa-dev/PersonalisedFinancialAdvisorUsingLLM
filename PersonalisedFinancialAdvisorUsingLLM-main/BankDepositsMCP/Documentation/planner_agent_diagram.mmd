@@ -1,0 +1,149 @@
+%%{init: {
+  'theme': 'neutral',
+  'flowchart': {
+    'nodeSpacing': 12,
+    'rankSpacing': 18,
+    'padding': 5,
+    'subGraphPadding': 4
+  }
+}}%%
+graph LR
+    SQL[SQLDatabase:RW Access for Admin, R Access for user]
+    DOCDB[DocumentDatabase : RW Access for Admin, R Access for user]
+    ADMIN(("<b>Admin</b><br/>--------------------<br/>Upload raw documents<br/>Trigger database update<br/>Trigger knowledge base update"))
+    USER(("<b>User</b><br/>--------------------<br/>Update user profile<br/>Update goal profile<br/>Receive action notifications"))
+
+    subgraph SYSTEM[System]
+        subgraph UA[UserGroupNode]
+            direction TB
+            START([Start]) --> InputGuardRail
+            InputGuardRail --> PA[PlannerAgentLLMNode]
+            InputGuardRail --> END_NODE
+
+            PA --> OutputGuardRail
+            OutputGuardRail --> END_NODE([End])
+
+            UPS_NODE[UpdateUserProfileStateToolNode]
+            PA --> UPS_NODE
+            UPS_NODE --> PA
+
+            subgraph INPUTS[UserInputsUpdaterToolNode]
+                UP[Data : UserProfile]
+                GP[Data : GoalProfile]
+            end
+            UPS[Data : UserProfileState]
+            PA --> FT[FinancialMathToolNode]
+            FT --> PA
+            PA --> SEARCH_TOOL
+            SEARCH_TOOL --> PA
+            PA --> INPUTS
+            INPUTS --> PA
+            subgraph SEARCH_TOOL[SearchGroupNode]
+                START_ST([Start]) --> LLMAGENT2[SearchLLMNode]
+                LLMAGENT2 --> END_ST([End])
+                subgraph TOOLS_ST[SearchToolNode]
+                    ST_INNER[DatabaseReadGroupNodeInstance]
+                    DBR[RagAgentGroupNodeInstance]
+                end
+                LLMAGENT2 --> TOOLS_ST
+                TOOLS_ST --> LLMAGENT2
+            end
+        end
+
+        subgraph CP[AdminAgentsGroupNode]
+            direction TB
+            START_LLM([Start]) --> LLMAGENT3[SQLDatabaseUpdaterLLMNode]
+            LLMAGENT3 --> END_LLM([End])
+            subgraph SQLU[SQLDatabaseUpdaterToolNode]
+                CreateTableTool
+                UpdateTableStucturetool
+            end
+            LLMAGENT3 --> SQLU
+            SQLU --> LLMAGENT3
+        end
+    end
+
+    SQLU .-> SQL
+    DBC .-> SQL
+
+    subgraph EXTERNAL_TOOLS[StandaloneToolsAgents]
+        direction TB
+        subgraph RAG_AGENT[RagAgentGroupNode]
+            START_KB([Start]) --> RET[RagLLMNode]
+            RET --> END_KB([End])
+            VDB[VectorDatabase] --> RERANK[Reranker]
+            RERANK --> VDB
+            RERANK --> RET
+            RET --> RERANK
+        end
+
+        subgraph DB_READ_AGENT[DatabaseReadGroupNode]
+            START_DBR([Start]) --> AGENT_DBR[DatabaseReadLLMNode]
+            AGENT_DBR --> END_DBR([End])
+            SQLR[DatabaseReadToolNode]
+
+            AGENT_DBR --> SQLR
+            SQLR --> AGENT_DBR
+        end
+        
+        InputGuardRail
+        OutputGuardRail
+    end
+
+    SQL .-> SQLR
+    
+    DOCDB -.-> VDB
+    ADMIN -.->|Triggers updates| DB_CREATOR_GROUP
+    ADMIN -.->|Uploads documents| DOCDB
+    ADMIN ~~~ RAG_AGENT
+    RET ~~~ USER
+    USER -.-> PA
+
+    %% Structural Start Nodes (Green)
+    style START fill:#4BD485,stroke:#23864B,color:#000000
+    style START_AGENT fill:#4BD485,stroke:#23864B,color:#000000
+    style START_LLM fill:#4BD485,stroke:#23864B,color:#000000
+    style START_DBR fill:#4BD485,stroke:#23864B,color:#000000
+    style START_KB fill:#4BD485,stroke:#23864B,color:#000000
+    style START_ST fill:#4BD485,stroke:#23864B,color:#000000
+
+    %% Structural End Nodes (Red)
+    style END_NODE fill:#F87171,stroke:#DC2626,color:#000000
+    style END_AGENT fill:#F87171,stroke:#DC2626,color:#000000
+    style END_LLM fill:#F87171,stroke:#DC2626,color:#000000
+    style END_DBR fill:#F87171,stroke:#DC2626,color:#000000
+    style END_KB fill:#F87171,stroke:#DC2626,color:#000000
+    style END_ST fill:#F87171,stroke:#DC2626,color:#000000
+
+    %% Core System Agents & Core Logic Nodes (Slate Blue: #E2E8F0)
+    style PA fill:#E2E8F0,stroke:#475569,color:#0F172A
+    style UPS_NODE fill:#E2E8F0,stroke:#475569,color:#0F172A
+    style FT fill:#E2E8F0,stroke:#475569,color:#0F172A
+    style AGENT_DBR fill:#E2E8F0,stroke:#475569,color:#0F172A
+    style RET fill:#E2E8F0,stroke:#475569,color:#0F172A
+
+    %% Tools, Readers, & Updaters (Light Slate: #CBD5E1)
+    style DBC fill:#CBD5E1,stroke:#475569,color:#0F172A
+    style SQLU fill:#CBD5E1,stroke:#475569,color:#0F172A
+    style ST_INNER fill:#CBD5E1,stroke:#475569,color:#0F172A
+    style DBR fill:#CBD5E1,stroke:#475569,color:#0F172A
+    style SQLR fill:#CBD5E1,stroke:#475569,color:#0F172A
+    style RERANK fill:#CBD5E1,stroke:#475569,color:#0F172A
+
+    %% Databases & Data Stores (Orange: #FF9900)
+    style SQL fill:#FF9900,stroke:#CC7A00,color:#000000
+    style DOCDB fill:#FF9900,stroke:#CC7A00,color:#000000
+    style VDB fill:#FF9900,stroke:#CC7A00,color:#000000
+
+    %% User / Inputs / State Management (Peach: #FFDAB9 & Neutral Grey: #D3D1C7)
+    style UP fill:#D3D1C7,stroke:#5F5E5A,color:#2C2C2A
+    style GP fill:#D3D1C7,stroke:#5F5E5A,color:#2C2C2A
+    style UPS fill:#FFDAB9,stroke:#D9822B,color:#4A2800
+
+    %% External System Actors (Light Slate Circle: #E2E8F0)
+    style ADMIN fill:#E2E8F0,stroke:#475569,color:#0F172A
+    style USER fill:#E2E8F0,stroke:#475569,color:#0F172A
+
+    NOTE[""<br/> 1. Instances of UserGroupNode are created for each user.
+    <br/> 2. One instance of AdminAgentsGroupNode is created.""]
+    style NOTE fill:none,stroke:none, text-align:left

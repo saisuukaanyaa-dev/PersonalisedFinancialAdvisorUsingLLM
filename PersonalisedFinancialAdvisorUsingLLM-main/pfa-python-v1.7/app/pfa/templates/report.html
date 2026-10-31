@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Your money plan · Finance Advisor{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/report.css?v={{ v }}">{% endblock %}
+{% block body_class %}report-page{% endblock %}
+{% block content %}
+<div class="pfa">
+  <div class="wrap">
+    <p class="writing-note" id="writing-note" {% if not writing %}hidden{% endif %}>✨ Your numbers are ready. I'm writing the personal explanation - it appears here in a few seconds.</p>
+    <main id="report-main" data-report="{{ report_id }}">{% include "_report_main.html" %}</main>
+
+    <section class="chat" id="chat" aria-labelledby="chat-title">
+      <div class="chat-head">
+        <div class="avatar" aria-hidden="true">A</div>
+        <div><h2 id="chat-title">Talk to Arth about your plan</h2>
+          <p class="muted">Ask anything, or try a what-if: <em>"What if I invest 40K a month?"</em>, <em>"I closed my car loan"</em>. I'll show any change before it's made.</p></div>
+      </div>
+      <div class="chat-log" id="chat-log" aria-live="polite"></div>
+      <div class="suggestions" id="suggestions">
+        <button type="button" class="chip-btn">Suggest stocks and funds for me</button>
+        <button type="button" class="chip-btn">How do I build my emergency fund faster?</button>
+        <button type="button" class="chip-btn">What does max drawdown mean?</button>
+      </div>
+      <form class="chat-form" id="chat-form">
+        <label for="chat-input" class="sr-only">Your question</label>
+        <button class="icon-btn" type="button" id="mic" title="Speak your question" aria-label="Speak your question" hidden>🎙</button>
+        <input id="chat-input" autocomplete="off" maxlength="1500" placeholder="Type or speak a question…">
+        <button class="btn primary" type="submit" id="chat-send">Send</button>
+      </form>
+      <div class="voice-row">
+        <label class="toggle"><input type="checkbox" id="read-aloud"> Read replies aloud</label>
+        <label class="toggle" id="natural-wrap" hidden><input type="checkbox" id="natural-voice"> Natural voice <span class="muted">(≈ ₹1 per reply)</span></label>
+        <span class="muted" id="voice-note"></span>
+      </div>
+      <p class="chat-disclaimer">Arth gives educational information from your numbers, a curated knowledge base and historical market data. It is not licensed financial advice, and past returns don't predict future ones.</p>
+    </section>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/report.js?v={{ v }}"></script><script src="/static/goals.js?v={{ v }}"></script>{% endblock %}

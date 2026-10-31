@@ -1,0 +1,15 @@
+# NIFTY 50 Historical Example
+
+**Category:** company_annual_analysis
+
+## Instruction
+Analyze Asian Paints Ltd.'s NIFTY 50 performance in 2026.
+
+## Context
+{"year": 2026, "symbol": "ASIANPAINT", "company_name": "Asian Paints Ltd.", "sector": "Consumer Durables", "member_from": "2026-01-01", "member_to": "2026-08-28", "full_year_member": false, "price_data_status": "available", "price_start_date": "2026-01-01", "price_end_date": "2026-08-26", "start_price": 2728.3291015625, "end_price": 2626.5, "annual_return_pct": -3.73228806980005, "annualized_volatility_pct": 24.62971562244589, "max_drawdown_pct": -26.76080060467913, "observations": 164}
+
+## Response
+Asian Paints Ltd. was a NIFTY 50 constituent for part of the year in 2026. It recorded an annual price return of -3.73%, annualized volatility of 24.63%, and maximum drawdown of -26.76% over the available membership-period price data.
+
+## Source
+{"annual_row": "ASIANPAINT-2026"}

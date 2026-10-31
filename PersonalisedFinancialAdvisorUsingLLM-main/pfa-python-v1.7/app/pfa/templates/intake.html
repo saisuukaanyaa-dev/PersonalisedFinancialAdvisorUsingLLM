@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Your plan · Finance Advisor{% endblock %}
+{% block content %}
+<main class="narrow intake">
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+  <p class="step-label" id="step-label"></p>
+  <div class="voice-bar" id="voice-bar" hidden>
+    <button type="button" class="btn voice small" id="voice-step">🎙 Answer this step by voice</button>
+    <label class="toggle"><input type="checkbox" id="voice-read"> Read questions aloud</label>
+    <label class="toggle" id="v-natural-wrap" hidden><input type="checkbox" id="v-natural"> Natural voice <span class="muted">(≈ ₹1 per reply)</span></label>
+    <span class="muted voice-note" id="voice-note" aria-live="polite"></span>
+  </div>
+  <div class="bubble" id="bubble" aria-live="polite"></div>
+  <form id="step-form" novalidate>
+    <div id="fields"></div>
+    <p class="alert" id="form-error" role="alert" hidden></p>
+    <div class="nav">
+      <button type="button" class="btn ghost" id="back">Back</button>
+      <button type="submit" class="btn primary" id="next">Next</button>
+    </div>
+  </form>
+  <div class="building" id="building" hidden>
+    <div class="spinner" aria-hidden="true"></div>
+    <p><strong>Crunching your numbers…</strong><br><span class="muted">Your report opens in a moment. The personal explanation is written while you read.</span></p>
+  </div>
+</main>
+<script type="application/json" id="boot">{{ boot|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="/static/intake.js?v={{ v }}"></script>{% endblock %}

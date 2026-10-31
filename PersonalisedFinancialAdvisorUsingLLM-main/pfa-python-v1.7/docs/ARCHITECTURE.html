@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PFA Python Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,750&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F5F7F6; --paper:#FFFFFF; --ink:#132421; --ink-2:#3E504C; --ink-3:#6B7C78;
+  --rule:#DCE3E1; --rule-2:#EAEFED; --accent:#0B6E5F; --accent-soft:#E1F1EC; --saffron:#B8650A; --saffron-soft:#FBEEDD;
+  --code-bg:#F0F3F2; --good:#1E7B34;
+  --k-web:#1F6FB8; --k-domain:#4A5A57; --k-ai:#B4306E; --k-data:#0B7A6B; --k-ext:#7A3FC1; --k-ui:#A66300;
+  --chip-a:0.11; --shadow:0 1px 2px rgba(19,36,33,.06),0 4px 16px rgba(19,36,33,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#0F1716; --paper:#15201E; --ink:#E4ECEA; --ink-2:#B6C4C0; --ink-3:#8A9A96;
+    --rule:#2A3936; --rule-2:#1F2B29; --accent:#4FC7AE; --accent-soft:#16312B; --saffron:#F0A652; --saffron-soft:#33260F;
+    --code-bg:#101A18; --good:#6CCB80;
+    --k-web:#72AEEA; --k-domain:#A9B8B4; --k-ai:#F07AAE; --k-data:#4FC7AE; --k-ext:#B993F0; --k-ui:#E8A94C; --chip-a:0.18; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F1716; --paper:#15201E; --ink:#E4ECEA; --ink-2:#B6C4C0; --ink-3:#8A9A96;
+  --rule:#2A3936; --rule-2:#1F2B29; --accent:#4FC7AE; --accent-soft:#16312B; --saffron:#F0A652; --saffron-soft:#33260F;
+  --code-bg:#101A18; --good:#6CCB80;
+  --k-web:#72AEEA; --k-domain:#A9B8B4; --k-ai:#F07AAE; --k-data:#4FC7AE; --k-ext:#B993F0; --k-ui:#E8A94C; --chip-a:0.18; --shadow:none;
+}
+*{box-sizing:border-box}
+body{background:var(--ground);color:var(--ink);font:400 16px/1.62 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;padding-inline:16px;padding-block:0 64px}
+.wrap{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:48px}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr);gap:0}.toc{display:none}}
+h1,h2,h3{font-family:"Bricolage Grotesque","IBM Plex Sans",system-ui,sans-serif;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,5vw,3.1rem);line-height:1.05;margin:0;font-weight:750}
+h2{font-size:1.75rem;line-height:1.15;margin:0 0 .4rem;font-weight:750}
+h3{font-size:1.15rem;margin:1.8rem 0 .5rem;font-weight:600}
+p{margin:.6rem 0;max-width:72ch}
+a{color:var(--accent)}
+code{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.86em;background:var(--code-bg);padding:.08em .35em;border-radius:4px}
+.eyebrow{font:500 .74rem/1 "IBM Plex Mono",monospace;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+header.top{max-width:1180px;margin:0 auto;padding-block:48px 28px;border-bottom:1px solid var(--rule)}
+header.top .lede{font-size:1.14rem;color:var(--ink-2);max-width:68ch;margin-top:14px}
+.facts{display:flex;flex-wrap:wrap;gap:12px 30px;margin:22px 0 0;padding:0;list-style:none}
+.facts li{display:flex;flex-direction:column;gap:2px}
+.facts b{font:600 1.35rem/1.1 "Bricolage Grotesque",sans-serif;font-variant-numeric:tabular-nums}
+.facts span{font-size:.82rem;color:var(--ink-3)}
+.toc{position:sticky;top:env(safe-area-inset-top,0px);align-self:start;padding-top:36px;max-height:100vh;overflow:auto}
+.toc ol{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:2px;font-size:.9rem}
+.toc a{display:block;color:var(--ink-2);text-decoration:none;padding:4px 10px;border-left:2px solid transparent}
+.toc a:hover,.toc a:focus-visible{color:var(--accent);border-left-color:var(--accent);outline:none}
+main{min-width:0}
+section{padding-block:44px 8px;border-bottom:1px solid var(--rule-2)}
+section:last-child{border-bottom:0}
+.sec-head{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;font:500 .72rem/1 "IBM Plex Mono",monospace;padding:4px 8px;border-radius:999px;white-space:nowrap;
+  color:var(--c);background:color-mix(in srgb,var(--c) calc(var(--chip-a)*100%),transparent);border:1px solid color-mix(in srgb,var(--c) 30%,transparent)}
+.chip::before{content:"";width:7px;height:7px;border-radius:2px;background:var(--c)}
+.k-web{--c:var(--k-web)}.k-domain{--c:var(--k-domain)}.k-ai{--c:var(--k-ai)}.k-data{--c:var(--k-data)}.k-ext{--c:var(--k-ext)}.k-ui{--c:var(--k-ui)}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 4px}
+.tbl{overflow-x:auto;margin:14px 0 6px;border:1px solid var(--rule);border-radius:10px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-bottom:1px solid var(--rule-2)}
+tr:last-child td{border-bottom:0}
+th{font:500 .72rem/1.2 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);background:var(--rule-2)}
+td.n{font-weight:600;white-space:nowrap}
+td.f{font-family:"IBM Plex Mono",monospace;font-size:.82rem;white-space:nowrap}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.total td{font-weight:600;background:var(--rule-2)}
+details.code{margin:12px 0;border:1px solid var(--rule);border-radius:10px;background:var(--paper)}
+details.code summary{cursor:pointer;padding:10px 14px;font-weight:500;display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;list-style:none}
+details.code summary::-webkit-details-marker{display:none}
+details.code summary::before{content:"▸";color:var(--accent);transition:transform .15s}
+details.code[open] summary::before{transform:rotate(90deg)}
+details.code summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+details.code summary small{color:var(--ink-3);font-weight:400;font-family:"IBM Plex Mono",monospace;font-size:.78rem}
+pre.src{margin:0;padding:14px 16px;overflow-x:auto;background:var(--code-bg);border-top:1px solid var(--rule);border-radius:0 0 10px 10px;font:400 .8rem/1.55 "IBM Plex Mono",ui-monospace,monospace;color:var(--ink);tab-size:4}
+.why{border-left:3px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0;max-width:76ch}
+.why b{color:var(--accent)}
+.diagram{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:16px;overflow-x:auto;margin:16px 0}
+pre.mermaid{margin:0;background:transparent;text-align:center}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0}
+@media (max-width:760px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.stat{background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow)}
+.stat span{display:block;font:500 .72rem/1.2 "IBM Plex Mono",monospace;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3)}
+.stat b{display:block;font:750 1.9rem/1.15 "Bricolage Grotesque",sans-serif;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.stat small{color:var(--ink-2);font-size:.86rem}
+.bar{display:flex;height:22px;border-radius:6px;overflow:hidden;margin:10px 0 6px;background:var(--rule-2)}
+.bar span{display:block;height:100%}
+.bar-legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.85rem;color:var(--ink-2)}
+.bar-legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+ul.checks{list-style:none;padding:0;margin:10px 0;display:flex;flex-direction:column;gap:8px}
+ul.checks li{display:grid;grid-template-columns:22px 1fr;gap:8px;max-width:78ch}
+ul.checks li::before{content:"✓";color:var(--good);font-weight:700}
+ul.checks li.todo::before{content:"○";color:var(--saffron)}
+dl.qa dt{font-weight:600;margin-top:16px}
+dl.qa dd{margin:4px 0 0;color:var(--ink-2);max-width:76ch}
+footer{max-width:1180px;margin:40px auto 0;color:var(--ink-3);font-size:.85rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+
+<header class="top">
+  <div class="eyebrow">Group 2 capstone · Personal Finance Advisor · Python edition v1.1</div>
+  <h1>Inside the Python advisor</h1>
+  <p class="lede">How the v3.2 n8n workflow became a small, modular Python web app: the architecture, what each module does, the code behind it, and what every plan and chat question costs in time and money.</p>
+  <ul class="facts">
+    <li><b>0.02 s</b><span>numbers and charts on screen</span></li>
+    <li><b>2</b><span>AI calls per plan, in parallel</span></li>
+    <li><b>₹0.45</b><span>AI cost per plan (measured)</span></li>
+    <li><b>₹0.11</b><span>AI cost per chat question</span></li>
+    <li><b>~4,000</b><span>lines of code, 25 unit tests</span></li>
+    <li><b>Phoenix</b><span>traces every plan and question</span></li>
+  </ul>
+</header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contents">
+  <div class="eyebrow">Contents</div>
+  <ol>
+    <li><a href="#arch">Architecture</a></li>
+    <li><a href="#flows">Request flows</a></li>
+    <li><a href="#modules">Modules (the new "nodes")</a></li>
+    <li><a href="#code">Key code</a></li>
+    <li><a href="#data">Data model</a></li>
+    <li><a href="#speed">Why it is faster</a></li>
+    <li><a href="#cost">Cost per plan and per question</a></li>
+    <li><a href="#observability">Observability (v1.1)</a></li>
+    <li><a href="#security">Sign-in and safety</a></li>
+    <li><a href="#tests">Testing</a></li>
+    <li><a href="#faq">Questions a mentor may ask</a></li>
+  </ol>
+</nav>
+
+<main>
+<section id="arch">
+  <div class="sec-head"><span class="eyebrow">Big picture</span><h2>Architecture</h2></div>
+  <p>Three containers on one Docker network. The <b>app</b> is a FastAPI service that does everything the n8n canvas did: pages, intake, calculations, AI calls, reports and chat. <b>Postgres + pgvector</b> holds accounts, profiles, reports, chat history and the knowledge-base vectors. <b>market-analyzer</b> is the same NIFTY 50 history API as v3.2. OpenAI and Google are the only outside services.</p>
+  <div class="diagram"><pre class="mermaid">
+flowchart LR
+  B["Browser<br/>pages + small JS"] -->|HTTPS / cookie session| APP
+  subgraph APP["app container · FastAPI (Python 3.12)"]
+    direction TB
+    W["main.py · auth.py<br/>routes, sign-in, sessions"]
+    P["profile.py · money.py<br/>intake checks, parsing, profile"]
+    E["engine/<br/>debt · allocation · projection · stocks"]
+    PL["pipeline.py<br/>plan orchestration"]
+    AI["ai/<br/>llm · rag · narrative · chat · guard"]
+    U["usage.py<br/>token + cost meter"]
+    R["report.py · charts.py · templates<br/>server-rendered report"]
+    D["db.py · ingest.py"]
+    W --> P --> PL
+    PL --> E
+    PL --> AI
+    AI --> U
+    W --> R
+    PL --> D
+    AI --> D
+  end
+  D --> PG[("Postgres 16 + pgvector<br/>accounts · users · advice_sessions<br/>chat_messages · finance_kb_embeddings")]
+  E -->|one cached call| MA["market-analyzer<br/>NIFTY 50 history"]
+  AI -->|chat completions + embeddings| OAI(["OpenAI<br/>gpt-5-mini · text-embedding-3-small"])
+  W -->|optional OAuth| G(["Google sign-in"])
+  APP -.->|OpenTelemetry spans| PH(["Arize Phoenix<br/>traces dashboard :6006"])
+  </pre></div>
+  <div class="legend" aria-label="Module kinds">
+    <span class="chip k-web">web &amp; sign-in</span><span class="chip k-domain">finance logic</span><span class="chip k-ai">AI</span><span class="chip k-data">data</span><span class="chip k-ui">report &amp; pages</span><span class="chip k-ext">outside service</span>
+  </div>
+  <div class="why"><b>The core idea: numbers come from code, words come from AI.</b> v3.2 established this rule. The Python edition uses it for speed as well as correctness: the numbers and charts never wait for AI. The report opens as soon as the maths is done, and the AI explanation is swapped in when it's ready.</div>
+</section>
+
+<section id="flows">
+  <div class="sec-head"><span class="eyebrow">What happens when</span><h2>Request flows</h2></div>
+  <h3>Building a plan</h3>
+  <div class="diagram"><pre class="mermaid">
+sequenceDiagram
+  participant U as Browser
+  participant A as app
+  participant M as market-analyzer
+  participant DB as Postgres
+  participant O as OpenAI
+  U->>A: POST /api/plan (answers from 5 steps)
+  A->>A: build_profile + sanity checks
+  A->>A: compute() - debt, risk plan, projection (0.1 ms)
+  A->>M: /five-year/all (cached for an hour)
+  A->>DB: save profile + report (computed text)
+  A-->>U: report_url (about 20 ms)
+  U->>A: GET /report/id - numbers and charts shown
+  par background task, metered
+    A->>O: 1 embeddings request (3 search queries)
+    A->>DB: pgvector search, top passages
+    A->>O: report_story (headline, summary, actions)
+    A->>O: report_details (debt, allocation, stock notes)
+  end
+  A->>DB: save AI text + usage (tokens, cost, time)
+  U->>A: polls status, then swaps in the AI text
+  </pre></div>
+  <h3>A chat question</h3>
+  <div class="diagram"><pre class="mermaid">
+sequenceDiagram
+  participant U as Browser
+  participant A as app
+  participant O as OpenAI
+  participant DB as Postgres
+  U->>A: POST /api/chat "What if I invest 40K a month?"
+  A->>A: guard - ID numbers or injection? answer locally, cost 0
+  A->>O: 1 embeddings request (the question)
+  A->>O: chat_reply - on_topic + reply + plan_changes in ONE call
+  alt plan_changes present
+    A->>A: apply_changes, rebuild profile, create_plan
+    A-->>U: reply + "Open the updated report" link
+  else question only
+    A-->>U: reply
+  end
+  A->>DB: store question, answer and its usage
+  </pre></div>
+</section>
+
+<section id="modules">
+  <div class="sec-head"><span class="eyebrow">Replaces the n8n canvas</span><h2>Modules (the new "nodes")</h2></div>
+  <p>Each n8n node became a function in a module with one job. The table shows the v3.2 node(s) each module replaces, so the mentor can map old to new.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Module</th><th>Kind</th><th>What it does</th><th>Replaces in v3.2</th><th class="num">Lines</th></tr></thead>
+    <tbody>
+      <tr><td class="f">main.py</td><td><span class="chip k-web">web</span></td><td>All pages and JSON APIs, security headers (CSP, no framing), the Usage page.</td><td>Form/Chat/Webhook triggers, Respond nodes</td><td class="num">225</td></tr>
+      <tr><td class="f">auth.py</td><td><span class="chip k-web">web</span></td><td>Email + password (scrypt), Google OAuth with a <code>state</code> check, signed session cookie, login throttling, anti-CSRF header check.</td><td>new</td><td class="num">184</td></tr>
+      <tr><td class="f">money.py</td><td><span class="chip k-domain">logic</span></td><td>Reads "85K", "1.2L", "1.5Cr"; formats ₹ with lakh grouping; CTC → in-hand pay (FY 2026-27 new regime).</td><td>shared helpers in every Code node</td><td class="num">170</td></tr>
+      <tr><td class="f">profile.py</td><td><span class="chip k-domain">logic</span></td><td>Per-step checks, the friendly reactions between steps, answers → canonical profile, "Nearly there" sanity checks, chat plan changes.</td><td>Evaluate Journey, Read … nodes, Build Financial Profile, Check Profile Completeness, Apply Plan Changes</td><td class="num">420</td></tr>
+      <tr><td class="f">engine/debt.py</td><td><span class="chip k-domain">logic</span></td><td>Totals, weighted rate, EMI-to-income %, loans above 12%, avalanche or snowball.</td><td>Compute Debt Metrics</td><td class="num">21</td></tr>
+      <tr><td class="f">engine/allocation.py</td><td><span class="chip k-domain">logic</span></td><td>Holdings by class and the <b>risk plan</b>: horizon cap, stock blockers, target mix, instruments, expected return.</td><td>Compute Allocation Metrics</td><td class="num">119</td></tr>
+      <tr><td class="f">engine/projection.py</td><td><span class="chip k-domain">logic</span></td><td>Future value, required SIP, verdict, chart series, monthly plan by instrument, snapshot.</td><td>Compute Future Projection</td><td class="num">123</td></tr>
+      <tr><td class="f">engine/stocks.py</td><td><span class="chip k-domain">logic</span></td><td>Screens all NIFTY 50 names against the risk rules in one call; best growth per unit of swing; max 2 per sector.</td><td>Screen_NIFTY50_Stocks and Historical_Market_Data tool loops</td><td class="num">61</td></tr>
+      <tr><td class="f">pipeline.py</td><td><span class="chip k-domain">logic</span></td><td>Runs a plan: compute → screen → save → start the metered AI task in the background.</td><td>the canvas wiring itself</td><td class="num">84</td></tr>
+      <tr><td class="f">ai/llm.py</td><td><span class="chip k-ai">AI</span></td><td>One shared HTTP client for OpenAI: strict JSON-schema answers, embeddings, retries, and recording usage into the meter.</td><td>OpenAI chat model nodes</td><td class="num">84</td></tr>
+      <tr><td class="f">ai/rag.py</td><td><span class="chip k-ai">AI</span></td><td>Embeds all search queries in one request, then cosine search in pgvector; numbered sources for [n] citations.</td><td>Knowledge_Base_Search + Embeddings</td><td class="num">44</td></tr>
+      <tr><td class="f">ai/narrative.py</td><td><span class="chip k-ai">AI</span></td><td>The report text: two parallel calls (story + details) over deterministic fallback text; only screened stocks may be described.</td><td>Debt, Portfolio, Recommender and Report agents, Report Schema</td><td class="num">209</td></tr>
+      <tr><td class="f">ai/chat.py</td><td><span class="chip k-ai">AI</span></td><td>One call returns on-topic flag + reply + plan changes; re-runs the plan on changes; stores history and usage.</td><td>Chat Trigger, Financial Q&amp;A Agent, Chat Memory, Update_My_Plan</td><td class="num">147</td></tr>
+      <tr><td class="f">ai/guard.py</td><td><span class="chip k-ai">AI safety</span></td><td>Local rules for prompt injection and Indian ID numbers (PAN, Aadhaar, cards with a Luhn check, phone); output masking.</td><td>Goal/Chat Input Guardrails, Output Sanitizer</td><td class="num">84</td></tr>
+      <tr><td class="f">usage.py</td><td><span class="chip k-ai">metering</span></td><td>A per-task meter: tokens in/out/cached/reasoning, cost in $ and ₹, time per call.</td><td>new</td><td class="num">91</td></tr>
+      <tr><td class="f">report.py · charts.py</td><td><span class="chip k-ui">report</span></td><td>Saved report → view model; SVG ring, projection line, stacked bars, donut, meters, all drawn on the server.</td><td>Render Report Card (786 lines of JS)</td><td class="num">278</td></tr>
+      <tr><td class="f">templates/ · static/</td><td><span class="chip k-ui">pages</span></td><td>Sign-in, welcome back, five-step intake (vanilla JS), report with <b>Goal projection first</b> and the chat at the end, Usage page.</td><td>Form pages, Show Report</td><td class="num">~990</td></tr>
+      <tr><td class="f">db.py</td><td><span class="chip k-data">data</span></td><td>Async connection pool, schema created at start-up, all SQL (parameterised).</td><td>Postgres nodes (Upsert, Save Advice History, …)</td><td class="num">185</td></tr>
+      <tr><td class="f">tracing.py</td><td><span class="chip k-data">observability</span></td><td>OpenTelemetry spans with OpenInference attributes (LLM, retriever, tool, guardrail) exported to Phoenix in the background; users as hashed ids; ID numbers masked.</td><td>the team's telemetry API + Phoenix (v1.1)</td><td class="num">174</td></tr>
+      <tr><td class="f">ingest.py</td><td><span class="chip k-data">data</span></td><td>Loads the 830 knowledge-base files: 800/100 recursive chunks, 96 per request, 4 in parallel, resumable.</td><td>RAG ingestion workflow</td><td class="num">156</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="code">
+  <div class="sec-head"><span class="eyebrow">Excerpts from the real files</span><h2>Key code</h2></div>
+  <details class="code"><summary>The plan pipeline <small>pipeline.py · create_plan</small></summary><pre class="src">async def create_plan(profile: dict, question: str, change_log: list[str] | None = None,
+                      parent: str | None = None) -&gt; str:
+    t0 = time.perf_counter()
+    facts = compute(profile)
+    t1 = time.perf_counter()
+    picks, screen_info = await _shortlist(facts)
+    t2 = time.perf_counter()
+    user_id = await db.save_profile(profile)
+    snapshot = copy.deepcopy(profile)
+    snapshot.pop("answers", None)
+    report_id = secrets.token_hex(12)
+    report = {
+        "version": REPORT_VERSION,
+        "status": "writing" if settings.ai_enabled else "ready",
+        "profile": snapshot,
+        **facts,
+        "picks": picks, "screen": screen_info,
+        "ai": narrative.fallback(profile, facts, picks),
+        "change_log": change_log or [], "parent": parent,
+        "timings": {"compute_ms": round((t1 - t0) * 1000, 1), "market_ms": round((t2 - t1) * 1000)},
+        "started_at": time.time(),
+    }
+    await db.save_report(report_id, user_id, profile["user_key"], question, report)
+    report["timings"]["first_view_ms"] = round((time.perf_counter() - t0) * 1000)
+    await db.update_report_ai(report_id, report["ai"], report["status"], report["timings"])
+    if settings.ai_enabled:
+        task = asyncio.create_task(_write_ai(report_id, profile, facts, picks, t0))
+        _background.add(task)
+        task.add_done_callback(_background.discard)
+    return report_id</pre></details>
+  <details class="code"><summary>Two AI calls at once <small>ai/narrative.py · write</small></summary><pre class="src">async def write(p: dict, f: dict, picks: list[dict]) -&gt; tuple[dict, dict]:
+    """Returns (ai_text, timings_ms)."""
+    import time
+    base = fallback(p, f, picks)
+    t0 = time.perf_counter()
+    sources = await rag.search(rag_queries(p, f), k=2)
+    t1 = time.perf_counter()
+    facts = json.dumps(facts_for_ai(p, f, picks), ensure_ascii=False, default=str)
+    kb = rag.as_prompt(sources)
+    story_task = llm.json_call(
+        RULES, f"FACTS:\n{facts}\n\nKNOWLEDGE:\n{kb}\n\nWrite: a headline (max 90 characters), a 2-4 sentence summary, "
+               "2-3 sentences of projection commentary, 2-4 strengths, 2-4 risks (most serious first) and 3-5 "
+               "priority actions in the priority order, each with a concrete how (amounts from the monthly plan).",
+        "report_story", STORY_SCHEMA)
+    detail_task = llm.json_call(
+        RULES, f"FACTS:\n{facts}\n\nKNOWLEDGE:\n{kb}\n\nWrite: debt_commentary (3-4 sentences, empty string if there "
+               "are no loans), a one-sentence rationale per asset class for the target allocation, one sentence per "
+               "stock in stock_shortlist on why it fits this user's horizon and risk (empty list if none), and up to "
+               "3 extra assumptions (not about returns or inflation).",
+        "report_details", DETAIL_SCHEMA)
+    results = await asyncio.gather(story_task, detail_task, return_exceptions=True)
+    for r in results:
+        if isinstance(r, Exception):
+            log.warning("AI call failed, using computed text: %s", r)
+    story, detail = [None if isinstance(r, Exception) else r for r in results]
+    t2 = time.perf_counter()
+    return _merge(base, story, detail, picks, sources), {"rag_ms": round((t1 - t0) * 1000), "ai_ms": round((t2 - t1) * 1000)}</pre></details>
+  <details class="code"><summary>The risk plan <small>engine/allocation.py</small></summary><pre class="src">    # 1. The time horizon caps the risk the goal can carry, whatever the appetite.
+    stated = d["profile"].get("risk_appetite") if d["profile"].get("risk_appetite") in LEVELS else "Medium"
+    reasons = []
+    cap = "Low" if years &lt; 3 else "Medium" if years &lt; 5 else "High"
+    effective = LEVELS[min(LEVELS.index(stated), LEVELS.index(cap))]
+    if effective != stated:
+        reasons.append(
+            f"Your goal is {years:.1f} years away - money needed that soon should not sit in shares, so we plan at Low risk."
+            if years &lt; 3 else
+            f"Your goal is {years:.1f} years away - enough for mutual funds, but too short to ride out a deep market fall, "
+            "so we plan at Medium risk.")
+
+    # 2. Direct stocks need a safety net first.
+    ef = d.get("emergency_fund", {})
+    ef_months = float(ef.get("months_of_expenses_covered") or 0)
+    expenses = float(ef.get("monthly_essential_expenses") or 0)
+    health = sum(float(i.get("sum_assured") or 0) for i in d.get("insurance", []) if "health" in str(i.get("type")).lower())
+    costly = [l for l in d.get("liabilities", []) if float(l.get("interest_rate") or 0) &gt; 12]
+    blockers = []
+    if ef_months &lt; 3:
+        blockers.append(f"Build your emergency fund to at least 3 months of expenses ({fmt_short(expenses * 3, cur)}) - "
+                        f"you have {ef_months:g} months today.")
+    if health &lt;= 0:
+        blockers.append("Get health insurance - one hospital bill could force you to sell shares at a loss.")
+    if costly:
+        blockers.append("Clear loans above 12% interest first (" +
+                        ", ".join(f"{l['type']} at {l['interest_rate']:g}%" for l in costly) +
+                        ") - they cost more than shares typically earn.")
+    if years &lt; 3:
+        blockers.insert(0, "Your goal is under 3 years away - that money should not be in shares at all, directly or through funds.")
+    elif effective == "Low":
+        blockers.insert(0, "Direct stocks do not suit a Low-risk plan - equity exposure stays in diversified index funds.")
+    elif years &lt; 5:
+        blockers.insert(0, "Direct stocks need at least a 5-year horizon.")
+    stocks_ok = not blockers
+
+    # 3. Target mix per level.
+    target = dict(TARGET[effective])
+    if years &lt; 3:
+        target = {"equity": 0, "debt": 85, "gold": 5, "cash": 10}
+    instruments = dict(INSTRUMENTS[effective])
+    if years &lt; 3:
+        instruments["debt"] = "Bank FD / RD matching your goal date, short-term debt funds"
+    expected = round(</pre></details>
+  <details class="code"><summary>The projection maths <small>engine/projection.py</small></summary><pre class="src">    def fv_at(m: int, pmt: float) -&gt; float:
+        g = (1 + r) ** m
+        return corpus * g + pmt * ((g - 1) / r)
+
+    growth = (1 + r) ** months
+    fv = fv_at(months, monthly)
+    target = float(d["goal"].get("target_amount") or 0)
+    gap = round(fv - target, 2)
+    required = max(0.0, (target - corpus * growth) / ((growth - 1) / r))
+    verdict =
+    # ... then the year-by-year series and the monthly plan by instrument</pre></details>
+  <details class="code"><summary>Stock screen in code <small>engine/stocks.py · screen</small></summary><pre class="src">def screen(rows: list[dict], rules: dict | None, limit: int = 5) -&gt; dict:
+    if not rules:
+        return {"picks": [], "screened": len(rows), "passed": 0}
+    passed = []
+    for s in rows:
+        dd, vol, cagr = s.get("max_drawdown_pct"), s.get("annualized_volatility_pct"), s.get("cagr_pct")
+        if not all(isinstance(x, (int, float)) for x in (dd, vol, cagr)):
+            continue
+        if -abs(dd) &lt; rules["max_drawdown_pct"] or vol &gt; rules["max_volatility_pct"]:
+            continue
+        if cagr &lt; vol * rules["min_cagr_to_volatility"]:
+            continue
+        passed.append(s)
+    # best growth per unit of swing first; never more than N per sector
+    passed.sort(key=lambda s: s["cagr_pct"] / max(s["annualized_volatility_pct"], 1), reverse=True)
+    picks, per_sector = [], {}
+    for s in passed:
+        sec = str(s.get("sector") or "").lower()
+        if per_sector.get(sec, 0) &gt;= rules["max_per_sector"]:
+            continue
+        per_sector[sec] = per_sector.get(sec, 0) + 1
+        picks.append({
+            "symbol": s["symbol"], "company_name": s.get("company_name"), "sector": s.get("sector"),
+            "five_year_cagr_pct": round(s["cagr_pct"], 1),
+            "annualized_volatility_pct": round(s["annualized_volatility_pct"], 1),
+            "max_drawdown_pct": round(s["max_drawdown_pct"], 1),
+            "rationale": (f"Grew about {s['cagr_pct']:.0f}% a year with {s['annualized_volatility_pct']:.0f}% yearly swings; "
+                          f"its worst fall (▼{abs(s['max_drawdown_pct']):.0f}%) is within your limit."),
+        })
+        if len(picks) &gt;= limit:
+            break
+    return {"picks": picks</pre></details>
+  <details class="code"><summary>One chat call does three jobs <small>ai/chat.py · CHAT_SCHEMA</small></summary><pre class="src">CHAT_SCHEMA = obj({
+    "on_topic": {"type": "boolean"},
+    "reply": STR,
+    "plan_changes": obj({
+        "monthly_sip_total": NUM_OR_NULL, "target_amount": NUM_OR_NULL, "target_date": STR_OR_NULL,
+        "risk_appetite": {"type": ["string", "null"], "enum": ["Low", "Medium", "High", None]},
+        "take_home": NUM_OR_NULL, "annual_ctc": NUM_OR_NULL, "expenses": NUM_OR_NULL, "emergency_fund": NUM_OR_NULL,
+        "term_cover": NUM_OR_NULL, "health_cover": NUM_OR_NULL, "remove_loan": STR_OR_NULL,
+    }),
+})</pre></details>
+  <details class="code"><summary>Local guardrails <small>ai/guard.py · check_chat_input</small></summary><pre class="src">def check_chat_input(message: str) -&gt; str | None:
+    """None if the message may go to the AI; otherwise a kind refusal."""
+    m = str(message or "").strip()
+    if not m:
+        return "Ask me anything about your plan - for example \"What if I invest 30K a month?\""
+    if len(m) &gt; 1500:
+        return "That's a long message - could you ask it in a sentence or two?"
+    pii = find_pii(m)
+    if pii:
+        return (f"Please don't share ID or account numbers here (I spotted what looks like a {pii[0]}). "
+                "I don't need them to help with your plan.")
+    if looks_like_injection(m):
+        return "I can only help with your personal finance plan - ask me about your goal, savings, loans or investments."
+    return None</pre></details>
+  <details class="code"><summary>Cost metering <small>usage.py · Meter.summary</small></summary><pre class="src">    def summary(self) -&gt; dict:
+        tot = {k: sum(c.get(k, 0) for c in self.calls)
+               for k in ("input_tokens", "cached_tokens", "output_tokens", "reasoning_tokens", "embed_tokens")}
+        usd = ((tot["input_tokens"] - tot["cached_tokens"]) * PRICES["chat_input"]
+               + tot["cached_tokens"] * PRICES["chat_cached"]
+               + tot["output_tokens"] * PRICES["chat_output"]
+               + tot["embed_tokens"] * PRICES["embed"]) / 1e6
+        return {
+            **tot,
+            "ai_calls": sum(1 for c in self.calls if "input_tokens" in c),
+            "embed_calls": sum(1 for c in self.calls if "embed_tokens" in c),
+            "cost_usd": round(usd, 6),
+            "cost_inr": round(usd * USD_TO_INR, 4),
+            "elapsed_ms"
+            ...</pre></details>
+  <details class="code"><summary>Google sign-in <small>auth.py · google_callback</small></summary><pre class="src">@router.get("/auth/google/callback")
+async def google_callback(request: Request, code: str = "", state: str = "", error: str = ""):
+    expected = request.session.pop("oauth_state", None)
+    if error or not code or not expected or not hmac.compare_digest(state, expected):
+        return RedirectResponse("/login?error=google_failed", 303)
+    try:
+        async with httpx.AsyncClient(timeout=15) as client:
+            tok = await client.post(GOOGLE_TOKEN, data={
+                "code": code, "client_id": settings.google_client_id, "client_secret": settings.google_client_secret,
+                "redirect_uri": _redirect_uri(), "grant_type": "authorization_code"})
+            tok.raise_for_status()
+            info = await client.get(GOOGLE_USERINFO, headers={"Authorization": f"Bearer {tok.json()['access_token']}"})
+            info.raise_for_status()
+            u = info.json()
+    except (httpx.HTTPError, KeyError, ValueError):
+        return RedirectResponse("/login?error=google_failed", 303)
+    email = str(u.get("email") or "").lower()
+    if not u.get("sub") or not email or not u.get("email_verified"):
+        return RedirectResponse("/login?error=google_unverified", 303)
+    row = await db.fetchone("SELECT id FROM accounts WHERE google_sub = %s", u["sub"])
+    if not row:
+        # Link to an existing email account, or create one. Password sign-ups don't prove the person owns
+        # the address, but Google does - so on linking, the Google owner takes over and any password
+        # set by whoever registered the address first stops working.
+        row = await db.fetchone(
+            """INSERT INTO accounts (email, name, google_sub, last_login_at) VALUES (%s, %s, %s, now())
+               ON CONFLICT (email) DO UPDATE SET google_sub = EXCLUDED.google_sub, password_hash = NULL,
+                 name = COALESCE(accounts.name, EXCLUDED.name), last_login_at = now()
+               RETURNING id""", email, (u.get("name") or "")[:80] or None, u["sub"])
+    else:
+        await db.execute("UPDATE accounts SET last_login_at = now() WHERE id = %s", row["id"])
+    _login(request, row["id"])
+    return RedirectResponse("/start", 303)</pre></details>
+</section>
+
+<section id="data">
+  <div class="sec-head"><span class="eyebrow">Postgres</span><h2>Data model</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Table</th><th>Holds</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td class="f">accounts</td><td>email, name, scrypt password hash, Google <code>sub</code></td><td>new; one account per email</td></tr>
+      <tr><td class="f">users</td><td>one profile per email (<code>profile_json</code> + raw answers for pre-fill)</td><td>same shape as v3.2</td></tr>
+      <tr><td class="f">advice_sessions</td><td>one row per report: computed facts, AI text, stock picks, change log, timings, <b>usage</b></td><td>random 24-hex id; readable only by its owner</td></tr>
+      <tr><td class="f">chat_messages</td><td>questions and answers; the answer row carries its <b>usage</b></td><td>ID numbers are never stored</td></tr>
+      <tr><td class="f">finance_kb_embeddings</td><td>1,632 chunks with 1,536-dimension vectors, HNSW cosine index</td><td>same table and format as v3.2</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="speed">
+  <div class="sec-head"><span class="eyebrow">The mentor's first point</span><h2>Why it is faster</h2></div>
+  <div class="tbl"><table>
+    <thead><tr><th>Step</th><th>n8n v3.2</th><th>Python edition (measured, real OpenAI)</th></tr></thead>
+    <tbody>
+      <tr><td class="n">Intake</td><td>6 form pages, each a full n8n round trip that resumes the paused execution</td><td>one page; each step is a small JSON check (a few ms)</td></tr>
+      <tr><td class="n">Numbers and charts on screen</td><td>only after every agent finished: <b>1-3 minutes</b></td><td><b>0.01-0.02 s</b> after "Build my plan"</td></tr>
+      <tr><td class="n">AI explanation</td><td>4 agents in a row, plus several recommender tool round trips and 2 guardrail model calls</td><td>1 search request + <b>2 calls in parallel</b>: 11-19 s, while the user is already reading</td></tr>
+      <tr><td class="n">Stock shortlist</td><td>agent tool loop (screen → per-stock data → knowledge base), then names removed by the renderer</td><td>rules applied in code to one cached call: <b>7-13 ms</b></td></tr>
+      <tr><td class="n">Chat answer</td><td>guardrail call + agent with tools + sanitizer</td><td>local guard + 1 call: <b>4.5-6.5 s</b> (a what-if also returns the new report link)</td></tr>
+      <tr><td class="n">Report page</td><td>34-44 KB per report with all CSS inside</td><td>26 KB; CSS and JS are cached files</td></tr>
+    </tbody>
+  </table></div>
+  <p>The model runs with <code>reasoning_effort=low</code>, which keeps answers quick. <code>OPENAI_REASONING_EFFORT=medium</code> in <code>.env</code> gives more thorough text, but it is slower and costs more.</p>
+</section>
+
+<section id="cost">
+  <div class="sec-head"><span class="eyebrow">Measured on 28 Sep 2026 · gpt-5-mini · $1 = ₹88</span><h2>Cost per plan and per question</h2></div>
+  <div class="grid3">
+    <div class="stat"><span>One plan</span><b>₹0.37-0.52</b><small>$0.0043-0.0059 · ~7,000 tokens · 2 AI calls + 1 search</small></div>
+    <div class="stat"><span>One chat question</span><b>₹0.10-0.11</b><small>$0.0012 · ~2,900 tokens · 1 AI call + 1 search</small></div>
+    <div class="stat"><span>Blocked by guardrail</span><b>₹0</b><small>answered locally in 1 ms, no AI call</small></div>
+  </div>
+  <p>Prices (OpenAI standard tier, per 1M tokens): gpt-5-mini <b>$0.25</b> input, <b>$0.025</b> cached input, <b>$2.00</b> output; text-embedding-3-small <b>$0.02</b>. Reasoning tokens are billed as output.</p>
+
+  <h3>Where one plan's cost goes</h3>
+  <p>Real plan (no cache hits), per call:</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Call</th><th class="num">Input tokens</th><th class="num">Output tokens</th><th class="num">of which reasoning</th><th class="num">Time</th><th class="num">Cost</th></tr></thead>
+    <tbody>
+      <tr><td class="f">embeddings (3 queries)</td><td class="num">43</td><td class="num">-</td><td class="num">-</td><td class="num">0.5 s</td><td class="num">₹0.0001</td></tr>
+      <tr><td class="f">report_story</td><td class="num">2,362</td><td class="num">1,134</td><td class="num">128</td><td class="num">12.3 s</td><td class="num">₹0.252</td></tr>
+      <tr><td class="f">report_details</td><td class="num">2,372</td><td class="num">1,246</td><td class="num">512</td><td class="num">13.1 s</td><td class="num">₹0.271</td></tr>
+      <tr class="total"><td>Plan total (calls overlap)</td><td class="num">4,777</td><td class="num">2,380</td><td class="num">640</td><td class="num">13.7 s</td><td class="num">₹0.523</td></tr>
+    </tbody>
+  </table></div>
+  <div class="bar" role="img" aria-label="Cost split: output tokens 80 percent, input tokens 20 percent">
+    <span style="width:80%;background:var(--k-ai)"></span><span style="width:20%;background:var(--k-web)"></span>
+  </div>
+  <div class="bar-legend"><span><i style="background:var(--k-ai)"></i>Output tokens (incl. reasoning) 80%</span><span><i style="background:var(--k-web)"></i>Input tokens 20%</span><span>Embeddings &lt;0.1%</span></div>
+  <p>The other measured plan cost ₹0.37 because OpenAI's prompt caching served 2,304 input tokens per call at a tenth of the price. Both calls share the same long facts block, so caching often kicks in.</p>
+
+  <h3>One chat question</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Question</th><th class="num">Input</th><th class="num">Output</th><th class="num">Time</th><th class="num">Cost</th></tr></thead>
+    <tbody>
+      <tr><td>"What if I invest 40K a month with medium risk?" → updated plan</td><td class="num">2,613</td><td class="num">303</td><td class="num">6.5 s</td><td class="num">₹0.111 <small>+ new plan ₹0.52</small></td></tr>
+      <tr><td>"Why keep an emergency fund in a liquid fund?"</td><td class="num">2,616</td><td class="num">259</td><td class="num">4.5 s</td><td class="num">₹0.103</td></tr>
+      <tr><td>"My PAN is …" (blocked locally)</td><td class="num">0</td><td class="num">0</td><td class="num">0.0 s</td><td class="num">₹0</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Per user and at scale</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Scenario</th><th>What they do</th><th class="num">Cost</th></tr></thead>
+    <tbody>
+      <tr><td class="n">Light user</td><td>1 plan + 3 questions</td><td class="num">≈ ₹0.8</td></tr>
+      <tr><td class="n">Typical user</td><td>1 plan + 5 questions + 2 what-ifs (each a new plan)</td><td class="num">≈ ₹2.1</td></tr>
+      <tr><td class="n">Heavy user</td><td>3 plans + 20 questions + 5 what-ifs</td><td class="num">≈ ₹6.3</td></tr>
+      <tr><td class="n">1,000 typical users a month</td><td></td><td class="num">≈ ₹2,100 (≈ $24)</td></tr>
+      <tr><td class="n">Knowledge base (one-time)</td><td>1,632 chunks, ~195K tokens</td><td class="num">≈ $0.004</td></tr>
+    </tbody>
+  </table></div>
+  <p>Estimates use ₹0.45 per plan and ₹0.11 per question. Actual costs vary with answer length and caching.</p>
+
+  <h3>How the app measures it</h3>
+  <ul class="checks">
+    <li>Every OpenAI response includes a <code>usage</code> block. <code>llm._post</code> records it into the current <b>meter</b>: tokens in, cached, out, reasoning, and time.</li>
+    <li>A meter is a context variable, so each plan's background task and each chat question has its own, even when many run at once.</li>
+    <li>The plan's usage is saved on its report; a chat answer's usage is saved on the answer row. A what-if is costed twice: the chat reply, and the new plan it creates.</li>
+    <li>People see it on each report ("AI cost of this plan ₹0.37 · 2 AI calls + 1 search · 6,778 tokens"), under each chat answer, and on the <b>Usage</b> page. For the team, <code>./scripts/usage-report.sh</code> prints plans, ₹ per plan, questions and ₹ per question for every user.</li>
+    <li>Prices and the rupee rate are settings in <code>.env</code> (<code>PRICE_…_PER_M</code>, <code>USD_TO_INR</code>).</li>
+  </ul>
+  <div class="why"><b>Levers if cost matters.</b> Output tokens dominate, so shorter answers cost less. Two options: keep <code>reasoning_effort=low</code>, or try <code>gpt-5-nano</code> ($0.05 input / $0.40 output, about 5× cheaper) for the chat. Keeping the facts block first in both calls maximises prompt caching.</div>
+</section>
+
+<section id="observability">
+  <div class="sec-head"><span class="eyebrow">New in v1.1 · from the team's n8n telemetry work</span><h2>Observability</h2></div>
+  <p>In the n8n bundle, a teammate added <b>Arize Phoenix</b> plus a small telemetry API. Workflow nodes were meant to post <code>{session_id, node_name, state}</code> events, which the API turned into OpenTelemetry spans. In Python the app traces itself, so the extra service isn't needed. Every step becomes a span that Phoenix understands:</p>
+  <div class="diagram"><pre class="mermaid">
+flowchart LR
+  subgraph PLAN["Trace: Build plan"]
+    direction TB
+    C1["Compute numbers · CHAIN"] --> S1["Screen NIFTY 50 · TOOL"] --> W1["Write explanation · CHAIN"]
+    W1 --> R1["Knowledge-base search · RETRIEVER"]
+    W1 --> L1["report_story · LLM"]
+    W1 --> L2["report_details · LLM"]
+  end
+  subgraph CHAT["Trace: Chat message"]
+    direction TB
+    G2["Guardrail check · GUARDRAIL"] --> R2["Knowledge-base search · RETRIEVER"] --> L3["chat_reply · LLM"] --> P2["Build plan (on a what-if)"]
+  end
+  PLAN -.-> PH(["Phoenix · session = user-hash"])
+  CHAT -.-> PH
+  </pre></div>
+  <div class="tbl"><table>
+    <thead><tr><th>In Phoenix you see</th><th>From</th></tr></thead>
+    <tbody>
+      <tr><td class="n">Step timings</td><td>every span: compute (0.1 ms), stock screen (~10 ms), search (~0.5 s), the two parallel AI calls (11-19 s)</td></tr>
+      <tr><td class="n">Prompts and answers</td><td>LLM spans (<code>llm.input_messages</code>, <code>llm.output_messages</code>); switch off with <code>PFA_TRACE_CONTENT=false</code></td></tr>
+      <tr><td class="n">Tokens and cost</td><td><code>llm.token_count.prompt / completion / total</code>, cached and reasoning details, <code>pfa.cost_usd</code></td></tr>
+      <tr><td class="n">Retrieved passages</td><td>RETRIEVER spans with document id, score and text</td></tr>
+      <tr><td class="n">A user's journey</td><td>Sessions view: all plans and questions of one <code>user-&lt;hash&gt;</code></td></tr>
+      <tr><td class="n">Failures</td><td>error status with the exception on the step that failed</td></tr>
+    </tbody>
+  </table></div>
+  <ul class="checks">
+    <li>Spans are exported in batches on a background thread. With Phoenix stopped, a plan still took 18 ms; the only effect was a warning in the log.</li>
+    <li>No email ever leaves the app: users appear as <code>user-&lt;hash&gt;</code>, and ID numbers are masked before export (tested with a PAN).</li>
+    <li>Setting <code>PHOENIX_COLLECTOR_ENDPOINT=</code> (empty) switches tracing off completely. It can also point to any other OpenTelemetry collector.</li>
+    <li>Tested: 28 spans for one plan and three chat messages, with the right kinds, parent links, token counts and costs.</li>
+  </ul>
+</section>
+
+<section id="security">
+  <div class="sec-head"><span class="eyebrow">Accounts and privacy</span><h2>Sign-in and safety</h2></div>
+  <ul class="checks">
+    <li><b>Email + password</b>: scrypt hash with a per-user salt; 8 failed attempts lock that email for 15 minutes; successful sign-ins never count.</li>
+    <li><b>Google</b> (when configured): OAuth authorisation-code flow with a random <code>state</code>. Only verified Google emails are accepted. Linking to an existing password account turns off the old password, because Google has proved who owns the address.</li>
+    <li><b>Sessions</b>: signed, HTTP-only, SameSite=Lax cookie holding only the account id; 7 days.</li>
+    <li><b>CSRF</b>: every write API needs the header <code>X-PFA: 1</code>, which other sites can't send without a CORS preflight this app never allows.</li>
+    <li><b>Privacy</b>: reports and their status are visible only to their owner (others get "not found"). ID numbers in chat are refused and never stored. AI output is masked for ID numbers.</li>
+    <li><b>Page security</b>: Content-Security-Policy allows scripts only from the app itself; no framing; no external CDNs.</li>
+    <li class="todo">Email + password sign-up doesn't verify the address. That's fine for local testing; a public version should use Google only or add email verification.</li>
+  </ul>
+</section>
+
+<section id="tests">
+  <div class="sec-head"><span class="eyebrow">Evidence</span><h2>Testing</h2></div>
+  <ul class="checks">
+    <li>25 unit tests: parsing, the ₹18L → ₹1.22L in-hand estimate, per-step checks, the risk plan, projection consistency, stock rules, chat changes, guardrails, passwords, cost maths and tracing (span attributes, parent links, ID masking).</li>
+    <li>A 31-check end-to-end run on an isolated stack: sign-up and sign-in, CSRF refusal, the five intake steps, "Nearly there", report order (Goal projection first), AI swap-in, chat what-if with updated report, refusals, and privacy between accounts.</li>
+    <li>Real OpenAI: knowledge base loaded in 21 s, schemas accepted, plan and chat timings and costs as shown above.</li>
+    <li>Browser click-through: sign-in, welcome back, intake pre-fill, report, chat what-if, Usage page.</li>
+    <li class="todo">Still to do: a real Google sign-in (needs the team's Google client ID), and a phone-layout pass by the team.</li>
+  </ul>
+</section>
+
+<section id="faq">
+  <div class="sec-head"><span class="eyebrow">Preparing for review</span><h2>Questions a mentor may ask</h2></div>
+  <dl class="qa">
+    <dt>Did moving from n8n to Python change the advice?</dt>
+    <dd>No. The finance rules, thresholds and formulas were ported line for line from the v3.2 Code nodes and are covered by unit tests. The same Priya profile gives the same in-hand estimate, risk plan and projection.</dd>
+    <dt>Isn't n8n the point of the capstone?</dt>
+    <dd>The n8n v3.2 and v3.2.3 bundles are unchanged and still run. The Python edition answers the mentor's performance feedback, and it shows the same design mapped to code: each node became a function, as the module table shows.</dd>
+    <dt>Why only two AI calls when v3.2 had five agents?</dt>
+    <dd>The agents mostly re-explained numbers that code had already computed. With the facts fixed, the writing splits into two independent tasks that can run at the same time. Stock discovery is a deterministic filter, so it moved into code.</dd>
+    <dt>What if OpenAI is down?</dt>
+    <dd>The report still opens with every number and chart, plus explanation text written from the numbers. The chat says the AI service is unavailable.</dd>
+    <dt>How do you know what a user costs?</dt>
+    <dd>Every AI call's tokens are recorded against the plan or question that caused it and priced at the published rates. The Usage page and <code>usage-report.sh</code> read these records; the costs above are measured, not estimated.</dd>
+    <dt>How would this go to production?</dt>
+    <dd>Put it behind HTTPS (set <code>COOKIE_SECURE=true</code>), use Google-only sign-in or add email verification, use a managed Postgres with pgvector, and run more than one app worker. Background AI tasks would then move to a small job queue.</dd>
+  </dl>
+</section>
+</main>
+</div>
+<footer>Educational project. The advice is not licensed financial advice. Market data is historical (period ending 26 Aug 2026). Costs measured on 28 Sep 2026 at OpenAI standard-tier prices; they change over time.</footer>
+
+<script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";mermaid.initialize({startOnLoad:true,theme:matchMedia("(prefers-color-scheme: dark)").matches?"dark":"default"});</script>
+</body>
+</html>

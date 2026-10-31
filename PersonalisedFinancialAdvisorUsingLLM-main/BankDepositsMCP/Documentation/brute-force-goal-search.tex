@@ -1,0 +1,160 @@
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{margin=0.65in}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{hyperref}
+
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+
+\title{\vspace{-0.4in}\textbf{Best Goal Search Algorithm}\vspace{-0.25in}}
+\author{Typeset from Manuscript Notes}
+\date{\today}
+
+\lstset{
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{teal},
+    frame=single,
+    breaklines=true,
+    captionpos=b,
+    tabsize=4,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    keepspaces=true
+}
+
+\begin{document}
+
+\maketitle
+
+\section{Overview \& Time Complexity}
+\texttt{GoalSearch.BestSearch} navigates state transitions from an initial
+state $S_0$ towards a goal state $S_g$. It is an iterative depth-first search
+over an explicit stack. If $S_g$ is reached, that path is returned. Otherwise,
+it returns the path to the leaf state with the highest balance among the
+leaves it visits.
+
+\begin{equation*}
+\underline{\text{Best Goal Search}} \implies \text{Complexity } O\!\left(|A|^{\text{MAX-DEPTH}}\right)
+\end{equation*}
+
+\noindent
+Where:
+\begin{itemize}\itemsep 0pt \parskip 0pt
+    \item $A = (A_0, \dots, A_{|A|-1})$: The ordered list of available actions
+          (deposit schemes), indexed by $a$.
+    \item $|A|$: The branching factor (number of actions).
+    \item $\text{MAX-DEPTH}$: The deepest stack reached before the
+          reachability test fails (bounded by the goal time horizon).
+\end{itemize}
+
+\section{Interface}
+\begin{itemize}\itemsep 0pt \parskip 0pt
+    \item \textbf{Transition}: $(S', c) = T(S, A_a)$ returns the successor
+          state $S'$ and the number of times $c$ that action $A_a$ is
+          repeated to reach it.
+    \item \textbf{Reachability test}: $\mathit{isGR}(S', S_g)$ returns one of:
+          \begin{itemize}\itemsep 0pt \parskip 0pt
+              \item \texttt{GOAL\_REACHED}: $S'$ satisfies the goal.
+              \item \texttt{GOAL\_NOT\_YET\_REACHED}: $S'$ can be extended
+                    further.
+              \item \texttt{GOAL\_NOT\_REACHABLE}: $S'$ overshoots the goal
+                    and is discarded.
+          \end{itemize}
+    \item \textbf{Stack entries}: each entry is $((a, c), S')$: the action
+          index, its repeat count, and the state it produced.
+\end{itemize}
+
+\clearpage
+\section{Typeset Pseudocode}
+
+% Keep the whole algorithm on one page.
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[language=Python, caption={Best Goal Search Pseudocode}]
+GoalSearch(Sg, A, T, isGR)
+
+BestSearch(S0):
+    S = S0, stack = [], a = 0
+    best = [], bestBalance = 0
+    prev = GOAL_NOT_YET_REACHED
+
+    loop:
+        (S', c) = T(S, A[a])
+        st = isGR(S', Sg)
+
+        if st == GOAL_NOT_YET_REACHED:      # go one level deeper
+            stack.push(((a, c), S'))
+            S = S'
+            a = 0
+
+        elif st == GOAL_NOT_REACHABLE:      # try the next sibling action
+            a = a + 1
+            if a >= |A|:                    # all siblings tried: backtrack
+                if stack is empty:
+                    break
+                ((a, _), _) = stack.pop()
+                a = a + 1
+                if stack is empty:
+                    S = S0
+                    break
+                S = top(stack).state
+            elif prev == GOAL_NOT_YET_REACHED:
+                # S is a leaf: keep the path if it has the best balance
+                if S.balance > bestBalance:
+                    bestBalance = S.balance
+                    best = copy(stack)
+
+        else:
+            stack.push(((a, c), S'))
+            best = copy(stack)
+            break
+
+        prev = st
+
+    L = copy(best)
+    return st
+
+GetFinalList():
+    if L is empty:
+        return (L, Sg.balance - S.balance)
+    return (L, Sg.balance - L[-1].state.balance)
+
+# L has the answer; the second value is the shortfall to the goal
+\end{lstlisting}
+\end{minipage}
+
+\section{Step-by-Step Logic}
+\begin{enumerate}\itemsep 0pt \parskip 0pt
+    \item \textbf{Transition}: Apply action $A_a$ to the current state $S$ to
+          get $(S', c) = T(S, A_a)$ and classify $S'$ with
+          $\mathit{isGR}(S', S_g)$.
+    \item \textbf{Descend}: If $S'$ is \texttt{GOAL\_NOT\_YET\_REACHED}, push
+          $((a, c), S')$, make $S'$ the current state and restart from the
+          first action $a = 0$.
+    \item \textbf{Leaf Evaluation}: If $S'$ is \texttt{GOAL\_NOT\_REACHABLE}
+          right after a descent, the current state $S$ is a leaf. If its
+          balance beats the best seen so far, record a copy of the stack as
+          the best path.
+    \item \textbf{Next Sibling}: After a \texttt{GOAL\_NOT\_REACHABLE} result,
+          move to the next action $a + 1$ at the same depth.
+    \item \textbf{Backtracking}: When every action at a depth has been tried,
+          pop the top entry and continue from the action after the popped
+          one, with the new stack top as the current state. The search stops
+          once the stack becomes empty.
+    \item \textbf{Goal Reached}: If $S'$ is \texttt{GOAL\_REACHED}, push
+          $((a, c), S')$, take the whole stack as the answer and stop.
+    \item \textbf{Result}: The stored path $L$ is returned by
+          \texttt{GetFinalList} together with the shortfall
+          $S_g.\text{balance} - S_{\text{end}}.\text{balance}$, where
+          $S_{\text{end}}$ is the last state on $L$, or the initial state when
+          $L$ is empty.
+\end{enumerate}
+
+\end{document}

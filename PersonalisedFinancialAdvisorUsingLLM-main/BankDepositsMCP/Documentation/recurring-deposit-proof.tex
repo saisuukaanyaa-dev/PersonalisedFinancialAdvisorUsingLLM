@@ -1,0 +1,104 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{primary}{HTML}{1A365D}
+\definecolor{secondary}{HTML}{2B6CB0}
+\definecolor{accent}{HTML}{D69E2E}
+\definecolor{bglight}{HTML}{F7FAFC}
+\definecolor{darktext}{HTML}{2D3748}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=secondary,
+    urlcolor=secondary
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\textcolor{gray}{\small Typeset Derivation --- \texttt{IMG\_20261004\_090254}}}
+\lhead{\textcolor{primary}{\bfseries Recurring Deposit Derivation}}
+\cfoot{\thepage}
+
+\begin{document}
+
+\begin{center}
+    {\LARGE \bfseries \color{primary} Derivation of Recurring Deposit Yield Formula}\\[0.5em]
+    {\large \color{secondary} Mathematical Typesetting of Handwritten Notes (\texttt{IMG\_20261004\_090254})}\\[0.3em]
+    \rule{\textwidth}{1pt}
+\end{center}
+
+\vspace{1em}
+
+\begin{tcolorbox}[colback=bglight,colframe=secondary,title=\textbf{Notation \& Variables}]
+\begin{tabular}{lll}
+$I$ (or $A$) & : & Installment amount deposited at the end of every payment period $R_d$.\\[0.3em]
+$R_d$ & : & Duration of each recurring deposit installment period (in days).\\[0.3em]
+$C_d$ & : & Duration of each compounding period (in days).\\[0.3em]
+$T_d$ & : & Total tenure / duration of the recurring deposit (in days).\\[0.3em]
+$r$ & : & Annual rate of interest (\%).\\[0.3em]
+$Y_d$ & : & Total duration of one year (in days, e.g., 365).
+\end{tabular}
+\end{tcolorbox}
+
+\vspace{1.5em}
+
+\section*{Step-by-Step Mathematical Derivation}
+
+Below is the complete, line-by-line LaTeX transcription and typesetting of the mathematical derivation from \texttt{IMG\_20261004\_090254}.
+
+\subsection*{1. Initial Compound Interest Summation}
+The total accrued value across all $K$ installment periods is formulated as the sum of individually compounded installments, adjusted by the annualized day ratio $\frac{Y_d}{T_d}$:
+
+\begin{equation}
+\left[ \sum_{K=0}^{\left(\frac{T_d}{R_d}-1\right)} I \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{T_d - K R_d}{C_d}} \right] \times \frac{Y_d}{T_d}
+\end{equation}
+
+\subsection*{2. Factoring Constant Terms}
+Decomposing the exponent $\frac{T_d - K R_d}{C_d} = \frac{T_d}{C_d} - \frac{K R_d}{C_d}$ allows splitting the compound term into product factors:
+
+\begin{equation}
+= \frac{Y_d}{T_d} \times I \sum_{K=0}^{\left(\frac{T_d}{R_d}-1\right)} \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{T_d}{C_d}} \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{-\frac{K R_d}{C_d}}
+\end{equation}
+
+Factoring out the constant factor $\left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{T_d}{C_d}}$ outside the summation yields:
+
+\begin{equation}
+= \frac{Y_d}{T_d} \times I \times \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{T_d}{C_d}} \sum_{K=0}^{\left(\frac{T_d}{R_d}-1\right)} \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{-\frac{K R_d}{C_d}}
+\end{equation}
+
+\subsection*{3. Evaluating the Finite Geometric Series}
+The remaining summation represents a finite geometric series $\sum_{K=0}^{N-1} x^K = \frac{x^N - 1}{x - 1}$, where $x = \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{-\frac{R_d}{C_d}}$ and $N = \frac{T_d}{R_d}$:
+
+\begin{equation}
+= \frac{Y_d}{T_d} \times I \times \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{T_d}{C_d}} \left[ \frac{\left[\left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{-\frac{R_d}{C_d}}\right]^{\frac{T_d}{R_d}} - 1}{\left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{-\frac{R_d}{C_d}} - 1} \right]
+\end{equation}
+
+Simplifying the exponent in the numerator $\left(-\frac{R_d}{C_d}\right) \times \left(\frac{T_d}{R_d}\right) = -\frac{T_d}{C_d}$:
+
+\begin{equation}
+= \frac{Y_d}{T_d} \times I \times \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{T_d}{C_d}} \left[ \frac{\left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{-\frac{T_d}{C_d}} - 1}{\left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{-\frac{R_d}{C_d}} - 1} \right]
+\end{equation}
+
+\subsection*{4. Algebraic Simplification to Positive Exponent Form}
+Multiplying the numerator and denominator by positive exponential scaling factors eliminates negative exponents:
+
+\begin{equation}
+= \frac{Y_d}{T_d} \times I \times \left[ \frac{\left[ 1 - \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{T_d}{C_d}} \right] \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{R_d}{C_d}}}{\left[ 1 - \left(1 + \frac{C_d}{Y_d} \frac{r}{100}\right)^{\frac{R_d}{C_d}} \right]} \right]
+\end{equation}
+
+\vspace{1.5em}
+
+\begin{tcolorbox}[colback=bglight,colframe=primary,title=\textbf{Final Typeset Closed-Form Result}]
+\[
+\mathbf{\text{Value}} = \frac{Y_d}{T_d} \cdot I \cdot \frac{\left[ 1 - \left(1 + \frac{C_d \cdot r}{100 \cdot Y_d}\right)^{\frac{T_d}{C_d}} \right] \left(1 + \frac{C_d \cdot r}{100 \cdot Y_d}\right)^{\frac{R_d}{C_d}}}{1 - \left(1 + \frac{C_d \cdot r}{100 \cdot Y_d}\right)^{\frac{R_d}{C_d}}}
+\]
+\end{tcolorbox}
+
+\end{document}

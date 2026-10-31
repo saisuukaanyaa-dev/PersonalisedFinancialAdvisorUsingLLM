@@ -1,0 +1,57 @@
+[project]
+name = "personalised-financial-advisor"
+version = "0.1.0"
+description = "Personalised financial advisor agents (bank deposits, mutual funds) built with LangGraph."
+readme = "readme.md"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "langchain==0.3.28",
+    "langchain-core==0.3.79",
+    "langchain-openai==0.3.35",
+    "langchain-text-splitters==0.3.11",
+
+    "langgraph==0.6.11",
+    # LangGraph Studio (`langgraph dev`)
+    "langgraph-cli[inmem]==0.4.31",
+    "langgraph-api==0.5.42",
+
+    # CPU-only build, see [tool.uv.sources]
+    "torch==2.14.0",
+    "sentence-transformers==5.1.1",
+    # Used by testsScriptForNumericalRag.py
+    "scikit-learn==1.9.1",
+    "rank-bm25==0.2.2",
+    "pandas==3.0.6",
+    "numpy==2.4.6",
+
+    "llm-guard==0.0.2",
+
+    "chromadb==1.5.9",
+    "spacy==3.8.16",
+    "en-core-web-sm",
+
+    # Not imported; huggingface_hub uses it to download the CrossEncoder model
+    "hf_xet==1.6.0",
+    "mcp==1.30.0",
+    "python-dotenv==1.2.3",
+    "requests==2.34.2",
+    "networkx",
+    "matplotlib"
+]
+
+[tool.uv]
+# The project is a collection of scripts, not an installable package.
+package = false
+# Hardlinking from the uv cache fails on this Windows setup with os error 396
+# (cloud files filter), so always copy packages into .venv.
+link-mode = "copy"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+en-core-web-sm = { url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" }
+
+# Keeps sentence-transformers and llm-guard from pulling the multi-GB CUDA wheels.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

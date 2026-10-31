@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<main class="narrow">
+  <div class="bubble">
+    <h1>Welcome back, {{ (profile.profile.user_name or acct.name or 'there').split(' ')[0] }}! 👋</h1>
+    <p>Your goal: <strong>{{ profile.goal.description }}</strong>. What would you like to do?</p>
+  </div>
+  <div class="choices">
+    {% if reports %}<a class="choice" href="/report/{{ reports[0].session_id }}"><b>See my latest plan</b><span>Open your most recent report and chat about it.</span></a>{% endif %}
+    <a class="choice" href="/intake"><b>Update my answers</b><span>Your saved answers are filled in - change only what's different.</span></a>
+    <a class="choice" href="/intake?fresh=1"><b>Start fresh</b><span>Plan for a new goal from a blank form.</span></a>
+  </div>
+  {% if reports %}
+  <h2 class="section-label">Your plans</h2>
+  <ul class="history">
+    {% for r in reports %}
+    <li><a href="/report/{{ r.session_id }}">{{ r.created_at.strftime('%d %b %Y, %H:%M') }}</a>
+      <span class="tag {{ r.verdict }}">{{ {'on_track':'On track','small_gap':'Slightly behind','large_gap':'Significant gap'}.get(r.verdict, '') }}</span>
+      {% if r.change_log %}<span class="muted">· updated in chat: {{ r.change_log|join(', ') }}</span>{% endif %}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</main>
+{% endblock %}

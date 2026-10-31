@@ -1,0 +1,256 @@
+name: pfa
+
+x-n8n-env: &n8n-env
+  DB_TYPE: postgresdb
+  DB_POSTGRESDB_HOST: postgres
+  DB_POSTGRESDB_PORT: 5432
+  DB_POSTGRESDB_DATABASE: ${POSTGRES_DB:-finance_advisor}
+  DB_POSTGRESDB_USER: ${POSTGRES_USER:-pfa}
+  DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD:?run ./start.sh to create .env}
+  N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?run ./start.sh to create .env}
+  GENERIC_TIMEZONE: ${GENERIC_TIMEZONE:-Asia/Kolkata}
+  TZ: ${GENERIC_TIMEZONE:-Asia/Kolkata}
+  N8N_DIAGNOSTICS_ENABLED: "false"
+  N8N_PERSONALIZATION_ENABLED: "false"
+
+  # n8n 2.x only reads files from allow-listed folders
+  N8N_RESTRICT_FILE_ACCESS_TO: /home/node/knowledge-base
+
+
+services:
+
+  # =========================================================
+  # POSTGRES
+  # =========================================================
+
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pfa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run ./start.sh to create .env}
+      POSTGRES_DB: ${POSTGRES_DB:-finance_advisor}
+
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+
+    volumes:
+      - pfa_postgres_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-pfa} -d ${POSTGRES_DB:-finance_advisor}"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+
+  # =========================================================
+  # MARKET ANALYZER
+  # =========================================================
+
+  market-analyzer:
+    build: ./market-analyzer
+    restart: unless-stopped
+
+    environment:
+      DATA_DIR: /data
+      PORT: 8000
+
+    volumes:
+      - ./data:/data:ro
+
+    ports:
+      - "127.0.0.1:${MARKET_API_PORT:-8000}:8000"
+
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+
+  # =========================================================
+  # N8N SETUP
+  # One-shot container used to initialize n8n
+  # =========================================================
+
+  n8n-setup:
+    image: n8nio/n8n:2.36.8
+    restart: "no"
+
+    entrypoint:
+      - /bin/sh
+      - /pfa/bootstrap/setup.sh
+
+    environment:
+      <<: *n8n-env
+
+      PFA_PG_USER: ${POSTGRES_USER:-pfa}
+      PFA_PG_PASSWORD: ${POSTGRES_PASSWORD}
+      PFA_PG_DB: ${POSTGRES_DB:-finance_advisor}
+
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+
+      MCP_BEARER_TOKEN: ${MCP_BEARER_TOKEN:-}
+
+    volumes:
+      - pfa_n8n_data:/home/node/.n8n
+      - ./n8n:/pfa:ro
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+
+  # =========================================================
+  # N8N
+  # =========================================================
+
+  n8n:
+    image: n8nio/n8n:2.36.8
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:${N8N_PORT:-5678}:5678"
+
+    environment:
+      <<: *n8n-env
+
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+
+      N8N_WEBHOOK_URL: http://localhost:${N8N_PORT:-5678}/
+      N8N_EDITOR_BASE_URL: http://localhost:${N8N_PORT:-5678}/
+
+      NODE_ENV: production
+
+    volumes:
+      - pfa_n8n_data:/home/node/.n8n
+      - ./knowledge-base:/home/node/knowledge-base:ro
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://127.0.0.1:5678/healthz >/dev/null 2>&1 || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+      market-analyzer:
+        condition: service_healthy
+
+      n8n-setup:
+        condition: service_completed_successfully
+
+
+  # =========================================================
+  # PHOENIX
+  # OpenTelemetry / LLM observability dashboard
+  # =========================================================
+
+  phoenix:
+    # Pinned (arize-phoenix v20.16.0) so a new "latest" can't change the dashboard before the demo.
+    image: arizephoenix/phoenix@sha256:d55a4ffac8c670e2d0bf72e44e81e32a73e832b7ce449e6e4567487adfa9d8d6
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:${PHOENIX_PORT:-6006}:6006"
+
+    environment:
+      PHOENIX_PORT: 6006
+      # Traces are kept in a volume, so they survive restarts (before v3.3 they were lost on every restart).
+      PHOENIX_WORKING_DIR: /mnt/data
+
+    volumes:
+      - pfa_phoenix_data:/mnt/data
+
+
+  # =========================================================
+  # TELEMETRY
+  # Reads every n8n run from Postgres and sends it to Phoenix as a trace
+  # (project "pfa-n8n"): agents, LLM calls with tokens and cost, RAG, tools.
+  # =========================================================
+
+  telemetry:
+    build: ./telemetry
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:${TELEMETRY_PORT:-8001}:8000"
+
+    environment:
+      PHOENIX_ENDPOINT: http://phoenix:6006/v1/traces
+      PHOENIX_PROJECT_NAME: pfa-n8n
+      PGHOST: postgres
+      PGDATABASE: ${POSTGRES_DB:-finance_advisor}
+      PGUSER: ${POSTGRES_USER:-pfa}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?run ./start.sh to create .env}
+      BACKFILL_HOURS: ${TRACE_BACKFILL_HOURS:-24}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      phoenix:
+        condition: service_started
+
+
+  # =========================================================
+  # TEAMMATE ADVISOR (v3.3)
+  # The team's PersonalisedFinancialAdvisorUsingLLM project (Python, LangGraph,
+  # Chroma hybrid RAG, llm_guard) as an MCP server that n8n's chat agents call.
+  # =========================================================
+
+  teammate-advisor:
+    build: ./teammate-advisor
+    image: pfa-teammate-advisor:3.3
+    restart: unless-stopped
+
+    ports:
+      - "127.0.0.1:${TEAMMATE_MCP_PORT:-8090}:8090"
+
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      MCP_BEARER_TOKEN: ${MCP_BEARER_TOKEN:-}
+      PHOENIX_COLLECTOR_ENDPOINT: http://phoenix:6006/v1/traces
+      PHOENIX_PROJECT_NAME: pfa-teammate-advisor
+
+    volumes:
+      # The bundle's bank-rate table, read-only: the teammate's agent writes its own SQL.
+      - ./deposits/memory.db:/app/teammate/memory.db:ro
+
+    depends_on:
+      phoenix:
+        condition: service_started
+
+
+# ===========================================================
+# PERSISTENT VOLUMES
+# ===========================================================
+
+volumes:
+
+  pfa_postgres_data:
+
+  pfa_n8n_data:
+
+  pfa_phoenix_data:

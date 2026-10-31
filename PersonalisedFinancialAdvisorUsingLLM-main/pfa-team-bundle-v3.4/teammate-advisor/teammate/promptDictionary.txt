@@ -1,0 +1,94 @@
+--------------prompt1--------------
+For the rows having: 
+interest_rate_general : (r"^-?\d+(\.\d+)?$") - (r"^-?\d+(\.\d+)?$")
+interest_rate_senior : (r"^-?\d+(\.\d+)?$") - (r"^-?\d+(\.\d+)?$")
+duration_months_min (r"\d") months
+duration_months_max (r"\d") months
+
+Add one more column duration_months
+
+Add a 2 new rows:
+if
+1.
+interest_rate_general : \1
+interest_rate_senior : \3
+duration_months \5 months
+2.
+interest_rate_general : \2
+interest_rate_senior : \4
+duration_months \6 months
+
+Add one row:
+if \1 and \2 are the same
+
+and remove the original rows
+
+--------------prompt2--------------
+For the rows having: 
+duration_months_min (r"\d") months and
+duration_months_max (r"\d") months
+
+if \1 and \2 are equal,
+duration_months_min NA
+duration_months_max NA
+duration_months \1 months
+
+--------------prompt3--------------
+Add a new column called installment_time_period.
+For the rows having:
+scheme_name containing the word "Recurring"
+extract the installment time period in months from the column maximum_deposit_amount:
+example : 
+if the text in the maximum_deposit_amount contains the patterns "/month" or "per month" or "monthly", then installment_time_period = 1 month
+for the rest of the empty cells of the column installment_time_period should be made NA
+
+--------------prompt3--------------
+make the columns having  "(^-?\d+(\.\d+)?$)% p.a." in interest_rate_general or interest_rate_senior, replace with \1
+
+--------------prompt4--------------
+My age is 40 years. My present bank balance is 100000 rs and it should be 150000 rs after 10 years. 
+Please consider the inflation as 0.
+Please give the optimal deposit actions to meet the goal.
+Please consider only fixed deposit products.
+please use the tool 'OptimalActionFixedDepositTool'
+
+--------------prompt5--------------
+My age is 41 years. My installment amount is 1000 rs and it should be 150000 rs after 10 years. 
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.
+Please consider only recurring deposit products.
+please use the tool 'OptimalActionRecurringDepositTool'
+
+
+--------------prompt6--------------
+My age is 41 years. My installment amount is 1000 rs and it should be 150000 rs after 10 years. 
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.
+Please consider only recurring deposit products.
+please use the tool 'OptimalActionRecurringDepositTool'
+
+--------------prompt7--------------
+My age is 41 years. My installment amount is 1000 rs and it should be 150000 rs after 9 years.
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.
+please use the tool 'OptimalActionRecurringDepositTool'
+
+--------------prompt8--------------
+My age is 41 years. My installment amount is 1000 rs and it should be 150000 rs after 8 years.
+Please consider the inflation as 0.
+Please give the optimal recurring deposit actions to meet the goal.
+
+--------------prompt9--------------
+My age is 41 years. My installment amount is 1000 rs and it should be 150000 rs after 8 years.
+Please consider the inflation as 0.
+Please give the optimal deposit actions to meet the goal.
+
+--------------prompt9--------------
+My age is 41 years. My installment amount is 1000 rs per month and it should be 150000 rs after 8 years.
+Please give the optimal deposit actions to meet the goal.
+
+Though deterministic, the sequence of prompts might affect the result.
+
+--------------prompt10--------------
+My age is 41 years. My bank balance is 100000 rs. My installment amount is 1000 rs per month and it should be 300000 rs after 8 years.
+Please give the optimal deposit actions to meet the goal.

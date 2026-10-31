@@ -1,0 +1,62 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+
+\title{\textbf{Financial Deposit and Valuation Formulas}}
+\author{Project Documentation}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Recurring Deposit Formula}
+The value of a recurring deposit (derived in \texttt{recurring-deposit-proof.tex}) is calculated as follows:
+\[
+\text{Value} = \frac{Y_d}{T_d} \cdot I \cdot \frac{\left[ 1 - \left(1 + \frac{C_d \cdot r}{100 \cdot Y_d}\right)^{\frac{T_d}{C_d}} \right] \left(1 + \frac{C_d \cdot r}{100 \cdot Y_d}\right)^{\frac{R_d}{C_d}}}{1 - \left(1 + \frac{C_d \cdot r}{100 \cdot Y_d}\right)^{\frac{R_d}{C_d}}}
+\]
+
+\subsection*{Parameter Definitions}
+\begin{itemize}
+    \item $I$: Installment amount deposited at the end of every payment period $R_d$
+    \item $r$: Annual rate of interest (\%)
+    \item $Y_d$: Days in a year
+    \item $R_d$: Days in a recurring payment period
+    \item $C_d$: Compounding frequency in days
+    \item $T_d$: Total tenure in days
+\end{itemize}
+
+\section{Fixed Deposit Formula}
+The maturity amount $A$ for a fixed deposit is given by:
+\[
+A = p \left( 1 + \frac{r \cdot C_d}{100 \cdot Y_d} \right)^{\frac{T_d}{C_d}}
+\]
+
+\subsection*{Parameter Definitions}
+\begin{itemize}
+    \item $A$: Final maturity amount
+    \item $p$: Principal amount deposited
+    \item $r$: Annual rate of interest (\%)
+    \item $C_d$: Compounding frequency in days
+    \item $Y_d$: Days in a year
+    \item $T_d$: Total tenure in days
+\end{itemize}
+
+\section{\texorpdfstring{Value at the End of $n$ Years}{Value at the End of n Years}}
+The discounted present value or value at the end of $n$ years is given by:
+\[
+A(n) = \frac{A}{1 + \frac{n \cdot R_i}{100}}
+\]
+
+\subsection*{Parameter Definitions}
+\begin{itemize}
+    \item $A(n)$: Value at the end of $n$ years / time $T$
+    \item $A$: Base amount
+    \item $n$: Number of years
+    \item $R_i$: Annual discount or interest rate (\%)
+\end{itemize}
+
+\end{document}

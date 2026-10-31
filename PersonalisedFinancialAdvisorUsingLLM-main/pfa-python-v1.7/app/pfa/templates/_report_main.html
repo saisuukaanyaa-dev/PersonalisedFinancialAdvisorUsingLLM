@@ -1,0 +1,298 @@
+{# Report body. Rendered on first load and again (as a fragment) when the AI text is ready. #}
+<div class="pfa-body" data-writing="{{ 'true' if writing else 'false' }}">
+
+{% if r.change_log %}
+<div class="updated">
+  <strong>Updated plan</strong> - changes you asked for:
+  <ul>{% for c in r.change_log %}<li>{{ c }}</li>{% endfor %}</ul>
+  {% if r.parent %}<a href="/report/{{ r.parent }}">See the previous plan</a>{% endif %}
+</div>
+{% endif %}
+
+{# 1 · GOAL PROJECTION - first, as the mentors asked #}
+<section class="hero" aria-labelledby="h-goal">
+  <div class="hero-text">
+    <span class="pill" style="--pill:{{ status_color }}"><b>{{ status_icon }}</b>{{ verdict_label }}</span>
+    <h1 id="h-goal">{{ ai.headline }}</h1>
+    <p class="ai-text">{{ ai.summary }}</p>
+    <div class="who">{{ p.profile.user_name }} · {{ p.goal.description }}{% if ctc_note %} · {{ ctc_note }}{% endif %}</div>
+  </div>
+  {{ ring }}
+</section>
+
+<h2>Goal projection{% if goals and goals.gp.count > 1 %} · main goal{% endif %}</h2>
+<div class="card">
+  {% if goals and goals.gp.count > 1 %}{% set mg = goals.rows[0] %}
+  <p class="muted">Main goal: <strong>{{ mg.name }}</strong>. It gets {{ mo(mg.corpus) }} of today's savings and {{ mo(mg.current_monthly) }}/mo of today's SIPs - the other goals' shares are under <a href="#goals">Your goals</a>.</p>
+  {% endif %}
+  <div class="grid">
+    <div class="tile" style="--accent:var(--muted)"><div class="tile-label">Target</div><div class="tile-value">{{ mo(pr.target_amount) }}</div><div class="tile-sub">by {{ target_date_text }}</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="tile-label">Projected</div><div class="tile-value">{{ mo(pr.projected_value) }}</div><div class="tile-sub">in {{ pr.years_remaining }} years</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="tile-label">You invest now</div><div class="tile-value">{{ mo(pr.current_monthly_contribution) }}/mo</div></div>
+    <div class="tile" style="--accent:var(--s3)"><div class="tile-label">Needed</div><div class="tile-value">{{ mo(pr.required_monthly) }}/mo</div></div>
+  </div>
+  <div class="chart-wrap">{{ projection_chart }}</div>
+  <p>{% if pr.on_track %}You are projected to finish <strong>{{ mo(pr.gap_or_surplus|abs) }} ahead</strong> of target.
+     {% else %}You are projected to fall <strong>{{ mo(pr.gap_or_surplus|abs) }} short</strong>. Closing it needs about <strong>{{ mo(pr.additional_monthly_needed) }} more per month</strong>.{% endif %}</p>
+  <p class="muted ai-text">{{ ai.projection_commentary }}</p>
+  <details class="data"><summary>Show the numbers behind the chart</summary>
+    <div class="table-wrap"><table><thead><tr><th>Year</th><th class="num">At your current SIP</th><th class="num">At the required SIP</th></tr></thead>
+    <tbody>{% for pt in pr.series %}<tr><td>{{ 'Now' if pt.month == 0 else (pt.month // 12) ~ ' yr' }}</td><td class="num">{{ mo(pt.current_path) }}</td><td class="num">{{ mo(pt.required_path) }}</td></tr>{% endfor %}</tbody></table></div>
+  </details>
+</div>
+
+{# v1.7 · SEVERAL GOALS: how savings and SIPs are shared, the timeline, and "what if a new goal comes up?" #}
+{% if goals %}{% set gp = goals.gp %}
+<h2 id="goals">Your goals{% if gp.count > 1 %} ({{ gp.count }}){% endif %}</h2>
+<div class="card">
+  {% if gp.count > 1 %}
+  <div class="goal-sum">
+    <div class="tile" style="--accent:var(--muted)"><div class="tile-label">Needed each month</div><div class="tile-value">{{ mo(gp.total_required) }}</div><div class="tile-sub">all {{ gp.count }} goals</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="tile-label">Free to invest</div><div class="tile-value">{{ mo(gp.investable) }}</div><div class="tile-sub">after essentials, EMIs, emergency top-up</div></div>
+    <div class="tile" style="--accent:var(--s3)"><div class="tile-label">The plan invests</div><div class="tile-value">{{ mo(gp.funded_total) }}</div><div class="tile-sub">{% if gp.all_funded %}every goal funded{% else %}{{ mo(gp.underfunded_total) }} short{% endif %}</div></div>
+    <div class="tile" style="--accent:var(--s4)"><div class="tile-label">Left over</div><div class="tile-value">{{ mo(gp.unallocated) }}</div><div class="tile-sub">spare each month</div></div>
+  </div>
+  <div class="table-wrap"><table class="goals-table">
+    <thead><tr><th>Goal</th><th>Target</th><th>Risk &amp; mix</th><th class="num">From savings</th><th class="num">Needed /mo</th><th class="num">Plan /mo</th><th>Projected</th><th>Status</th></tr></thead>
+    <tbody>{% for g in goals.rows %}<tr>
+      <td><span class="goal-name">{{ g.name }}</span>{% if g.is_main %} <span class="prio">· main</span>{% endif %}
+        <div class="prio">{{ g.priority }} · funded {{ ['1st','2nd','3rd','4th'][g.funded_order - 1] }}</div>
+        {% if not g.is_main %}<button type="button" class="goal-remove" data-remove-goal="{{ g.name }}">Remove</button>{% endif %}</td>
+      <td>{{ mo(g.target_amount) }}<div class="prio">by {{ g.date_text }} · {{ g.years }} yrs</div></td>
+      <td>{{ g.risk }}<div class="prio">{{ g.mix_text }}</div></td>
+      <td class="num">{{ mo(g.corpus) }}</td>
+      <td class="num">{{ mo(g.required_monthly) }}</td>
+      <td class="num">{{ mo(g.funded_monthly) }}</td>
+      <td><span class="mini"><span style="width:{{ g.progress_pct }}%"></span></span>{{ g.progress_pct|round|int }}%</td>
+      <td><span class="goal-status" style="--b:{{ g.status_color }}">{{ g.status_label }}</span>
+        {% if g.status in ('partly', 'not_funded') %}<div class="prio">{% if g.reachable_text %}reachable {{ g.reachable_text }} at the plan's SIP{% else %}not reachable at the plan's SIP{% endif %}</div>{% endif %}</td>
+    </tr>{% endfor %}</tbody></table></div>
+  <p class="goal-rule"><strong>How the money is shared:</strong> {{ gp.rule }} Savings you already have are set aside the same way: each goal gets what it needs today at its own expected return, and anything left stays with the main goal. Each goal has its own risk level for its own date, so near goals sit in FD / RD while far goals can hold equity.</p>
+  {% if not gp.all_funded %}<div class="warn">Your money can't fund every goal yet: about <strong>{{ mo(gp.underfunded_total) }} a month</strong> more is needed. The goals funded last fall short first - move a date, lower an amount, or mark a goal Nice-to-have.</div>{% endif %}
+  <div class="chart-wrap">{{ goals.chart }}</div>
+  <p class="ab-legend">All your goal money over time at the plan's monthly amounts. The line drops when a goal is paid out.</p>
+  {% else %}
+  <p>Your plan has one goal. Add another below to see how two goals share your money - and what a new, nearer goal would cost your main one.</p>
+  {% endif %}
+  {% if goals.can_add %}
+  <div class="whatif" id="whatif">
+    <h3>What if a new goal comes up?</h3>
+    <p class="muted">A car, a wedding, a course before your main goal? See what it costs and how it changes your other goals before you commit. Calculated instantly, no AI.</p>
+    <form id="whatif-form" autocomplete="off">
+      <label>What is it?<select name="goal_type">{% for t in goal_types %}<option{{ ' selected' if t == 'Buy a car' }}>{{ t }}</option>{% endfor %}</select></label>
+      <label>Name (optional)<input name="name" maxlength="40" placeholder="e.g. Family car"></label>
+      <label>How much?<input name="target_amount" placeholder="e.g. 6L" required></label>
+      <label>By when?<input name="target_date" type="date" required></label>
+      <label>Priority<select name="priority">{% for pr_ in goals.priorities %}<option>{{ pr_ }}</option>{% endfor %}</select></label>
+      <button class="btn primary small" type="submit">See the impact</button>
+    </form>
+    <div class="err" id="whatif-err" hidden></div>
+    <div id="whatif-result" aria-live="polite"></div>
+  </div>
+  {% else %}<p class="muted">Your plan has the maximum of {{ goals.max_extra + 1 }} goals. Remove one to try another.</p>{% endif %}
+</div>
+{% endif %}
+
+<h2>Where you stand today</h2>
+<div class="grid">
+  <div class="tile" style="--accent:var(--c-cash)"><div class="tile-label">Net worth</div><div class="tile-value">{{ mo(s.net_worth) }}</div><div class="tile-sub">investments + emergency fund − loans</div></div>
+  <div class="tile" style="--accent:var(--c-equity)"><div class="tile-label">Investments</div><div class="tile-value">{{ mo(s.total_savings_investments) }}</div></div>
+  <div class="tile" style="--accent:var(--s2)"><div class="tile-label">Loans outstanding</div><div class="tile-value">{{ mo(s.total_liabilities) }}</div><div class="tile-sub">{% if s.total_liabilities > 0 %}avg {{ '%.1f'|format(s.weighted_interest_pct) }}% interest{% else %}no loans - debt-free{% endif %}</div></div>
+  <div class="tile" style="--accent:var(--c-debt)"><div class="tile-label">Monthly surplus</div><div class="tile-value">{{ mo(s.monthly_surplus) }}</div><div class="tile-sub">savings rate {{ '%.1f'|format(s.savings_rate_pct or 0) }}%</div></div>
+</div>
+
+<h2>What you own today</h2>
+<div class="card own-today">
+  <div class="own-now">
+    <div class="row-label"><span>Your money today</span><strong>{{ mo(own_total_all) }}</strong></div>
+    {{ own_pie }}
+  </div>
+  <div class="own-target">
+    {% if sip_pie %}<div class="row-label"><span>Where your monthly investing goes now</span><strong>{{ mo(sip_total) }}/mo</strong></div>
+    {{ sip_pie }}{% endif %}
+    <div class="row-label"><span>Target for your investments ({{ plan.effective_risk }} risk)</span></div>
+    {{ target_pie }}
+  </div>
+  <p class="pie-sentence">{{ pie_sentence }}</p>
+  <p class="ab-legend">The emergency fund is kept separate from the investment mix - it stays safe and instantly available. Hybrid funds are counted half equity, half fixed income.</p>
+</div>
+
+<h2>Where your monthly pay goes</h2>
+<div class="card">
+  <div class="row-label"><span>In-hand pay</span><strong>{{ mo(salary) }} / month</strong></div>
+  <div class="flow-wrap">{{ flow_bar }}{% if overspend > 0 %}<div class="pay-marker" style="left:{{ '%.2f'|format(pay_marker_pct) }}%"><span>In-hand pay {{ sh(salary) }}</span></div>{% endif %}</div>
+  {{ flow_legend }}
+  <div class="ab-legend">Percentages are shares of your in-hand pay.</div>
+  {% if overspend > 0 %}<div class="warn">Essentials, EMIs and planned investments add up to <strong>{{ mo(outflow) }}</strong> a month - <strong>{{ mo(overspend) }} more</strong> than your in-hand pay.</div>{% endif %}
+</div>
+
+<h2>Your risk profile</h2>
+<div class="card">
+  <div class="lvls">
+    {% for l, sub, c in [('Low','FDs, PPF, index fund','var(--c-debt)'),('Medium','Mostly mutual funds','var(--s1)'),('High','Funds + direct stocks','var(--s2)')] %}
+    <div class="lvl{{ ' on' if l == plan.effective_risk }}" style="--lc:{{ c }}"><div class="lvl-name">{{ l }}</div><div class="lvl-sub">{{ sub }}</div>
+      {% if l == plan.stated_risk %}<div class="lvl-tag">You chose</div>{% endif %}{% if l == plan.effective_risk %}<div class="lvl-tag on">Your plan</div>{% endif %}</div>
+    {% endfor %}
+  </div>
+  <p>{% if plan.effective_risk == plan.stated_risk %}You chose <strong>{{ plan.stated_risk }}</strong> risk, and your goal date supports it, so your plan is built at <strong>{{ plan.effective_risk }}</strong>.
+     {% else %}You chose <strong>{{ plan.stated_risk }}</strong> risk. Your plan is built at <strong>{{ plan.effective_risk }}</strong> instead.{% endif %}
+     Expected long-run return of this mix: <strong>{{ plan.expected_return_pct }}% a year</strong>.</p>
+  {% if plan.reasons %}<ul class="bad">{% for x in plan.reasons %}<li>{{ x }}</li>{% endfor %}</ul>{% endif %}
+</div>
+
+<h2>Where to put your money each month</h2>
+<div class="card">
+  {% if mp.total > 0 %}
+  <div class="row-label"><span>Suggested monthly plan</span><strong>{{ mo(mp.total) }} / month</strong></div>
+  {{ plan_bar }}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Where</th><th>What to buy</th><th class="num">Per month</th><th class="num">Share</th></tr></thead>
+    <tbody>{% for x in mp.rows %}<tr><td><i class="sw" style="background:{{ plan_color.get(x.bucket, 'var(--neutral)') }}"></i>{{ x.bucket }}</td>
+      <td class="rationale">{{ x.instrument }}</td><td class="num"><strong>{{ mo(x.amount) }}</strong></td>
+      <td class="num">{{ '%.0f'|format(x.amount / mp.total * 100) }}%</td></tr>{% endfor %}</tbody></table></div>
+  {% if sip_rows %}
+  <h3 class="sub-h">Your SIPs now vs the plan</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Where</th><th class="num">You invest now</th><th class="num">Plan suggests</th><th>Why</th></tr></thead>
+    <tbody>{% for x in sip_rows %}<tr><td><i class="sw" style="background:{{ x.color }}"></i>{{ x.bucket }}</td>
+      <td class="num">{{ mo(x.now) }}</td>
+      <td class="num"><strong>{{ mo(x.suggested) }}</strong>{% if x.delta > 0 %} <span class="up">▲ {{ sh(x.delta) }}</span>{% elif x.delta < 0 %} <span class="down">▼ {{ sh(-x.delta) }}</span>{% endif %}</td>
+      <td class="rationale">{{ x.why }}</td></tr>{% endfor %}
+      <tr class="total-row"><td><strong>Total</strong></td><td class="num"><strong>{{ mo(sip_rows_total[0]) }}</strong></td><td class="num"><strong>{{ mo(sip_rows_total[1]) }}</strong></td><td></td></tr></tbody></table></div>
+  {% endif %}
+  <p class="ab-legend">Built from the {{ mo(mp.available) }} left after essentials and EMIs.
+    {% if mp.emergency_topup %}The emergency fund is topped up first. {% endif %}
+    {% if mp.unallocated > 0 %}{{ mo(mp.unallocated) }} stays free for other goals or spending. {% endif %}
+    {% if goals and goals.gp.count > 1 %}{% if goals.gp.underfunded_total > 0 %}<strong>Your goals need {{ mo(goals.gp.underfunded_total) }} more a month than you can spare today</strong> - see <a href="#goals">Your goals</a> for which one and its options.{% endif %}
+    {% elif mp.goal_underfunded_by > 0 %}<strong>Your goal needs {{ mo(mp.goal_underfunded_by) }} more a month than you can spare today</strong> - consider a later date or a smaller target.{% endif %}</p>
+  {% else %}<p class="muted">Nothing is left after essentials and EMIs yet - the first step is to free up monthly cash.</p>{% endif %}
+</div>
+
+{% if dp %}
+<h2>Bank deposits for your fixed-income part{% if dp.ok and dp.steps %} · {{ mo(dp.monthly_amount) }}/month{% endif %}</h2>
+<div class="card">
+  {% if dp.ok and dp.steps %}
+  <p>Your {{ plan.effective_risk|lower }}-risk plan puts <strong>{{ mo(dp.monthly_amount) }} a month</strong> into fixed income.
+    The team's deposit planner picked this recurring-deposit sequence ({{ dp.rate_type }} rates):</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Bank</th><th>Tenure</th><th class="num">Rate</th><th>When</th><th class="num">Matures at</th></tr></thead>
+    <tbody>{% for x in dp.steps %}<tr><td><strong>{{ x.bank }}</strong></td>
+      <td>{{ x.tenor }}{% if x.times > 1 %}<div class="sub">× {{ x.times }} back to back</div>{% endif %}</td>
+      <td class="num">{{ '%.2f'|format(x.rate_pct) }}%<div class="sub">{{ x.rate_note }}</div></td>
+      <td>{{ ddate(x.start) }} → {{ ddate(x.end) }}</td><td class="num">{{ mo(x.value_at_end) }}</td></tr>{% endfor %}
+      {% if dp.cash_months %}<tr><td>Savings account</td><td>Last {{ dp.cash_months }} month{{ 's' if dp.cash_months > 1 }}<div class="sub">too short for an RD</div></td>
+      <td class="num">-</td><td>until {{ ddate(dp.goal_date) }}</td><td class="num">{{ mo(dp.cash_value) }}</td></tr>{% endif %}</tbody></table></div>
+  <div class="grid" style="margin-top:14px">
+    <div class="tile" style="--accent:var(--muted)"><div class="tile-label">You pay in</div><div class="tile-value">{{ mo(dp.total_paid) }}</div><div class="tile-sub">monthly instalments</div></div>
+    <div class="tile" style="--accent:var(--c-debt)"><div class="tile-label">Value by goal date</div><div class="tile-value">{{ mo(dp.value_on_goal_date) }}</div><div class="tile-sub">before tax</div></div>
+    <div class="tile" style="--accent:var(--s1)"><div class="tile-label">Fixed-income share to fund</div><div class="tile-value">{{ mo(dp.goal_share) }}</div><div class="tile-sub">{{ plan.target_allocation.debt }}% of what your monthly saving must build</div></div>
+  </div>
+  <p>{% if dp.reached %}This <strong>covers</strong> the fixed-income share of your goal (your current investments cover the rest as they grow).
+    {% else %}This <strong>falls short</strong> of the fixed-income share. About <strong>{{ mo(dp.installment_needed) }} a month</strong> in these deposits would cover it.{% endif %}</p>
+  {% if dp.alternatives %}<p class="ab-legend">Single-bank alternatives: {% for a in dp.alternatives %}{{ a.bank }} {{ a.tenor }} @ {{ '%.2f'|format(a.rate_pct) }}% → {{ mo(a.value) }}{% if not loop.last %} · {% endif %}{% endfor %}.</p>{% endif %}
+  <p class="ab-legend">Card rates from the team's bank documents{% if dp.as_of %} (as of {{ dp.as_of }}){% endif %} - confirm with the bank before opening.
+    Interest is taxable; values are before tax. Matured deposits are kept, not reinvested. Ask the chat below for other amounts, banks or senior-citizen rates.</p>
+  {% else %}
+  <p class="muted">The bank deposit planner could not build a plan ({{ dp.reason or dp.verdict or 'no deposit fits before your goal date' }}). Use the fixed-income instruments above.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<h2>Do these first</h2>
+<div class="card"><ol class="actions">
+  {% for a in ai.priority_actions %}<li class="action"><span class="rank">{{ loop.index }}</span><div>
+    <div class="action-title ai-text">{{ a.title }}</div><div class="action-why ai-text">{{ a.why }}</div><div class="action-how ai-text">{{ a.how }}</div></div></li>
+  {% else %}<li class="muted">Nothing urgent - keep your plan going.</li>{% endfor %}
+</ol></div>
+
+<h2>What you own vs what you owe</h2>
+<div class="card">
+  <div class="row-label"><span>You own</span><strong>{{ mo(own_total) }}</strong></div>
+  <div style="width:{{ '%.1f'|format(own_width) }}%">{{ own_bar }}</div>
+  <div class="row-label"><span>You owe</span><strong>{{ mo(owe_total) }}</strong></div>
+  {% if owe_total > 0 %}<div style="width:{{ '%.1f'|format(owe_width) }}%">{{ owe_bar }}</div>
+  <div class="ab-legend">Grey<span style="background:var(--neutral)"></span>loans at 12% or less · Red<span style="background:var(--critical)"></span>above 12% interest - pay these first</div>
+  {% else %}<div class="muted">Nothing - you are debt-free 🎉</div>{% endif %}
+  {{ own_legend }}
+</div>
+
+<h2>Asset allocation · now vs your {{ plan.effective_risk|lower }}-risk target</h2>
+<div class="card alloc no-donut">
+  <div>
+    {% for a in alloc_rows %}<div class="ab-row"><div class="ab-key"><i style="background:{{ a.color }}"></i>{{ a.label }}</div>
+      <div class="ab-bars"><div class="ab-bar now" title="{{ a.label }} now: {{ a.now }}%"><span style="width:{{ a.now }}%;background:{{ a.color }}"></span><em>{{ '%.1f'|format(a.now) }}%</em></div>
+      <div class="ab-bar to" title="{{ a.label }} suggested: {{ a.to }}%"><span style="width:{{ a.to }}%;background:{{ a.color }}"></span><em>{{ '%.1f'|format(a.to) }}%</em></div></div></div>{% endfor %}
+    <div class="ab-legend">Faded bar<span style="opacity:.45"></span>now · Solid bar<span></span>suggested</div>
+  </div>
+</div>
+<div class="card"><div class="table-wrap"><table>
+  <thead><tr><th>Asset class</th><th class="num">Now</th><th class="num">Suggested</th><th class="num">Change</th><th>Why</th></tr></thead>
+  <tbody>{% for a in alloc_rows %}<tr><td>{{ a.label }}</td><td class="num">{{ '%.1f'|format(a.now) }}%</td><td class="num">{{ '%.1f'|format(a.to) }}%</td>
+    <td class="num {{ a.dir }}">{{ '▲' if a.dir == 'up' else '▼' if a.dir == 'down' else '—' }} {{ '%.1f'|format(a.delta|abs) }}%</td><td class="rationale ai-text">{{ a.why }}</td></tr>{% endfor %}</tbody>
+</table></div></div>
+
+<h2>Safety-net check</h2>
+<div class="meters">{% for m in meters %}{{ m }}{% endfor %}</div>
+
+{% if loans %}
+<h2>Your loans</h2>
+<div class="card">
+  {% for l in loans %}<div class="debt-row"><div>{{ l.key }}{% if l.rate > 12 %} <span class="badge" style="--b:var(--critical)"><b>!</b> pay first</span>{% endif %}</div>
+    <div class="debt-bar" title="{{ l.key }}: {{ mo(l.value) }}, EMI {{ mo(l.emi) }}"><span style="width:{{ '%.1f'|format(l.value / owe_total * 100 if owe_total else 0) }}%;background:{{ l.color }}"></span></div>
+    <div class="num">{{ sh(l.value) }}</div></div>{% endfor %}
+  {% if ai.debt_commentary %}<p class="ai-text">{{ ai.debt_commentary }}</p>{% endif %}
+</div>
+{% endif %}
+
+{% if not plan.direct_stocks_allowed %}
+<h2>Direct stocks · not yet</h2>
+<div class="card">
+  <p>Individual shares can fall 30-50% in a bad year. {{ 'They are not part of your plan:' if plan.effective_risk == 'Low' else 'They unlock once these are in place:' }}</p>
+  <ul class="bad">{% for x in plan.direct_stock_blockers %}<li>{{ x }}</li>{% endfor %}</ul>
+  {% if watchlist %}
+  <h3 class="sub-h">Watchlist for when you're ready</h3>
+  <p class="ab-legend">The NIFTY 50 names with the best 5-year record within your {{ plan.effective_risk }}-risk limits ({{ r.screen.period.start }} to {{ r.screen.period.end }}). Not part of your plan yet - ask the chat for today's prices.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Stock</th><th>Sector</th><th class="num">5-yr CAGR</th><th class="num">Volatility</th><th class="num">Worst fall</th></tr></thead>
+    <tbody>{% for x in watchlist %}<tr><td><strong>{{ x.symbol }}</strong><div class="sub">{{ x.company_name }}</div></td><td>{{ x.sector }}</td>
+      <td class="num">{{ '%.1f'|format(x.five_year_cagr_pct) }}%</td><td class="num">{{ '%.1f'|format(x.annualized_volatility_pct) }}%</td>
+      <td class="num down">▼ {{ '%.1f'|format(x.max_drawdown_pct|abs) }}%<div class="sub">₹10,000 → {{ x.worst_10k }}</div></td></tr>{% endfor %}</tbody></table></div>
+  {% endif %}
+</div>
+{% elif picks %}
+<h2>Equity shortlist · {{ mo(stock_monthly) }}/month</h2>
+<div class="card">
+  <p><strong>{{ mo(stock_monthly) }} a month</strong> ({{ plan.direct_stock_share_pct }}% of your goal investment) can go to the stocks below, split evenly; the rest of your equity stays in mutual funds.</p>
+  <p class="ab-legend">Screened {{ r.screen.screened }} NIFTY 50 names; {{ r.screen.passed }} met your {{ plan.effective_risk }}-risk limits: worst fall no deeper than ▼{{ plan.stock_rules.max_drawdown_pct|abs }}%, yearly swing up to {{ plan.stock_rules.max_volatility_pct }}%, growth at least half the swing, max {{ plan.stock_rules.max_per_sector }} per sector.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Stock</th><th>Sector</th><th class="num">5-yr CAGR</th><th class="num">Volatility</th><th class="num">Worst fall</th><th>Why this one</th></tr></thead>
+    <tbody>{% for x in picks %}<tr><td><strong>{{ x.symbol }}</strong><div class="sub">{{ x.company_name }}</div></td><td>{{ x.sector }}</td>
+      <td class="num"><span class="mini"><span style="width:{{ '%.0f'|format(x.five_year_cagr_pct|abs / max_cagr * 100) }}%"></span></span>{{ '%.1f'|format(x.five_year_cagr_pct) }}%</td>
+      <td class="num">{{ '%.1f'|format(x.annualized_volatility_pct) }}%</td>
+      <td class="num down">▼ {{ '%.1f'|format(x.max_drawdown_pct|abs) }}%<div class="sub">₹10,000 → {{ x.worst_10k }}</div></td>
+      <td class="rationale ai-text">{{ x.rationale }}</td></tr>{% endfor %}</tbody></table></div>
+  <p class="ab-legend"><strong>Worst fall (max drawdown)</strong> is the biggest drop from a high to a later low in the five years - a loss, which is why it is often written as a negative number.</p>
+  <p class="caveat"><strong>Read this before acting.</strong> These names were screened from the NIFTY 50 historical dataset ({{ r.screen.period.start }} to {{ r.screen.period.end }}) on past return and risk alone. Past performance does not predict future returns, and this is not a recommendation to buy.</p>
+</div>
+{% else %}
+<h2>Direct stocks</h2>
+<div class="card"><p>{{ r.screen.error or 'No NIFTY 50 name passed your risk limits.' }} Keep the equity part in mutual funds for now.</p></div>
+{% endif %}
+
+<h2>Strengths and risks</h2>
+<div class="card two-col">
+  <div><strong>Working in your favour</strong><ul class="good">{% for x in ai.strengths %}<li class="ai-text">{{ x }}</li>{% endfor %}</ul></div>
+  <div><strong>Watch out for</strong><ul class="bad">{% for x in ai.risks %}<li class="ai-text">{{ x }}</li>{% endfor %}</ul></div>
+</div>
+
+{% if ai.sources %}
+<p class="sources"><strong>Knowledge base used:</strong> {% for x in ai.sources %}[{{ x.n }}] {{ x.file }}{{ ' · ' if not loop.last }}{% endfor %}</p>
+{% endif %}
+
+<div class="disclaimer">
+  <strong>Assumptions:</strong> {{ pr.assumptions.expected_annual_return_pct }}% expected annual return ({{ plan.effective_risk }}-risk mix: equity {{ plan.class_return_assumptions_pct.equity }}%, fixed income {{ plan.class_return_assumptions_pct.debt }}%, gold {{ plan.class_return_assumptions_pct.gold }}%, cash {{ plan.class_return_assumptions_pct.cash }}%) · {{ pr.assumptions.inflation_pct }}% inflation{% for x in ai.extra_assumptions %} · {{ x }}{% endfor %}{% if s.in_hand_source == 'estimated_from_ctc' %} · In-hand pay estimated from CTC (new tax regime, FY 2026-27){% endif %}.<br><br>
+  This report is educational information generated from the figures you supplied and a historical market dataset. It is not licensed financial advice, and past performance does not predict future returns. Please consult a registered adviser before acting on it.
+  {% if usage_text %}<div class="timing">{{ usage_text }} · <a href="/usage">see all usage</a></div>{% endif %}
+  {% if timing_text %}<div class="timing">{{ timing_text }}{% if ai.source == 'computed' and not writing %} · explanation written from your numbers (AI unavailable){% endif %}</div>{% endif %}
+</div>
+</div>

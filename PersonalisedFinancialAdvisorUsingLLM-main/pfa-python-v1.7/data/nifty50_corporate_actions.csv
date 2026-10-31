@@ -1,0 +1,4 @@
+symbol,event_date,event_type,description,price_data_status
+HDFC,2023-07-12,MERGER_DELISTING,HDFC Ltd. ceased independent trading following amalgamation with HDFC Bank.,unavailable
+LTIM,2023-07-13,NIFTY50_ENTRY,LTIMindtree entered NIFTY 50 following HDFC Ltd.'s exit.,unavailable
+TATAMOTORS,2025-10-01,CORPORATE_RESTRUCTURING,Tata Motors underwent corporate restructuring/demerger during 2025; Yahoo price download was unavailable for this symbol.,unavailable

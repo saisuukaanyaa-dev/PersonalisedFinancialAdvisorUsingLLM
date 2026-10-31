@@ -1,0 +1,1077 @@
+{
+  "name": "PFA · Bank deposit planner",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## PFA · Bank deposit planner\nThe teammate's **OptimalBankDepositFinderAgent** (LangGraph + FastMCP + SQLite) rebuilt as n8n nodes.\n\n- **MCP server** `/mcp/bank-deposits` (bearer = MCP_BEARER_TOKEN) - the advisor v3.2 calls it\n- **Plan branch** (no AI): read rates from Postgres → optimiser Code node (port of GoalSearch.py)\n- **Ask branch**: guardrail → gpt-5-mini agent (same steps as the teammate's prompt) → sanitizer\n- **Chat** (hosted) for trying it by hand\n\nRates: table `deposit_schemes`, built from the team's bank documents by `tools/build_deposit_db.py`.",
+        "height": 300,
+        "width": 560,
+        "color": 4
+      },
+      "name": "About this workflow",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        -420
+      ],
+      "id": "208b9998-caa0-56a6-958c-5a128dbec67e"
+    },
+    {
+      "parameters": {
+        "authentication": "bearerAuth",
+        "path": "bank-deposits"
+      },
+      "name": "Bank Deposits MCP Server",
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        1180,
+        520
+      ],
+      "webhookId": "0f49cf31-2b82-5c8b-b7f7-40a76a84ce73",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "pfaMcpBearer0001",
+          "name": "PFA MCP bearer token"
+        }
+      },
+      "id": "82a40fc3-be00-5c3d-8088-0f32f72ce1be"
+    },
+    {
+      "parameters": {
+        "inputSource": "workflowInputs",
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "action",
+              "type": "string"
+            },
+            {
+              "name": "request",
+              "type": "string"
+            },
+            {
+              "name": "initial_amount",
+              "type": "any"
+            },
+            {
+              "name": "monthly_installment",
+              "type": "any"
+            },
+            {
+              "name": "goal_amount",
+              "type": "any"
+            },
+            {
+              "name": "goal_date",
+              "type": "string"
+            },
+            {
+              "name": "inflation_pct",
+              "type": "any"
+            },
+            {
+              "name": "senior",
+              "type": "any"
+            },
+            {
+              "name": "banks",
+              "type": "string"
+            },
+            {
+              "name": "start_date",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "name": "Planner Request",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -400,
+        0
+      ],
+      "id": "92237aeb-8490-506e-9d2e-9ded0e0da4fe"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f94be26a-c366-5750-9381-3b25d1c40a51",
+              "leftValue": "={{ String($json.action || '').toLowerCase() === 'ask' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Ask or Plan?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -180,
+        0
+      ],
+      "id": "e8b7a6a6-80da-5de8-a89f-9de88e4520be"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d10d5e1b-0f35-5d3f-99d4-a8d4d0df3be7",
+              "leftValue": "={{ $('Planner Request').first().json.inflation_pct !== null && $('Planner Request').first().json.inflation_pct !== undefined && String($('Planner Request').first().json.inflation_pct).trim() !== '' }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "name": "Inflation Given?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        60,
+        120
+      ],
+      "id": "edbe50b4-28ed-5cc3-9e5f-ac026299448f"
+    },
+    {
+      "parameters": {
+        "url": "https://api.worldbank.org/v2/country/IND/indicator/FP.CPI.TOTL.ZG?format=json&per_page=6",
+        "options": {
+          "timeout": 8000,
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "data"
+            }
+          }
+        }
+      },
+      "name": "Get India Inflation (World Bank)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        300,
+        220
+      ],
+      "onError": "continueRegularOutput",
+      "id": "66c39bbd-27be-5a51-845d-51749b5dfdbd"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT bank_name, scheme_type, scheme_name, tenor_label, duration_months, interest_rate_general, interest_rate_senior,\n       compounding_months, installment_months, rate_source, as_of\nFROM deposit_schemes ORDER BY scheme_type, bank_name, duration_months;",
+        "options": {}
+      },
+      "name": "Read Deposit Rates",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        540,
+        120
+      ],
+      "executeOnce": true,
+      "alwaysOutputData": true,
+      "credentials": {
+        "postgres": {
+          "id": "DLigOZtLp73yVBeP",
+          "name": "Postgres account"
+        }
+      },
+      "id": "3144b12d-b06c-5ed6-b8aa-ece53d2edee6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ---- deposit optimiser (embedded verbatim in the n8n Code node \"Optimise FD & RD Plan\") ----\n// JavaScript port of the teammate's GoalSearch.py + StateActionState.py (PersonalisedFinancialAdvisorUsingLLM).\n// Kept from the original: the state/action model, the rate-sorted depth-first goal search (BruteForce),\n// the FD transition (quarterly compounding, the same deposit repeated `count` times) and the FD sort key.\n// Fixed (see docs/BANK_DEPOSITS.md):\n//   1. RD maturity uses the standard Indian bank formula (each monthly installment compounds quarterly to maturity);\n//      the original gave Rs 11,03,576 for Rs 5,000/month at 7% for 1 year - the bank figure is about Rs 62,000.\n//   2. Inflation compounds over the whole time elapsed. The original divided by (1 + term x inflation) once per step,\n//      so a 2-year FD renewed 5 times was deflated for 2 years, not 10 (Rs 1,81,963 instead of Rs 1,22,881).\n//   3. No crash when nothing fits (the original zip(*[]) / unset aM errors) - returns a clear verdict instead.\n//   4. When the goal is out of reach, returns the best sequence found rather than a single step.\n//   5. A search budget and memo, so a large rate table can't hang the workflow.\nconst GOAL_REACHED = 1, GOAL_NOT_REACHABLE = 2, GOAL_NOT_YET_REACHED = 3;\nconst DAY = 86400000;\n\nfunction toDate(s) { const d = new Date(String(s).slice(0, 10) + 'T00:00:00Z'); return isNaN(d) ? null : d; }\nfunction iso(d) { return new Date(d).toISOString().slice(0, 10); }\nfunction num(v) { if (v === null || v === undefined || v === '') return null; const n = Number(String(v).replace(/[,₹\\s]/g, '')); return isFinite(n) ? n : null; }\nfunction r0(x) { return Math.round(x); }\n\nfunction rateOf(row, senior) {\n  const g = Number(row.interest_rate_general), s = row.interest_rate_senior == null ? null : Number(row.interest_rate_senior);\n  return senior && s ? s : g;\n}\n\n// ---------- FD: the teammate's transition and sort key, with inflation compounding over elapsed time\nfunction planFD({ amount, start, goalDate, goal, inflation, deposits, budget = 60000 }) {\n  const sg = { balance: goal, time: goalDate.getTime() };\n  const infl = t => Math.pow(1 + inflation / 100, (t - start.getTime()) / (365 * DAY));\n  const real = s => s.balance / infl(s.time);\n  const totalDays = (sg.time - start.getTime()) / DAY;\n  const sortBase = d => Math.pow(1 + d.rate * d.comp / 100, (d.years / d.comp) * Math.floor(totalDays / (365 * d.years)));\n  const A = deposits.slice().sort((a, b) => sortBase(b) - sortBase(a));\n\n  const T = (s, d) => {\n    let count = Math.floor(((sg.time - s.time) / DAY) / (365 * d.years));\n    if (count === 0) count = 1;\n    return [{ balance: s.balance * Math.pow(1 + d.rate * d.comp / 100, (d.years / d.comp) * count),\n              time: s.time + Math.round(d.years * count * 365) * DAY }, count];\n  };\n  const isGR = s => s.time <= sg.time ? (real(s) >= sg.balance ? GOAL_REACHED : GOAL_NOT_YET_REACHED) : GOAL_NOT_REACHABLE;\n\n  let expanded = 0, truncated = false;\n  const failed = new Map();                       // time -> highest balance already shown not to reach the goal\n  let best = { value: -1, path: [] };\n  const stack = [];\n  function bruteForce(s) {\n    const r = isGR(s);\n    if (r !== GOAL_NOT_YET_REACHED) return r;\n    if (stack.length && real(s) > best.value) best = { value: real(s), path: stack.slice() };\n    if ((failed.get(s.time) ?? -1) >= s.balance) return GOAL_NOT_REACHABLE;\n    for (const d of A) {\n      if (++expanded > budget) { truncated = true; return GOAL_NOT_REACHABLE; }\n      const [sn, count] = T(s, d);\n      stack.push({ d, count, s: sn });\n      if (bruteForce(sn) === GOAL_REACHED) return GOAL_REACHED;\n      stack.pop();\n    }\n    failed.set(s.time, Math.max(failed.get(s.time) ?? -1, s.balance));\n    return GOAL_NOT_REACHABLE;\n  }\n  const s0 = { balance: amount, time: start.getTime() };\n  const reached = bruteForce(s0) === GOAL_REACHED;\n  const path = reached ? stack.slice() : best.path;\n  let t = start.getTime();\n  const steps = path.map(({ d, count, s }) => {\n    const step = { bank: d.bank, scheme: d.scheme, tenor: d.tenor, term_months: d.months, times: count,\n                   rate_pct: d.rate, rate_source: d.rate_source, start: iso(t), end: iso(s.time),\n                   value_at_end: r0(s.balance), value_at_end_in_todays_money: r0(real(s)) };\n    t = s.time;\n    return step;\n  });\n  const last = path.length ? path[path.length - 1].s : s0;\n  return { reached, steps, final_value: r0(last.balance), final_value_in_todays_money: r0(real(last)),\n           final_date: iso(last.time), search: { expanded, truncated } };\n}\n\n// ---------- RD: standard maturity (each monthly installment compounds quarterly until maturity)\nfunction rdMaturity(P, ratePct, months) {\n  const i = ratePct / 400;\n  let m = 0;\n  for (let k = 1; k <= months; k++) m += P * Math.pow(1 + i, (months - k + 1) / 3);\n  return m;\n}\n\nfunction planRD({ installment, start, goalDate, goal, inflation, deposits }) {\n  // Fill every month up to the goal date with back-to-back RDs, choosing the mix with the highest maturity\n  // (dynamic programme over months; everything scales with the installment, so it is solved for Rs 1 a month).\n  // Months no RD fits are saved as cash. Matured RDs are kept, not reinvested (conservative).\n  const monthsLeft = Math.floor((goalDate - start) / DAY / 30.4375);\n  const cands = [];\n  for (const d of deposits) {\n    const n = Math.round(d.months);\n    if (n >= 1 && n <= monthsLeft) cands.push({ d, n, v: rdMaturity(1, d.rate, n) });\n  }\n  if (!cands.length) return { reached: false, best: null, alternatives: [] };\n  const best = new Array(monthsLeft + 1).fill(0), choice = new Array(monthsLeft + 1).fill(null);\n  for (let m = 1; m <= monthsLeft; m++) {\n    best[m] = best[m - 1] + 1; choice[m] = null;              // this month as cash\n    for (const c of cands) if (c.n <= m && best[m - c.n] + c.v > best[m] + 1e-12) { best[m] = best[m - c.n] + c.v; choice[m] = c; }\n  }\n  const segs = [];\n  for (let m = monthsLeft; m > 0;) {\n    const c = choice[m];\n    if (!c) { m--; continue; }\n    const last = segs[segs.length - 1];\n    if (last && last.c === c) last.times++; else segs.push({ c, times: 1 });\n    m -= c.n;\n  }\n  segs.reverse();\n  const deflate = Math.pow(1 + inflation / 100, monthsLeft / 12);\n  let t = start.getTime();\n  const steps = segs.map(({ c, times }) => {\n    const end = t + Math.round(c.n * times * 30.4375) * DAY;\n    const step = { bank: c.d.bank, scheme: c.d.scheme, tenor: c.d.tenor, term_months: c.n, times, rate_pct: c.d.rate,\n                   rate_source: c.d.rate_source, start: iso(t), end: iso(end), value_at_end: r0(installment * c.v * times) };\n    t = end;\n    return step;\n  });\n  const cashMonths = monthsLeft - segs.reduce((x, s) => x + s.c.n * s.times, 0);\n  const plan = { steps, months: monthsLeft, cash_months: cashMonths, total_paid: r0(installment * monthsLeft),\n                 value_on_goal_date: r0(installment * best[monthsLeft]),\n                 value_in_todays_money: r0(installment * best[monthsLeft] / deflate),\n                 installment_needed_for_goal: goal > 0 ? r0(goal * deflate / best[monthsLeft]) : 0 };\n  // single-scheme alternatives (the same RD renewed back to back), for comparison\n  const alternatives = cands.map(c => {\n    const times = Math.floor(monthsLeft / c.n), v = c.v * times + (monthsLeft - c.n * times);\n    return { bank: c.d.bank, tenor: c.d.tenor, term_months: c.n, times, rate_pct: c.d.rate, value_in_todays_money: r0(installment * v / deflate) };\n  }).sort((x, y) => y.value_in_todays_money - x.value_in_todays_money).slice(0, 3);\n  return { reached: installment > 0 && plan.value_in_todays_money >= goal, best: plan, alternatives };\n}\n\n// ---------- the whole plan: FD for the lump sum first, then RD for whatever is left (the teammate's agent steps 1-5)\nfunction planDeposits(rows, p) {\n  const start = toDate(p.start_date) || toDate(new Date().toISOString());\n  const goalDate = toDate(p.goal_date);\n  const goal = num(p.goal_amount), amount = num(p.initial_amount) || 0, installment = num(p.monthly_installment) || 0;\n  const inflation = num(p.inflation_pct);\n  const senior = p.senior === true || /^(true|yes|y|1|senior)$/i.test(String(p.senior || ''));\n  const errors = [];\n  if (!goalDate) errors.push('goal_date is required (YYYY-MM-DD)');\n  else if (goalDate <= start) errors.push('goal_date must be in the future');\n  if (!(goal > 0)) errors.push('goal_amount must be a positive rupee amount');\n  if (!(amount > 0) && !(installment > 0)) errors.push('give initial_amount (lump sum) and/or monthly_installment');\n  if (inflation === null || inflation < 0 || inflation > 30) errors.push('inflation_pct missing or out of range');\n  if (errors.length) return { ok: false, errors };\n\n  const ALIAS = { sbi: 'state bank of india', pnb: 'punjab national', bob: 'bank of baroda', baroda: 'bank of baroda',\n                  idfc: 'idfc first', kotak: 'kotak mahindra', indusind: 'indusind', canara: 'canara' };\n  // compare names without the word \"bank\": 'State Bank of India' -> 'state of india', 'HDFC Bank' -> 'hdfc'\n  const norm = x => String(x).toLowerCase().replace(/\\bbank\\b/g, ' ').replace(/\\s+/g, ' ').trim();\n  const bankFilter = String(p.banks || '').split(/[,;]|\\band\\b/i).map(norm)\n    .filter(b => b && !/^(any|all)$/.test(b)).map(b => norm(ALIAS[b] || b));\n  const pick = type => rows\n    .filter(r => r.scheme_type === type && Number(r.duration_months) > 0)\n    .filter(r => !bankFilter.length || bankFilter.some(b => norm(r.bank_name).includes(b)))\n    .map(r => ({ bank: r.bank_name, scheme: r.scheme_name, tenor: r.tenor_label, months: Number(r.duration_months),\n                 years: Number(r.duration_months) / 12, comp: (Number(r.compounding_months) || 3) / 12,\n                 rate: rateOf(r, senior), rate_source: r.rate_source }))\n    .filter(d => d.rate > 0);\n\n  const fd = amount > 0 ? planFD({ amount, start, goalDate, goal, inflation, deposits: pick('Fixed Deposit') }) : null;\n  const remaining = Math.max(0, goal - (fd ? fd.final_value_in_todays_money : 0));\n  const rd = remaining > 0 ? planRD({ installment, start, goalDate, goal: remaining, inflation, deposits: pick('Recurring Deposit') }) : null;\n\n  const covered = (fd && fd.reached) || remaining === 0 || (rd && rd.reached);\n  const verdict = covered ? 'Goal reachable with bank deposits'\n    : (!fd || !fd.steps.length) && (!rd || !rd.best) ? 'Not possible with current fixed/recurring deposits interest rates.'\n    : 'Goal not reachable with the amounts given - see the shortfall and the installment needed';\n  const rdValue = rd && rd.best && installment > 0 ? rd.best.value_in_todays_money : 0;\n  return {\n    ok: true, verdict,\n    inputs: { initial_amount: amount, monthly_installment: installment, goal_amount_todays_money: goal,\n              goal_amount_on_goal_date: r0(goal * Math.pow(1 + inflation / 100, (goalDate - start) / DAY / 365)),\n              start_date: iso(start), goal_date: iso(goalDate), inflation_pct: inflation, inflation_source: p.inflation_source || 'given',\n              rate_type: senior ? 'senior citizen' : 'general', banks: bankFilter.length ? bankFilter : 'all' },\n    fixed_deposit_plan: fd,\n    remaining_goal_after_fd_todays_money: r0(remaining),\n    recurring_deposit_plan: rd,\n    shortfall_todays_money: covered ? 0 : r0(Math.max(0, remaining - rdValue)),\n    notes: ['Amounts \"in today\\'s money\" are deflated by the inflation rate; the goal is compared in today\\'s money.',\n            'Rates are card rates from the team\\'s bank documents (as of ' + (rows[0] && rows[0].as_of || 'n/a') + '); confirm with the bank before investing.',\n            'Interest is shown before tax (TDS applies above the yearly threshold). Educational information, not licensed advice.'],\n  };\n}\n// ---- end deposit optimiser ----\n\n// Inputs from the caller; inflation from the caller, else the World Bank (latest year with data), else a stated fallback.\nconst p = { ...$('Planner Request').first().json };\nlet inflation = p.inflation_pct, source = 'given by the user';\nif (inflation === null || inflation === undefined || String(inflation).trim() === '') {\n  try {\n    const raw = $('Get India Inflation (World Bank)').first().json.data;\n    const data = (typeof raw === 'string' ? JSON.parse(raw) : raw)[1] || [];\n    const pt = data.find(x => x.value !== null && x.value !== undefined);\n    inflation = Math.round(pt.value * 100) / 100;\n    source = `World Bank, India consumer price inflation ${pt.date}`;\n  } catch (e) {\n    inflation = 4; source = 'fallback 4% (RBI inflation target) - World Bank data unavailable';\n  }\n}\nconst rows = $input.all().map(i => i.json).filter(r => r && r.scheme_type);\nif (!rows.length) return [{ json: { ok: false, errors: ['No deposit rates in the database - run ./start.sh to load postgres/deposits.sql'] } }];\nreturn [{ json: planDeposits(rows, { ...p, inflation_pct: inflation, inflation_source: source }) }];\n"
+      },
+      "name": "Optimise FD & RD Plan",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        780,
+        120
+      ],
+      "id": "09979299-c5bb-5dba-b6cb-2231d4c7d18c"
+    },
+    {
+      "parameters": {
+        "content": "### Plan branch - no AI, costs nothing\nSame maths as the teammate's `OptimalActionFixedDepositTool` / `OptimalActionRecurringDepositTool`: FD for the lump sum (rate-sorted goal search), then RD for what is left. \n\n**Two maths bugs fixed** (checked by `deposits/teammate-fixes/check_fixes.py`):\n1. **RD maturity** - standard bank formula. Rs 5,000/month, 7%, 1 year: original Rs 11,03,576, fixed Rs 62,311.\n2. **Inflation** over the whole time elapsed, not one term. 2-year FD renewed 5x at 5% inflation: original Rs 1,81,963, fixed Rs 1,22,881.\nAlso: no crash when nothing fits. A fixed copy of the teammate's Python is in `deposits/teammate-fixes/`. See docs/BANK_DEPOSITS.md.",
+        "height": 230,
+        "width": 900,
+        "color": 5
+      },
+      "name": "Plan Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        40,
+        -240
+      ],
+      "id": "5792d1e2-fe5b-5e04-8bc1-70ad6a0c6b5c"
+    },
+    {
+      "parameters": {
+        "public": true,
+        "mode": "hostedChat",
+        "authentication": "none",
+        "initialMessages": "Hi! Tell me your savings goal and I'll find the best bank FD / RD sequence.\nExample: I have 3 lakh now and can save 10,000 a month. I need 8 lakh by March 2030.",
+        "options": {
+          "title": "Bank deposit planner",
+          "subtitle": "Fixed & recurring deposits - educational information, not licensed advice"
+        }
+      },
+      "name": "Chat Trigger",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -400,
+        420
+      ],
+      "webhookId": "c09dc5df-beba-5f98-833f-0aec31f4e272",
+      "id": "0b5fefb0-cf9a-5afb-8b87-be18d5d561d6"
+    },
+    {
+      "parameters": {
+        "jsCode": "// One shape for both entry points: the hosted chat and the MCP / sub-workflow \"ask\" call.\nconst j = $json;\nconst question = String(j.chatInput || j.request || '').slice(0, 2000);\nreturn [{ json: { question, sessionId: j.sessionId || ('mcp-' + $execution.id) } }];\n"
+      },
+      "name": "Question",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        60,
+        420
+      ],
+      "id": "1918cc38-2480-5f23-8227-b4dfdb06052b"
+    },
+    {
+      "parameters": {
+        "operation": "classify",
+        "text": "={{ $json.question }}",
+        "guardrails": {
+          "jailbreak": {
+            "value": {
+              "threshold": 0.7
+            }
+          },
+          "topicalAlignment": {
+            "value": {
+              "threshold": 0.7,
+              "prompt": "You are a content analysis system that determines if text stays on topic.\n\nBUSINESS SCOPE: Saving towards a money goal with bank fixed deposits (FD) and recurring deposits (RD) in India: amounts, goal dates, monthly savings, interest rates, banks, tenures, inflation, senior citizen rates, and general personal finance questions about deposits. Greetings and thanks are in scope.\n\nDetermine if the text stays within the defined business scope. Flag any content that strays from the allowed topics."
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          },
+          "pii": {
+            "value": {
+              "type": "selected",
+              "entities": [
+                "CREDIT_CARD",
+                "IBAN_CODE",
+                "US_BANK_NUMBER",
+                "IN_PAN",
+                "IN_AADHAAR",
+                "IN_PASSPORT",
+                "IN_VOTER"
+              ]
+            }
+          }
+        }
+      },
+      "name": "Deposit Question Guardrail",
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        280,
+        420
+      ],
+      "id": "80879eb6-ca0d-5695-8bd4-603eb6b6b72d"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "name": "Guardrail LLM",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        280,
+        640
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "X8YO6z75FjdGlh8o",
+          "name": "OpenAI account"
+        }
+      },
+      "id": "a21a1255-a538-5fc9-bf2d-011d2cc85ec0"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Replaces the teammate's \"I dont know the answer.\" for off-topic questions, and blocks PII / secrets.\nconst checks = JSON.stringify($json.checks || []).toLowerCase();\nlet output;\nif (/pii|credit_card|pan|aadhaar|passport|iban|bank_number/.test(checks)) {\n  output = \"For your safety, please don't share card numbers, PAN, Aadhaar, passport or account numbers - I never need them.\";\n} else if (/secret/.test(checks)) {\n  output = 'That looks like a password or secret key - please never paste those into a chat.';\n} else {\n  output = \"I don't know the answer - I can only help with saving for a goal using bank fixed and recurring deposits.\";\n}\nreturn [{ json: { output, guardrail: 'refused' } }];\n"
+      },
+      "name": "Polite Refusal",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        600
+      ],
+      "id": "5341a7b4-4c75-5b9d-b45c-8b50f2fcb23b"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Question').first().json.question }}",
+        "hasOutputParser": false,
+        "options": {
+          "systemMessage": "=You are a bank-deposit planner for India. Today is {{ $now.toFormat('yyyy-LL-dd') }}.\n\nFollow these steps (the same flow as the team's LangGraph agent):\n1. From the question, get: the lump sum they have now (initial_amount), the monthly amount they can save (monthly_installment), the goal amount and the goal date. Amounts in rupees as plain numbers (3 lakh = 300000, 1.2 crore = 12000000). A goal year alone means 1 April of that year. If the goal amount or date is missing, ask for it - never guess.\n2. Inflation: use the rate the user gives; otherwise leave inflation_pct empty and the planner fetches India's latest rate (Get_India_Inflation is for when the user asks about inflation itself).\n3. Call Plan_Bank_Deposits once with those values (senior = yes if they say they are 60+, banks = only if they name banks). It runs the fixed-deposit search for the lump sum first, then the recurring-deposit plan for whatever is left.\n4. Reply with both parts: the FD sequence (bank, tenure, rate, how many times, dates, value) and the best RD (bank, tenure, rate, monthly amount, value), then the verdict. If there is a shortfall, give the monthly installment_needed_for_goal.\n5. If the planner finds nothing, say exactly: \"Not possible with current fixed/recurring deposits interest rates.\"\n6. For questions about a bank's rates, use Get_Deposit_Rates. Never quote a rate from memory.\n7. For questions about a bank's scheme rules (premature-withdrawal penalty, RD rules and missed instalments, senior-citizen benefits, loans or overdraft against an FD, special schemes), call Ask_Bank_Deposit_Schemes (the team's bank documents) with one plain question.\n\nRULES: amounts in Indian format (₹3,00,000). Say that values 'in today's money' are after inflation. Rates are card rates as of the date the tools give - tell the user to confirm with the bank, and that interest is taxable. Keep it short. If the question is not about deposits or saving for a goal, answer: \"I dont know the answer.\" End with: Educational information, not licensed financial advice.",
+          "maxIterations": 6
+        }
+      },
+      "name": "Deposit Planner Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        560,
+        360
+      ],
+      "id": "1df5abe2-e8ae-5fae-af59-e6d504db8a7e"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "options": {}
+      },
+      "name": "Planner LLM",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        420,
+        700
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "X8YO6z75FjdGlh8o",
+          "name": "OpenAI account"
+        }
+      },
+      "id": "f10e6f01-57c6-5783-b030-2421251b5159"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Question').first().json.sessionId }}",
+        "contextWindowLength": 10
+      },
+      "name": "Chat Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        560,
+        760
+      ],
+      "id": "2fdf9b80-33c5-5412-ae50-f1496bdc17a7"
+    },
+    {
+      "parameters": {
+        "description": "Best sequence of Indian bank fixed deposits (for a lump sum) and recurring deposits (for a monthly saving) to reach a money goal by a date, after inflation. Uses the rate table from the team's bank documents. Returns the FD steps, the best RD, the verdict, any shortfall and the monthly installment needed. Pass 0 for an amount the user does not have.",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "pfaBankDepositsV1"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "plan",
+            "initial_amount": "={{ $fromAI('initial_amount', 'Lump sum available now, rupees. 0 if none', 'number') }}",
+            "monthly_installment": "={{ $fromAI('monthly_installment', 'Amount the user can save every month, rupees. 0 if none', 'number') }}",
+            "goal_amount": "={{ $fromAI('goal_amount', 'Goal amount in rupees, in today money', 'number') }}",
+            "goal_date": "={{ $fromAI('goal_date', 'Goal date, YYYY-MM-DD', 'string') }}",
+            "inflation_pct": "={{ $fromAI('inflation_pct', 'Yearly inflation in percent if the user gave one, else empty', 'string') }}",
+            "senior": "={{ $fromAI('senior', 'yes if the depositor is 60 or older, else no', 'string') }}",
+            "banks": "={{ $fromAI('banks', 'Comma-separated bank names to limit to (e.g. SBI, HDFC), or empty for all banks', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "request",
+              "displayName": "request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "initial_amount",
+              "displayName": "initial_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": false
+            },
+            {
+              "id": "monthly_installment",
+              "displayName": "monthly_installment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": false
+            },
+            {
+              "id": "goal_amount",
+              "displayName": "goal_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": false
+            },
+            {
+              "id": "goal_date",
+              "displayName": "goal_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "inflation_pct",
+              "displayName": "inflation_pct",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": false
+            },
+            {
+              "id": "senior",
+              "displayName": "senior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": false
+            },
+            {
+              "id": "banks",
+              "displayName": "banks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "start_date",
+              "displayName": "start_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "name": "Plan_Bank_Deposits",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        700,
+        760
+      ],
+      "id": "6067281c-8ab0-5f2f-bf2c-59a53a815d47"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Current FD and RD card rates by bank from the team's bank documents: tenor, general and senior-citizen rate, as-of date. Input: one bank name (e.g. SBI, HDFC, Axis) or 'all' for the highest rates across banks.",
+        "operation": "executeQuery",
+        "query": "SELECT bank_name, scheme_type, tenor_label, duration_months, interest_rate_general, interest_rate_senior, rate_source, as_of\nFROM deposit_schemes\nWHERE lower($1) IN ('', 'all', 'any')\n   OR bank_name ILIKE '%' || $1 || '%'\n   OR (lower($1) = 'sbi' AND bank_name = 'State Bank of India') OR (lower($1) = 'pnb' AND bank_name = 'Punjab National Bank')\n   OR (lower($1) = 'bob' AND bank_name = 'Bank of Baroda')\nORDER BY interest_rate_general DESC, duration_months LIMIT 30;",
+        "options": {
+          "queryReplacement": "={{ String($fromAI('bank', 'One bank name, or all', 'string') || 'all').replace(/,/g, ' ').replace(/\\bbank\\b/ig, '').trim() }}"
+        }
+      },
+      "name": "Get_Deposit_Rates",
+      "type": "n8n-nodes-base.postgresTool",
+      "typeVersion": 2.5,
+      "position": [
+        840,
+        760
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "DLigOZtLp73yVBeP",
+          "name": "Postgres account"
+        }
+      },
+      "id": "4c0a11f6-591f-584e-93ab-67e21c489eb0"
+    },
+    {
+      "parameters": {
+        "url": "https://api.worldbank.org/v2/country/IND/indicator/FP.CPI.TOTL.ZG?format=json&per_page=6",
+        "options": {},
+        "toolDescription": "India's yearly consumer price inflation (%) from the World Bank. The first entry with a value is the latest year."
+      },
+      "name": "Get_India_Inflation",
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.5,
+      "position": [
+        980,
+        760
+      ],
+      "id": "966a7564-bed2-5309-aff0-0f6074e27941"
+    },
+    {
+      "parameters": {
+        "description": "Ask the bank-deposit planner a question in plain English, e.g. 'I have 3 lakh and can save 10,000 a month; I need 8 lakh by March 2030'. Returns a written answer with the best FD and RD sequence. (Same tool name as the team's FastMCP server.)",
+        "source": "database",
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "pfaBankDepositsV1"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "action": "ask",
+            "request": "={{ $fromAI('request', 'The user question, with amounts, goal and goal date', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "action",
+              "displayName": "action",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "request",
+              "displayName": "request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "initial_amount",
+              "displayName": "initial_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": true
+            },
+            {
+              "id": "monthly_installment",
+              "displayName": "monthly_installment",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": true
+            },
+            {
+              "id": "goal_amount",
+              "displayName": "goal_amount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": true
+            },
+            {
+              "id": "goal_date",
+              "displayName": "goal_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "inflation_pct",
+              "displayName": "inflation_pct",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": true
+            },
+            {
+              "id": "senior",
+              "displayName": "senior",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "any",
+              "removed": true
+            },
+            {
+              "id": "banks",
+              "displayName": "banks",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            },
+            {
+              "id": "start_date",
+              "displayName": "start_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "name": "GetBestBankDepositSchemeSequence",
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        1320,
+        760
+      ],
+      "id": "bab4d115-6f43-5c78-8fa7-c87827f411ef"
+    },
+    {
+      "parameters": {
+        "operation": "sanitize",
+        "text": "={{ $json.output }}",
+        "guardrails": {
+          "pii": {
+            "value": {
+              "type": "selected",
+              "entities": [
+                "CREDIT_CARD",
+                "IBAN_CODE",
+                "US_BANK_NUMBER",
+                "IN_PAN",
+                "IN_AADHAAR",
+                "IN_PASSPORT",
+                "IN_VOTER",
+                "PHONE_NUMBER"
+              ]
+            }
+          },
+          "secretKeys": {
+            "value": {
+              "permissiveness": "balanced"
+            }
+          }
+        }
+      },
+      "name": "Deposit Output Sanitizer",
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        900,
+        360
+      ],
+      "id": "4ebe7a4c-f1c5-5ebb-9112-055094b1f8aa"
+    },
+    {
+      "parameters": {
+        "jsCode": "// The sanitizer returns the redacted text as guardrailsInput; the chat widget and the MCP caller read `output`.\nreturn [{ json: { output: $json.guardrailsInput } }];\n"
+      },
+      "name": "Planner Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        360
+      ],
+      "id": "0966c698-7330-5a9d-8f93-25eb80418677"
+    },
+    {
+      "parameters": {
+        "content": "### MCP server - tools plug in from below\nAn MCP Server Trigger has **no output arrow**: it is not a step in a flow. Callers (the advisor's *Bank_Deposits_MCP* node, or any MCP client) call the tools attached to its bottom. **Plan_Bank_Deposits** and **Get_Deposit_Rates** are shared with the Deposit Planner Agent, so they have two lines. **GetBestBankDepositSchemeSequence** runs this workflow's Ask branch.",
+        "height": 190,
+        "width": 520,
+        "color": 3
+      },
+      "name": "MCP Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        900
+      ],
+      "id": "c3ab4d30-065c-5f7e-b845-07fb02b4d4dd"
+    },
+    {
+      "parameters": {
+        "content": "### Ask branch & chat (gpt-5-mini)\nReplaces LangGraph Studio and the gpt-4o agent. The input guardrail replaces llm_guard + the extra gpt-4.1 call; no tool can run free-form SQL (the original let the model write any SQL).",
+        "height": 110,
+        "width": 400,
+        "color": 6
+      },
+      "name": "Ask Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -420,
+        300
+      ],
+      "id": "af08aee8-de9f-5235-a9b7-5e964e5c86e5"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "http://teammate-advisor:8090/mcp",
+        "serverTransport": "httpStreamable",
+        "authentication": "bearerAuth",
+        "include": "selected",
+        "includeTools": [
+          "Ask_Bank_Deposit_Schemes"
+        ],
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "name": "Teammate_Deposit_Schemes",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.4,
+      "position": [
+        1200,
+        760
+      ],
+      "id": "65cec8c0-e1e5-5c89-b8e3-0c32bfd88d7c",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "pfaMcpBearer0001",
+          "name": "PFA MCP bearer token"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Planner Request": {
+      "main": [
+        [
+          {
+            "node": "Ask or Plan?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask or Plan?": {
+      "main": [
+        [
+          {
+            "node": "Question",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Inflation Given?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inflation Given?": {
+      "main": [
+        [
+          {
+            "node": "Read Deposit Rates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get India Inflation (World Bank)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get India Inflation (World Bank)": {
+      "main": [
+        [
+          {
+            "node": "Read Deposit Rates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Deposit Rates": {
+      "main": [
+        [
+          {
+            "node": "Optimise FD & RD Plan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Trigger": {
+      "main": [
+        [
+          {
+            "node": "Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrail LLM": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Deposit Question Guardrail",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Question": {
+      "main": [
+        [
+          {
+            "node": "Deposit Question Guardrail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deposit Question Guardrail": {
+      "main": [
+        [
+          {
+            "node": "Deposit Planner Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Polite Refusal",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Planner LLM": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Deposit Planner Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Deposit Planner Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan_Bank_Deposits": {
+      "ai_tool": [
+        [
+          {
+            "node": "Deposit Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Bank Deposits MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_Deposit_Rates": {
+      "ai_tool": [
+        [
+          {
+            "node": "Deposit Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          },
+          {
+            "node": "Bank Deposits MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get_India_Inflation": {
+      "ai_tool": [
+        [
+          {
+            "node": "Deposit Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GetBestBankDepositSchemeSequence": {
+      "ai_tool": [
+        [
+          {
+            "node": "Bank Deposits MCP Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deposit Planner Agent": {
+      "main": [
+        [
+          {
+            "node": "Deposit Output Sanitizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deposit Output Sanitizer": {
+      "main": [
+        [
+          {
+            "node": "Planner Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Teammate_Deposit_Schemes": {
+      "ai_tool": [
+        [
+          {
+            "node": "Deposit Planner Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "6458ad86-e825-560b-98ca-9d4a441a99fe",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": [],
+  "id": "pfaBankDepositsV1"
+}

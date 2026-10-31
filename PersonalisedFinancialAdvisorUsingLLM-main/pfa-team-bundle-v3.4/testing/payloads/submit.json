@@ -1,0 +1,19 @@
+{
+  "email": "stepbystep@test.local",
+  "journey": "new",
+  "answers": {
+    "user_name": "Step Tester", "age": "32", "currency": "INR", "annual_ctc": "18L",
+    "goal_type": "Buy a home", "goal_details": "2BHK in Pune", "target_amount": "80L", "target_date": "2031-10-01",
+    "take_home": "1.22L", "expenses": "45K",
+    "emergency": "1.5L", "term_cover": "50L", "term_premium": "12K", "health_cover": "5L", "health_premium": "15K",
+    "loan_types": ["Car loan"],
+    "loans": { "Car loan": { "outstanding": "3.2L", "rate": "9.2", "emi": "11K" } },
+    "investments": {
+      "other_label": "",
+      "mf_value": "4.5L", "mf_monthly": "15K", "stocks_value": "", "stocks_monthly": "",
+      "gold_value": "", "gold_monthly": "", "fd_value": "2L", "fd_monthly": "",
+      "pf_value": "", "pf_monthly": "", "cash_value": "", "cash_monthly": "", "other_value": "", "other_monthly": ""
+    },
+    "risk": "Medium"
+  }
+}

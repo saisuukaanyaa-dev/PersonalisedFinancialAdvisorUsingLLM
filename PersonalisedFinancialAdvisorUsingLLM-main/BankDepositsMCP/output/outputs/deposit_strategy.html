@@ -1,0 +1,31 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Optimal action diagrams</title></head><body><h1>Optimal action diagrams</h1>
+<h2>Optimal Deposit Actions — Fixed + Recurring</h2>
+<pre class="mermaid">graph TD;
+  subgraph Fixed Deposits
+    n0[&quot;balance: 100000.00, date: 2026-10-10&quot;] --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months x1&quot;| n1[&quot;balance: 207161.56, date: 2036-10-07&quot;];
+    n1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x2&quot;| n2[&quot;balance: 238941.40, date: 2038-10-07&quot;];
+  end
+  subgraph Recurring Deposits
+    r0[&quot;installment: 1000.00/month, date: 2026-10-10&quot;] --&gt;|&quot;HDFC Bank HDFC RD — 120 months x1&quot;| r1[&quot;balance: 174663.57, date: 2036-10-07&quot;];
+    r1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x2&quot;| r2[&quot;balance: 201458.02, date: 2038-10-07&quot;];
+  end
+  n2 --&gt;|&quot;Total at goal (sum of FD and RD)&quot;| g[&quot;end balance: 440399.42, date: 2038-10-10&quot;];
+  classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+  class g leaf;
+  classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+  class n0,n1,n2,r0,r1,r2 inner;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+  subgraph Fixed Deposits
+    n0[&quot;balance: 100000.00, date: 2026-10-10&quot;] --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 120 months x1&quot;| n1[&quot;balance: 207161.56, date: 2036-10-07&quot;];
+    n1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x2&quot;| n2[&quot;balance: 238941.40, date: 2038-10-07&quot;];
+  end
+  subgraph Recurring Deposits
+    r0[&quot;installment: 1000.00/month, date: 2026-10-10&quot;] --&gt;|&quot;HDFC Bank HDFC RD — 120 months x1&quot;| r1[&quot;balance: 174663.57, date: 2036-10-07&quot;];
+    r1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) — 12 months x2&quot;| r2[&quot;balance: 201458.02, date: 2038-10-07&quot;];
+  end
+  n2 --&gt;|&quot;Total at goal (sum of FD and RD)&quot;| g[&quot;end balance: 440399.42, date: 2038-10-10&quot;];
+  classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+  class g leaf;
+  classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+  class n0,n1,n2,r0,r1,r2 inner;</pre></details>
+<script type='module'>import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad: true});</script></body></html>

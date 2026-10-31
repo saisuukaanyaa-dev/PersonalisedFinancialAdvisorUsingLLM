@@ -1,0 +1,45 @@
+{# v1.7: "What if a new goal comes up?" - three ways to pay for it, computed in code (engine.goals.new_goal_impact) #}
+{% set ng, a, b, c = imp.new_goal, imp.option_a, imp.option_b, imp.option_c %}
+<div class="impact">
+  {% if older %}<p class="rec-line">This is an older report. The impact below uses your latest saved plan ({{ saved_goals }} goal{{ 's' if saved_goals != 1 }}), because that is what "Add it to my plan" changes.</p>{% endif %}
+  <p><strong>{{ ng.name }}</strong>: {{ mo(ng.target_amount) }} by {{ month_text(ng.target_date) }} ({{ ng.years }} years away).
+     Its own risk level is <strong>{{ ng.risk }}</strong> ({{ ng.instruments.debt if ng.risk == 'Low' else ng.instruments.equity }}), expected about {{ ng.expected_return_pct }}% a year.</p>
+  <div class="options">
+    <div class="opt{{ ' rec' if imp.recommended == 'A' }}">
+      {% if imp.recommended == 'A' %}<div class="tag">Recommended</div>{% endif %}
+      <h4>A · Save for it separately</h4>
+      <p>Adds <strong>{{ mo(a.monthly_cost) }}/mo</strong> to the plan in total{% if a.set_aside_now %}: {{ mo(a.set_aside_now) }} of today's savings is set aside for it{% if a.new_goal_monthly %}, plus {{ mo(a.new_goal_monthly) }}/mo{% endif %}{% if a.others_monthly_change > 0 %}, so your other goals need {{ mo(a.others_monthly_change) }}/mo more{% endif %}{% endif %}.</p>
+      {% for e in a.effects %}
+      <p>{{ e.name.split(' - ')[0] }}: plan {{ mo(e.funded_before) }} → <strong>{{ mo(e.funded_after) }}/mo</strong>{% if e in a.hurts %}, projected {{ sh(e.projected_before) }} → <strong>{{ sh(e.projected_after) }}</strong> of {{ sh(e.target) }}{% if e.reachable_after %} (reachable {{ month_text(e.reachable_after) }}){% endif %}{% else %}, still on target{% endif %}.</p>
+      {% endfor %}
+      <p class="muted">{% if a.covered_by_spare %}Your spare money covers it - {{ mo(a.spare_after) }}/mo still left over.
+        {% elif a.hurts %}Your money doesn't stretch that far, so the goals funded last get less, as shown.
+        {% else %}Only {{ mo(a.funded) }}/mo is free for it (it is funded last), so it is partly funded{% if a.new_goal_reachable %} - reachable {{ month_text(a.new_goal_reachable) }}{% endif %}. Your other goals are unchanged.{% endif %}</p>
+    </div>
+    <div class="opt{{ ' rec' if imp.recommended == 'B' }}">
+      {% if imp.recommended == 'B' %}<div class="tag">Recommended</div>{% endif %}
+      <h4>B · Use your main goal's savings</h4>
+      {% if b.applies %}
+      <p>Take {{ mo(b.withdrawal) }} from the main goal's pot in {{ month_text(ng.target_date) }}; no new SIP.</p>
+      <p>The main goal ends <strong>{{ sh(b.main_loses_at_goal) }} lower</strong> (the money loses its growth): projected {{ sh(b.main_projected_after) }} of {{ sh(b.main_target) }}.</p>
+      <p>To make it up: <strong>{{ mo(b.extra_monthly_to_recover) }}/mo</strong> more{% if b.delay_months is not none %}, or wait <strong>{{ b.delay_months }} months</strong> ({{ month_text(b.main_new_date) }}){% endif %}.</p>
+      {% if b.risk_note %}<p class="muted">⚠ {{ b.risk_note }}</p>{% endif %}
+      {% else %}<p class="na">{{ b.why }}</p>{% endif %}
+    </div>
+    <div class="opt{{ ' rec' if imp.recommended == 'C' }}">
+      {% if imp.recommended == 'C' %}<div class="tag">Recommended</div>{% endif %}
+      <h4>C · Wait until spare money covers it</h4>
+      {% if c.reachable_date %}
+      <p>With only your spare {{ mo(c.spare_monthly) }}/mo, it is reachable by <strong>{{ month_text(c.reachable_date) }}</strong>{% if c.delay_months %} - {{ c.delay_months }} months later than you want{% else %} - on time{% endif %}.</p>
+      <p>Nothing else in your plan changes.</p>
+      {% elif c.spare_monthly > 0 %}<p class="na">Your spare {{ mo(c.spare_monthly) }}/mo can't reach it within 50 years.</p>
+      {% else %}<p class="na">Nothing is spare each month right now, so waiting alone doesn't get there.</p>{% endif %}
+    </div>
+  </div>
+  <p class="rec-line">{{ imp.recommendation }}</p>
+  <p>
+    <button type="button" class="btn primary small" data-add-goal="{{ ng.target_date }}">Add it to my plan ({{ month_text(ng.target_date) }})</button>
+    {% if c.reachable_date and c.delay_months %}<button type="button" class="btn ghost small" data-add-goal="{{ c.reachable_date }}">Add it for {{ month_text(c.reachable_date) }} instead</button>{% endif %}
+  </p>
+  <p class="ab-legend">Adding a goal rebuilds your plan with it included, shared the way option A shows. You can remove it any time from this table or by asking Arth.</p>
+</div>

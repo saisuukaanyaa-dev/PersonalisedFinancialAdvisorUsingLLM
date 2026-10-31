@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Talk to Arth · Finance Advisor{% endblock %}
+{% block content %}
+<main class="ichat-wrap">
+  <section class="ichat" aria-label="Chat with Arth">
+    <div class="ichat-head">
+      <div class="ichat-avatar" aria-hidden="true">A</div>
+      <div><b>Arth</b><span>your money guide</span></div>
+      <span class="ichat-meter" id="meter" title="AI reads used for this intake">AI reads 0 of 3 · ₹0.00</span>
+    </div>
+    <div class="ichat-log" id="log" aria-live="polite"></div>
+    <form class="ichat-composer" id="composer">
+      <div class="icomp">
+        <button type="button" class="icomp-btn icomp-mic" id="mic" title="Speak instead of typing" aria-label="Speak instead of typing" aria-pressed="false">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.5a1 1 0 1 0-2 0 4 4 0 0 1-8 0 1 1 0 1 0-2 0 6 6 0 0 0 5 5.91V20H9a1 1 0 1 0 0 2h6a1 1 0 1 0 0-2h-2v-2.59A6 6 0 0 0 18 11.5Z"/></svg>
+        </button>
+        <label for="msg" class="sr-only">Your message</label>
+        <textarea id="msg" rows="1" maxlength="3000" placeholder="Tell me about you, your goal and your money…"></textarea>
+        <button class="icomp-btn icomp-send" type="submit" id="send" aria-label="Send" disabled>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 4a1 1 0 0 1 .71.29l6 6a1 1 0 0 1-1.42 1.42L13 7.41V19a1 1 0 1 1-2 0V7.41l-4.29 4.3a1 1 0 0 1-1.42-1.42l6-6A1 1 0 0 1 12 4Z"/></svg>
+        </button>
+      </div>
+      <p class="icomp-hint" id="hint" aria-live="polite">Enter to send · Shift + Enter for a new line</p>
+    </form>
+    <p class="ichat-foot muted">Prefer a form? <a href="/intake">Use the step-by-step form</a> · Start over: <a href="/start?fresh=1">new goal</a></p>
+  </section>
+
+  <aside class="iprof" aria-label="Your profile">
+    <h2>Your profile</h2>
+    <p class="muted" id="progress-text"></p>
+    <div class="iprof-bar" aria-hidden="true"><i id="progress-bar"></i></div>
+    <div id="profile"></div>
+    <p class="iprof-legend muted">✦ understood from your message · ✓ typed by you · saved = from your last plan</p>
+    <div id="reports"></div>
+  </aside>
+</main>
+<script type="application/json" id="boot">{{ boot|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="/static/intake_chat.js?v={{ v }}"></script>{% endblock %}

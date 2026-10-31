@@ -1,0 +1,20 @@
+--- original/GoalSearch.py
++++ fixed/GoalSearch.py
+@@ -33,6 +33,7 @@
+     def BestSearch(self, s):
+         if GOAL_NOT_REACHABLE == self.BruteForce(s):
+             m = 0
++            aM = None  # FIX: stays None when no deposit ends before the goal date
+             for a in self.A:
+                 (sNext, c) = self.T(s, a)
+                 if (m < sNext.balance) and (
+@@ -41,7 +42,8 @@
+                     aM = a
+                     sNextM = sNext
+                     cM = c
+-            self.pathList.append(((aM, cM), sNextM))
++            if aM is not None:
++                self.pathList.append(((aM, cM), sNextM))
+             return GOAL_NOT_REACHABLE
+         else:
+             return GOAL_REACHED

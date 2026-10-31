@@ -1,0 +1,105 @@
+# Personal Finance Advisor - Python edition. ./start.sh creates .env and starts this stack.
+name: ${COMPOSE_PROJECT_NAME:-pfapy}
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-pfa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run ./start.sh to create .env}
+      POSTGRES_DB: ${POSTGRES_DB:-finance_advisor}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5434}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pfa} -d ${POSTGRES_DB:-finance_advisor}"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  market-analyzer:
+    build: ./market-analyzer
+    restart: unless-stopped
+    environment:
+      DATA_DIR: /data
+      PORT: 8000
+    volumes:
+      - ./data:/data:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: ./app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-pfa}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-finance_advisor}
+      MARKET_API_URL: http://market-analyzer:8000
+      PUBLIC_BASE_URL: ${PUBLIC_BASE_URL:-http://localhost:8080}
+      SESSION_SECRET: ${SESSION_SECRET:?run ./start.sh to create .env}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-5-mini}
+      OPENAI_REASONING_EFFORT: ${OPENAI_REASONING_EFFORT:-low}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      KB_DIR: /knowledge-base
+      PRICE_CHAT_INPUT_PER_M: ${PRICE_CHAT_INPUT_PER_M:-0.25}
+      PRICE_CHAT_CACHED_PER_M: ${PRICE_CHAT_CACHED_PER_M:-0.025}
+      PRICE_CHAT_OUTPUT_PER_M: ${PRICE_CHAT_OUTPUT_PER_M:-2.00}
+      PRICE_EMBED_PER_M: ${PRICE_EMBED_PER_M:-0.02}
+      USD_TO_INR: ${USD_TO_INR:-88}
+      # Live data (optional): SerpAPI refreshes the knowledge base at start and answers time-sensitive chat questions.
+      SERPAPI_API_KEY: ${SERPAPI_API_KEY:-}
+      SERPAPI_BASE_URL: ${SERPAPI_BASE_URL:-https://serpapi.com}
+      SERPAPI_MONTHLY_LIMIT: ${SERPAPI_MONTHLY_LIMIT:-250}
+      SERPAPI_CHAT_RESERVE: ${SERPAPI_CHAT_RESERVE:-60}
+      SERPAPI_REFRESH_BUDGET: ${SERPAPI_REFRESH_BUDGET:-10}
+      SERPAPI_REFRESH_HOURS: ${SERPAPI_REFRESH_HOURS:-24}
+      SERPAPI_QUOTES_PER_REFRESH: ${SERPAPI_QUOTES_PER_REFRESH:-6}
+      SERPAPI_CACHE_HOURS: ${SERPAPI_CACHE_HOURS:-12}
+      PRICE_SERPAPI_SEARCH: ${PRICE_SERPAPI_SEARCH:-0.025}
+      # Voice: browser (free, default) or openai (natural voice, metered; still only when the user presses a button)
+      VOICE_ENGINE: ${VOICE_ENGINE:-browser}
+      OPENAI_STT_MODEL: ${OPENAI_STT_MODEL:-gpt-4o-mini-transcribe}
+      OPENAI_TTS_MODEL: ${OPENAI_TTS_MODEL:-gpt-4o-mini-tts}
+      OPENAI_TTS_VOICE: ${OPENAI_TTS_VOICE:-sage}
+      PRICE_STT_PER_MIN: ${PRICE_STT_PER_MIN:-0.003}
+      PRICE_TTS_PER_MIN: ${PRICE_TTS_PER_MIN:-0.015}
+      VOICE_DAILY_LIMIT_PER_USER: ${VOICE_DAILY_LIMIT_PER_USER:-60}
+      # Observability: traces to Phoenix. Empty endpoint = tracing off.
+      PHOENIX_COLLECTOR_ENDPOINT: ${PHOENIX_COLLECTOR_ENDPOINT-http://phoenix:6006/v1/traces}
+      PHOENIX_PROJECT: ${PHOENIX_PROJECT:-pfa-python}
+      PFA_TRACE_CONTENT: ${PFA_TRACE_CONTENT:-true}
+      TZ: ${TZ:-Asia/Kolkata}
+    volumes:
+      - ./knowledge-base:/knowledge-base:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      market-analyzer:
+        condition: service_healthy
+
+  # Arize Phoenix: OpenTelemetry / LLM observability dashboard (from the team's n8n telemetry work).
+  # The app sends traces straight to it - no separate telemetry service is needed in Python.
+  phoenix:
+    image: arizephoenix/phoenix:version-20.16.0
+    restart: unless-stopped
+    environment:
+      PHOENIX_PORT: 6006
+      PHOENIX_WORKING_DIR: /mnt/data
+    ports:
+      - "127.0.0.1:${PHOENIX_PORT:-6006}:6006"
+    volumes:
+      - phoenix_data:/mnt/data
+
+volumes:
+  pg_data:
+  phoenix_data:

@@ -1,0 +1,438 @@
+<!doctype html><html><head><meta charset="utf-8"><title>A. your inputs, Low</title></head><body>
+<style>
+  .pfa {
+    color-scheme: light;
+    --bg: #f4f5fb; --surface: #ffffff; --surface-2: #f8f9fc; --border: #e3e6ef; --grid: #eceef4;
+    --ink: #0b0b0b; --ink-2: #52514e; --muted: #7a7976; --neutral: #a8a7a2;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+    --c-equity: #2a78d6; --c-debt: #1baf7a; --c-gold: #eda100; --c-cash: #4a3aa7;
+    --good: #0ca30c; --warning: #fab219; --critical: #d03b3b;
+    --hero-a: #4a3aa7; --hero-b: #2a78d6; --hero-c: #1baf7a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .pfa {
+      color-scheme: dark;
+      --bg: #111110; --surface: #1a1a19; --surface-2: #222220; --border: #33332f; --grid: #2a2a27;
+      --ink: #ffffff; --ink-2: #c3c2b7; --muted: #9a998f; --neutral: #6d6c66;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+      --c-equity: #3987e5; --c-debt: #199e70; --c-gold: #c98500; --c-cash: #9085e9;
+      --hero-a: #3b2f86; --hero-b: #1c5cab; --hero-c: #137a57;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f4f5fb; }
+  @media (prefers-color-scheme: dark) { body { background: #111110; } }
+  .pfa { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         background: var(--bg); color: var(--ink); line-height: 1.55; font-size: 15px; text-align: left;
+         padding: 16px 16px 56px; min-height: 100vh; }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  .hero { border-radius: 18px; padding: 26px 26px 24px; color: #fff; display: flex; gap: 22px; align-items: center;
+          background: linear-gradient(125deg, var(--hero-a) 0%, var(--hero-b) 55%, var(--hero-c) 100%); }
+  .hero h1 { font-size: 25px; margin: 8px 0 6px; letter-spacing: -0.02em; line-height: 1.25; }
+  .hero p { margin: 0; opacity: .92; }
+  .hero .who { font-size: 13px; opacity: .85; margin-top: 10px; }
+  .pill { display: inline-flex; gap: 6px; align-items: center; padding: 4px 12px; border-radius: 999px;
+          font-size: 12px; font-weight: 650; background: rgba(255,255,255,.18); letter-spacing: .03em; }
+  .pill b { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--pill); color: #fff; font-size: 11px; }
+  .ring { width: 128px; height: 128px; flex: 0 0 128px; }
+  .ring-track { fill: none; stroke: rgba(255,255,255,.22); stroke-width: 12; }
+  .ring-fill { fill: none; stroke-width: 12; stroke-linecap: round; }
+  .ring-num { fill: #fff; font-size: 28px; font-weight: 700; text-anchor: middle; }
+  .ring-sub { fill: rgba(255,255,255,.85); font-size: 12px; text-anchor: middle; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .09em; color: var(--ink-2); margin: 34px 0 12px; font-weight: 700; }
+  .card { border: 1px solid var(--border); border-radius: 14px; padding: 20px; background: var(--surface); }
+  .card + .card { margin-top: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .tile { border: 1px solid var(--border); border-top: 4px solid var(--accent); border-radius: 12px; padding: 12px 14px; background: var(--surface); }
+  .tile-label { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .tile-value { font-size: 20px; font-weight: 680; margin-top: 4px; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+  .tile-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .stack { display: flex; gap: 2px; height: 26px; border-radius: 6px; overflow: hidden; background: var(--grid); }
+  .stack > span { display: block; height: 100%; min-width: 3px; }
+  .flow-wrap { position: relative; padding-top: 22px; }
+  .pay-marker { position: absolute; top: 0; bottom: -4px; border-left: 2px dashed var(--ink); }
+  .pay-marker span { position: absolute; top: 0; left: 4px; font-size: 11px; font-weight: 650; white-space: nowrap; color: var(--ink); }
+  .stack > span:first-child { border-radius: 4px 0 0 4px; } .stack > span:last-child { border-radius: 0 4px 4px 0; }
+  .legend { list-style: none; padding: 0; margin: 14px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 8px 18px; }
+  .legend li { display: flex; align-items: center; gap: 8px; font-size: 14px; white-space: nowrap; }
+  .legend i { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 12px; }
+  .lg-key { color: var(--ink-2); } .lg-val { margin-left: auto; font-weight: 620; font-variant-numeric: tabular-nums; }
+  .lg-pct { color: var(--muted); font-size: 12px; width: 34px; text-align: right; }
+  .row-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--ink-2); margin: 14px 0 6px; }
+  .row-label strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .warn { margin-top: 12px; font-size: 13.5px; border-left: 3px solid var(--critical); padding: 8px 12px; background: var(--surface-2); border-radius: 0 8px 8px 0; }
+  .chart { width: 100%; height: auto; display: block; }
+  .chart .grid { stroke: var(--grid); stroke-width: 1; }
+  .chart .axis { fill: var(--muted); font-size: 11px; }
+  .chart .line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+  .chart .area { fill: var(--s1); opacity: .10; }
+  .chart .dot { stroke: var(--surface); stroke-width: 2; }
+  .chart .dot.hit { opacity: 0; } .chart .dot.hit:hover { opacity: 1; }
+  .chart .target-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+  .chart .end-label { font-size: 12px; font-weight: 600; }
+  .alloc { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center; }
+  .donut { width: 200px; height: 200px; }
+  .donut-track { fill: none; stroke: var(--grid); stroke-width: 26; }
+  .donut-seg { fill: none; stroke-width: 26; }
+  .donut-num { fill: var(--ink); font-size: 18px; font-weight: 700; text-anchor: middle; }
+  .donut-sub { fill: var(--muted); font-size: 11px; text-anchor: middle; }
+  .ab-row { display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: center; padding: 7px 0; }
+  .ab-key { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .ab-key i { width: 12px; height: 12px; border-radius: 3px; }
+  .ab-bars { display: grid; gap: 4px; }
+  .ab-bar { position: relative; height: 14px; background: var(--grid); border-radius: 4px; }
+  .ab-bar > span { display: block; height: 100%; border-radius: 4px; }
+  .ab-bar.now > span { opacity: .45; }
+  .ab-bar em { position: absolute; right: 6px; top: -1px; font-size: 11px; font-style: normal; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .ab-legend { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .ab-legend span { display: inline-block; width: 18px; height: 8px; border-radius: 2px; background: var(--ink-2); vertical-align: middle; margin: 0 4px 0 12px; }
+  .lvls { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .lvl { border: 1px solid var(--border); border-radius: 12px; padding: 12px; background: var(--surface-2); opacity: .7; }
+  .lvl.on { opacity: 1; border: 2px solid var(--lc); background: var(--surface); }
+  .lvl-name { font-weight: 700; font-size: 16px; color: var(--lc); }
+  .lvl-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .lvl-tag { display: inline-block; margin-top: 8px; margin-right: 4px; font-size: 11px; font-weight: 650; padding: 2px 8px; border-radius: 999px; background: var(--grid); color: var(--ink-2); }
+  .lvl-tag.on { background: var(--lc); color: #fff; }
+  i.sw { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 8px; vertical-align: 0; }
+  .meters { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+  .meter { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface); }
+  .meter-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+  .meter-title { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .badge { font-size: 11.5px; font-weight: 650; color: var(--ink); white-space: nowrap; }
+  .badge b { display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; background: var(--b); color: #fff; font-size: 10px; margin-right: 3px; }
+  .meter-value { font-size: 19px; font-weight: 680; margin: 6px 0 8px; font-variant-numeric: tabular-nums; }
+  .meter-track { height: 8px; border-radius: 999px; background: var(--grid); overflow: hidden; }
+  .meter-track > span { display: block; height: 100%; border-radius: 999px; }
+  .meter-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .debt-row { display: grid; grid-template-columns: 170px 1fr 90px; gap: 10px; align-items: center; padding: 6px 0; font-size: 14px; }
+  .debt-bar { height: 16px; background: var(--grid); border-radius: 4px; }
+  .debt-bar > span { display: block; height: 100%; border-radius: 4px; }
+  .debt-row .num { text-align: right; font-variant-numeric: tabular-nums; font-weight: 620; }
+  ol.actions { list-style: none; padding: 0; margin: 0; }
+  .action { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--grid); }
+  .action:last-child { border-bottom: 0; }
+  .rank { flex: 0 0 28px; height: 28px; border-radius: 50%; color: #fff; font-size: 13px; font-weight: 700;
+          display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--hero-a), var(--hero-b)); }
+  .action-title { font-weight: 650; } .action-why { color: var(--ink-2); font-size: 14px; margin-top: 2px; } .action-how { font-size: 14px; margin-top: 4px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); border-bottom: 1px solid var(--border); padding: 8px 10px; font-weight: 650; }
+  td { padding: 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.rationale { color: var(--ink-2); }
+  .up { color: var(--good); } .down { color: var(--critical); } .flat { color: var(--muted); }
+  .mini { display: inline-block; width: 44px; height: 6px; background: var(--grid); border-radius: 3px; margin-right: 6px; vertical-align: middle; }
+  .mini > span { display: block; height: 100%; background: var(--s1); border-radius: 3px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  ul.good, ul.bad { margin: 8px 0 0; padding-left: 20px; } ul.good li, ul.bad li { margin-bottom: 6px; }
+  ul.good li::marker { color: var(--good); } ul.bad li::marker { color: var(--critical); }
+  .muted { color: var(--muted); } .sub { font-size: 12px; color: var(--muted); font-weight: 400; }
+  .empty { color: var(--muted); font-size: 14px; padding: 30px 0; text-align: center; }
+  .caveat { font-size: 12.5px; color: var(--ink-2); background: var(--surface-2); border-left: 3px solid var(--warning); padding: 10px 14px; border-radius: 0 6px 6px 0; margin: 14px 0 0; }
+  .disclaimer { margin-top: 28px; padding: 14px 16px; border-left: 3px solid var(--border); background: var(--surface); font-size: 13px; color: var(--ink-2); border-radius: 0 8px 8px 0; }
+  details.data { margin-top: 12px; font-size: 13px; } details.data summary { cursor: pointer; color: var(--ink-2); }
+  @media (max-width: 640px) {
+    .hero { flex-direction: column; align-items: flex-start; }
+    .alloc, .two-col { grid-template-columns: 1fr; }
+    .donut { margin: 0 auto; display: block; }
+    .debt-row { grid-template-columns: 1fr 80px; } .debt-row .debt-bar { grid-column: 1 / -1; grid-row: 2; }
+  }
+</style>
+
+<div class="pfa"><div class="wrap">
+
+  <div class="hero">
+    <div style="flex:1;min-width:0">
+      <span class="pill" style="--pill:var(--critical)"><b>✕</b>Significant gap</span>
+      <h1>Your home goal is in reach once the card debt is gone</h1>
+      <p>You save a healthy share of your pay and already hold a solid base of investments. Clearing the credit card and lifting your SIP modestly would put the Pune home on schedule.</p>
+      <div class="who">Asha · Buy a home · CTC ₹21L · in-hand ₹1.5L/mo</div>
+    </div>
+    <svg class="ring" viewBox="0 0 128 128" role="img" aria-label="32% of goal projected">
+    <circle cx="64" cy="64" r="52" class="ring-track"/>
+    <circle cx="64" cy="64" r="52" class="ring-fill" style="stroke:var(--critical)"
+      stroke-dasharray="104.2 326.7" transform="rotate(-90 64 64)"><title>31.9% of target projected</title></circle>
+    <text x="64" y="62" class="ring-num">32%</text>
+    <text x="64" y="82" class="ring-sub">of goal</text>
+  </svg>
+  </div>
+
+  <h2>Where you stand today</h2>
+  <div class="grid">
+    <div class="tile" style="--accent:var(--c-cash)">
+  <div class="tile-label">Net worth</div><div class="tile-value">₹15,60,000</div>
+  <div class="tile-sub">investments + emergency fund − loans</div></div>
+    <div class="tile" style="--accent:var(--c-equity)">
+  <div class="tile-label">Investments</div><div class="tile-value">₹15,10,000</div>
+  </div>
+    <div class="tile" style="--accent:var(--s2)">
+  <div class="tile-label">Loans outstanding</div><div class="tile-value">₹0</div>
+  <div class="tile-sub">no loans - debt-free</div></div>
+    <div class="tile" style="--accent:var(--c-debt)">
+  <div class="tile-label">Monthly surplus</div><div class="tile-value">₹1,15,000</div>
+  <div class="tile-sub">savings rate 76.7%</div></div>
+  </div>
+
+  <h2>Where your monthly pay goes</h2>
+  <div class="card">
+    <div class="row-label"><span>In-hand pay</span><strong>₹1,50,000 / month</strong></div>
+    <div class="flow-wrap"><div class="stack"><span style="width:23.33%;background:var(--s1)" title="Essentials: ₹35,000 (23% of in-hand pay)"></span><span style="width:76.67%;background:var(--s4)" title="Free cash: ₹1,15,000 (77% of in-hand pay)"></span></div></div><ul class="legend">
+  <li><i style="background:var(--s1)"></i><span class="lg-key">Essentials</span>
+  <span class="lg-val">₹35,000</span><span class="lg-pct">23%</span></li>
+  <li><i style="background:var(--s2)"></i><span class="lg-key">Loan EMIs</span>
+  <span class="lg-val">₹0</span><span class="lg-pct">0%</span></li>
+  <li><i style="background:var(--s3)"></i><span class="lg-key">Investing</span>
+  <span class="lg-val">₹0</span><span class="lg-pct">0%</span></li>
+  <li><i style="background:var(--s4)"></i><span class="lg-key">Free cash</span>
+  <span class="lg-val">₹1,15,000</span><span class="lg-pct">77%</span></li></ul>
+    <div class="ab-legend">Percentages are shares of your in-hand pay.</div>
+    
+  </div>
+
+  <h2>Goal projection</h2>
+  <div class="card">
+    <div class="grid">
+      <div class="tile" style="--accent:var(--muted)">
+  <div class="tile-label">Target</div><div class="tile-value">₹1,00,00,000</div>
+  <div class="tile-sub">Sep 01 2036</div></div>
+      <div class="tile" style="--accent:var(--s1)">
+  <div class="tile-label">Projected</div><div class="tile-value">₹31,85,064</div>
+  <div class="tile-sub">in 9.9 years</div></div>
+      <div class="tile" style="--accent:var(--s1)">
+  <div class="tile-label">You invest now</div><div class="tile-value">₹0/mo</div>
+  </div>
+      <div class="tile" style="--accent:var(--s3)">
+  <div class="tile-label">Needed</div><div class="tile-value">₹38,652/mo</div>
+  </div>
+    </div>
+    <div style="margin-top:14px"><svg class="chart" viewBox="0 0 720 300" role="img" aria-label="Projected savings path versus target">
+    <line x1="64" x2="560" y1="264.0" y2="264.0" class="grid"/>
+    <text x="56" y="268.0" class="axis" text-anchor="end">₹0</text><line x1="64" x2="560" y1="202.5" y2="202.5" class="grid"/>
+    <text x="56" y="206.5" class="axis" text-anchor="end">₹27.5L</text><line x1="64" x2="560" y1="141.0" y2="141.0" class="grid"/>
+    <text x="56" y="145.0" class="axis" text-anchor="end">₹55L</text><line x1="64" x2="560" y1="79.5" y2="79.5" class="grid"/>
+    <text x="56" y="83.5" class="axis" text-anchor="end">₹82.5L</text><line x1="64" x2="560" y1="18.0" y2="18.0" class="grid"/>
+    <text x="56" y="22.0" class="axis" text-anchor="end">₹1.1Cr</text>
+    <line x1="64" x2="560" y1="40.4" y2="40.4" class="target-line"/>
+    <path d="M64.0,230.2 L114.0,227.6 L164.0,224.7 L214.1,221.7 L264.1,218.4 L314.1,214.8 L364.1,211.0 L414.1,206.8 L464.1,202.3 L514.2,197.5 L560.0,192.8 L560.0,264.0 L64.0,264.0 Z" class="area"/>
+    <path d="M64.0,230.2 L114.0,216.9 L164.0,202.4 L214.1,186.9 L264.1,170.1 L314.1,152.0 L364.1,132.5 L414.1,111.5 L464.1,88.9 L514.2,64.4 L560.0,40.4" class="line" style="stroke:var(--s3)"/>
+    <path d="M64.0,230.2 L114.0,227.6 L164.0,224.7 L214.1,221.7 L264.1,218.4 L314.1,214.8 L364.1,211.0 L414.1,206.8 L464.1,202.3 L514.2,197.5 L560.0,192.8" class="line" style="stroke:var(--s1)"/>
+    <circle cx="64.0" cy="230.2" r="4" class="dot" style="fill:var(--s3)">
+      <title>Now · At the required SIP: ₹15,10,000</title></circle><circle cx="114.0" cy="216.9" r="4" class="dot" style="fill:var(--s3)">
+      <title>2027 · At the required SIP: ₹21,08,251</title></circle><circle cx="164.0" cy="202.4" r="4" class="dot" style="fill:var(--s3)">
+      <title>2028 · At the required SIP: ₹27,53,266</title></circle><circle cx="214.1" cy="186.9" r="4" class="dot" style="fill:var(--s3)">
+      <title>2029 · At the required SIP: ₹34,48,700</title></circle><circle cx="264.1" cy="170.1" r="4" class="dot" style="fill:var(--s3)">
+      <title>2030 · At the required SIP: ₹41,98,495</title></circle><circle cx="314.1" cy="152.0" r="4" class="dot" style="fill:var(--s3)">
+      <title>2031 · At the required SIP: ₹50,06,901</title></circle><circle cx="364.1" cy="132.5" r="4" class="dot" style="fill:var(--s3)">
+      <title>2032 · At the required SIP: ₹58,78,498</title></circle><circle cx="414.1" cy="111.5" r="4" class="dot" style="fill:var(--s3)">
+      <title>2033 · At the required SIP: ₹68,18,226</title></circle><circle cx="464.1" cy="88.9" r="4" class="dot" style="fill:var(--s3)">
+      <title>2034 · At the required SIP: ₹78,31,411</title></circle><circle cx="514.2" cy="64.4" r="4" class="dot" style="fill:var(--s3)">
+      <title>2035 · At the required SIP: ₹89,23,795</title></circle><circle cx="560.0" cy="40.4" r="4" class="dot" style="fill:var(--s3)">
+      <title>2036 · At the required SIP: ₹1,00,00,000</title></circle><circle cx="64.0" cy="230.2" r="4" class="dot" style="fill:var(--s1)">
+      <title>Now · At your current SIP: ₹15,10,000</title></circle><circle cx="114.0" cy="227.6" r="4" class="dot" style="fill:var(--s1)">
+      <title>2027 · At your current SIP: ₹16,28,034</title></circle><circle cx="164.0" cy="224.7" r="4" class="dot" style="fill:var(--s1)">
+      <title>2028 · At your current SIP: ₹17,55,294</title></circle><circle cx="214.1" cy="221.7" r="4" class="dot" style="fill:var(--s1)">
+      <title>2029 · At your current SIP: ₹18,92,503</title></circle><circle cx="264.1" cy="218.4" r="4" class="dot" style="fill:var(--s1)">
+      <title>2030 · At your current SIP: ₹20,40,436</title></circle><circle cx="314.1" cy="214.8" r="4" class="dot" style="fill:var(--s1)">
+      <title>2031 · At your current SIP: ₹21,99,933</title></circle><circle cx="364.1" cy="211.0" r="4" class="dot" style="fill:var(--s1)">
+      <title>2032 · At your current SIP: ₹23,71,898</title></circle><circle cx="414.1" cy="206.8" r="4" class="dot" style="fill:var(--s1)">
+      <title>2033 · At your current SIP: ₹25,57,305</title></circle><circle cx="464.1" cy="202.3" r="4" class="dot" style="fill:var(--s1)">
+      <title>2034 · At your current SIP: ₹27,57,205</title></circle><circle cx="514.2" cy="197.5" r="4" class="dot" style="fill:var(--s1)">
+      <title>2035 · At your current SIP: ₹29,72,731</title></circle><circle cx="560.0" cy="192.8" r="4" class="dot" style="fill:var(--s1)">
+      <title>2036 · At your current SIP: ₹31,85,064</title></circle>
+    <text x="64.0" y="288" class="axis" text-anchor="middle">Now</text><text x="164.0" y="288" class="axis" text-anchor="middle">2028</text><text x="264.1" y="288" class="axis" text-anchor="middle">2030</text><text x="364.1" y="288" class="axis" text-anchor="middle">2032</text><text x="464.1" y="288" class="axis" text-anchor="middle">2034</text><text x="560.0" y="288" class="axis" text-anchor="middle">2036</text><text x="568" y="44.4" class="end-label" style="fill:var(--ink)"><tspan style="fill:var(--s3)">●</tspan> ₹1Cr needed pace</text><text x="568" y="60.4" class="end-label" style="fill:var(--ink)"><tspan style="fill:var(--muted)">●</tspan> Target ₹1Cr</text><text x="568" y="196.8" class="end-label" style="fill:var(--ink)"><tspan style="fill:var(--s1)">●</tspan> ₹31.85L today&#39;s pace</text>
+  </svg></div>
+    <p>You are projected to fall <strong>₹68,14,936 short</strong>. Closing it needs about <strong>₹38,652 more per month</strong>.</p>
+    <p class="muted">At today&#39;s pace you reach part of the target by mid-2031. A higher monthly SIP closes the gap without touching your lifestyle.</p>
+  </div>
+
+  <h2>Your risk profile</h2>
+  <div class="card">
+    <div class="lvls"><div class="lvl on" style="--lc:var(--c-debt)">
+    <div class="lvl-name">Low</div><div class="lvl-sub">FDs, PPF, index fund</div>
+    <div class="lvl-tag">You chose</div><div class="lvl-tag on">Your plan</div></div><div class="lvl" style="--lc:var(--s1)">
+    <div class="lvl-name">Medium</div><div class="lvl-sub">Mostly mutual funds</div>
+    </div><div class="lvl" style="--lc:var(--s2)">
+    <div class="lvl-name">High</div><div class="lvl-sub">Funds + direct stocks</div>
+    </div></div>
+    <p style="margin:14px 0 0">You chose <strong>Low</strong> risk, and your goal date supports it, so your plan is built at <strong>Low</strong>.
+      Expected long-run return of this mix: <strong>7.55% a year</strong>.</p>
+    
+  </div>
+
+  <h2>Where to put your money each month</h2>
+  <div class="card">
+    
+    <div class="row-label"><span>Suggested monthly plan</span><strong>₹52,000 / month</strong></div>
+    <div class="stack"><span style="width:25.58%;background:var(--c-cash)" title="Emergency fund top-up: ₹13,300 (26%)"></span><span style="width:52.12%;background:var(--c-debt)" title="Fixed income: ₹27,100 (52%)"></span><span style="width:11.15%;background:var(--c-equity)" title="Mutual funds: ₹5,800 (11%)"></span><span style="width:7.50%;background:var(--c-gold)" title="Gold: ₹3,900 (8%)"></span><span style="width:3.65%;background:var(--neutral)" title="Cash buffer: ₹1,900 (4%)"></span></div>
+    <div class="table-wrap" style="margin-top:14px"><table>
+      <thead><tr><th>Where</th><th>What to buy</th><th class="num">Per month</th><th class="num">Share</th></tr></thead>
+      <tbody><tr><td><i class="sw" style="background:var(--c-cash)"></i>Emergency fund top-up</td>
+  <td class="rationale">Liquid fund / savings account</td><td class="num"><strong>₹13,300</strong></td>
+  <td class="num">26%</td></tr><tr><td><i class="sw" style="background:var(--c-debt)"></i>Fixed income</td>
+  <td class="rationale">Bank FD / RD, PPF, short-term debt funds</td><td class="num"><strong>₹27,100</strong></td>
+  <td class="num">52%</td></tr><tr><td><i class="sw" style="background:var(--c-equity)"></i>Mutual funds</td>
+  <td class="rationale">Nifty 50 index fund (SIP)</td><td class="num"><strong>₹5,800</strong></td>
+  <td class="num">11%</td></tr><tr><td><i class="sw" style="background:var(--c-gold)"></i>Gold</td>
+  <td class="rationale">Sovereign Gold Bonds or gold ETF</td><td class="num"><strong>₹3,900</strong></td>
+  <td class="num">8%</td></tr><tr><td><i class="sw" style="background:var(--neutral)"></i>Cash buffer</td>
+  <td class="rationale">Savings account / liquid fund</td><td class="num"><strong>₹1,900</strong></td>
+  <td class="num">4%</td></tr></tbody></table></div>
+    <p class="ab-legend">Built from the ₹1,15,000 left after essentials and EMIs.
+      The emergency fund is topped up first. ₹63,000 stays free for other goals or spending.
+      </p>
+  </div>
+
+  <h2>What you own vs what you owe</h2>
+  <div class="card">
+    <div class="row-label"><span>You own</span><strong>₹15,60,000</strong></div>
+    <div style="width:100.0%"><div class="stack"><span style="width:57.69%;background:var(--c-equity)" title="Equity: ₹9,00,000 (58%)"></span><span style="width:32.05%;background:var(--c-debt)" title="Fixed income (FD/PPF): ₹5,00,000 (32%)"></span><span style="width:6.41%;background:var(--c-gold)" title="Gold: ₹1,00,000 (6%)"></span><span style="width:3.85%;background:var(--c-cash)" title="Cash &amp; emergency fund: ₹60,000 (4%)"></span></div></div>
+    <div class="row-label"><span>You owe</span><strong>₹0</strong></div>
+    <div class="muted" style="font-size:14px">Nothing - you are debt-free 🎉</div>
+    <ul class="legend">
+  <li><i style="background:var(--c-equity)"></i><span class="lg-key">Equity</span>
+  <span class="lg-val">₹9,00,000</span><span class="lg-pct">58%</span></li>
+  <li><i style="background:var(--c-debt)"></i><span class="lg-key">Fixed income (FD/PPF)</span>
+  <span class="lg-val">₹5,00,000</span><span class="lg-pct">32%</span></li>
+  <li><i style="background:var(--c-gold)"></i><span class="lg-key">Gold</span>
+  <span class="lg-val">₹1,00,000</span><span class="lg-pct">6%</span></li>
+  <li><i style="background:var(--c-cash)"></i><span class="lg-key">Cash &amp; emergency fund</span>
+  <span class="lg-val">₹60,000</span><span class="lg-pct">4%</span></li></ul>
+  </div>
+
+  <h2>Asset allocation · now vs your low-risk target</h2>
+  <div class="card alloc">
+    <svg class="donut" viewBox="0 0 180 180" role="img" aria-label="Current asset allocation">
+    <circle cx="90" cy="90" r="70" class="donut-track"/><circle cx="90" cy="90" r="70" class="donut-seg" style="stroke:var(--c-equity)"
+      stroke-dasharray="260.15 439.82" stroke-dashoffset="0.00"
+      transform="rotate(-90 90 90)"><title>Equity: ₹9,00,000 (59.6%)</title></circle><circle cx="90" cy="90" r="70" class="donut-seg" style="stroke:var(--c-debt)"
+      stroke-dasharray="143.64 439.82" stroke-dashoffset="-262.15"
+      transform="rotate(-90 90 90)"><title>Fixed income (FD/PPF): ₹5,00,000 (33.1%)</title></circle><circle cx="90" cy="90" r="70" class="donut-seg" style="stroke:var(--c-gold)"
+      stroke-dasharray="27.13 439.82" stroke-dashoffset="-407.78"
+      transform="rotate(-90 90 90)"><title>Gold: ₹1,00,000 (6.6%)</title></circle><circle cx="90" cy="90" r="70" class="donut-seg" style="stroke:var(--c-cash)"
+      stroke-dasharray="0.91 439.82" stroke-dashoffset="-436.91"
+      transform="rotate(-90 90 90)"><title>Cash: ₹10,000 (0.7%)</title></circle>
+    <text x="90" y="86" class="donut-num">₹15.1L</text>
+    <text x="90" y="106" class="donut-sub">invested</text></svg>
+    <div>
+      <div class="ab-row">
+    <div class="ab-key"><i style="background:var(--c-equity)"></i>Equity</div>
+    <div class="ab-bars">
+      <div class="ab-bar now" title="Equity now: 59.6%"><span style="width:59.6%;background:var(--c-equity)"></span><em>59.6%</em></div>
+      <div class="ab-bar to" title="Equity suggested: 15.0%"><span style="width:15%;background:var(--c-equity)"></span><em>15.0%</em></div>
+    </div></div><div class="ab-row">
+    <div class="ab-key"><i style="background:var(--c-debt)"></i>Fixed income</div>
+    <div class="ab-bars">
+      <div class="ab-bar now" title="Fixed income now: 33.1%"><span style="width:33.1%;background:var(--c-debt)"></span><em>33.1%</em></div>
+      <div class="ab-bar to" title="Fixed income suggested: 70.0%"><span style="width:70%;background:var(--c-debt)"></span><em>70.0%</em></div>
+    </div></div><div class="ab-row">
+    <div class="ab-key"><i style="background:var(--c-gold)"></i>Gold</div>
+    <div class="ab-bars">
+      <div class="ab-bar now" title="Gold now: 6.6%"><span style="width:6.6%;background:var(--c-gold)"></span><em>6.6%</em></div>
+      <div class="ab-bar to" title="Gold suggested: 10.0%"><span style="width:10%;background:var(--c-gold)"></span><em>10.0%</em></div>
+    </div></div><div class="ab-row">
+    <div class="ab-key"><i style="background:var(--c-cash)"></i>Cash</div>
+    <div class="ab-bars">
+      <div class="ab-bar now" title="Cash now: 0.7%"><span style="width:0.7%;background:var(--c-cash)"></span><em>0.7%</em></div>
+      <div class="ab-bar to" title="Cash suggested: 5.0%"><span style="width:5%;background:var(--c-cash)"></span><em>5.0%</em></div>
+    </div></div>
+      <div class="ab-legend">Faded bar<span style="opacity:.45"></span>now · Solid bar<span></span>suggested</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="table-wrap"><table>
+      <thead><tr><th>Asset class</th><th class="num">Now</th><th class="num">Suggested</th><th class="num">Change</th><th>Why</th></tr></thead>
+      <tbody><tr><td>Equity</td><td class="num">59.6%</td><td class="num">15.0%</td>
+    <td class="num down">&#9660; 44.6%</td><td class="rationale">Five-year horizon can carry a moderate equity share.</td></tr><tr><td>Fixed income</td><td class="num">33.1%</td><td class="num">70.0%</td>
+    <td class="num up">&#9650; 36.9%</td><td class="rationale">Stability as the purchase date approaches.</td></tr><tr><td>Gold</td><td class="num">6.6%</td><td class="num">10.0%</td>
+    <td class="num up">&#9650; 3.4%</td><td class="rationale">Small hedge, no need to grow it.</td></tr><tr><td>Cash</td><td class="num">0.7%</td><td class="num">5.0%</td>
+    <td class="num up">&#9650; 4.3%</td><td class="rationale">Keep liquidity for the down payment.</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <h2>Safety-net check</h2>
+  <div class="meters"><div class="meter">
+    <div class="meter-head"><span class="meter-title">Emergency fund</span>
+      <span class="badge" style="--b:var(--warning)"><b>!</b> Build up</span></div>
+    <div class="meter-value">1.4 of 6 months</div>
+    <div class="meter-track"><span style="width:23.3%;background:var(--warning)"></span></div>
+    <div class="meter-note">Target ₹2.1L - ₹1.6L to go.</div>
+  </div><div class="meter">
+    <div class="meter-head"><span class="meter-title">Term life cover</span>
+      <span class="badge" style="--b:var(--warning)"><b>!</b> Build up</span></div>
+    <div class="meter-value">₹1Cr</div>
+    <div class="meter-track"><span style="width:47.6%;background:var(--warning)"></span></div>
+    <div class="meter-note">Guide: about 10× annual income (₹2.1Cr).</div>
+  </div><div class="meter">
+    <div class="meter-head"><span class="meter-title">Health cover</span>
+      <span class="badge" style="--b:var(--critical)"><b>✕</b> Missing</span></div>
+    <div class="meter-value">None</div>
+    <div class="meter-track"><span style="width:0.0%;background:var(--critical)"></span></div>
+    <div class="meter-note">Guide: at least ₹10L for a family in a metro.</div>
+  </div><div class="meter">
+    <div class="meter-head"><span class="meter-title">EMIs vs take-home</span>
+      <span class="badge" style="--b:var(--good)"><b>✓</b> Healthy</span></div>
+    <div class="meter-value">0.0%</div>
+    <div class="meter-track"><span style="width:0.0%;background:var(--good)"></span></div>
+    <div class="meter-note">Within the 40% comfort line.</div>
+  </div></div>
+
+  <h2>Debt</h2><div class="card"><p>The credit card is the only expensive debt; the car loan at 9.2% can run its course.</p></div>
+
+  <h2>Do these first</h2>
+  <div class="card"><ol class="actions">
+  <li class="action"><span class="rank">1</span><div>
+    <div class="action-title">Clear the credit card balance</div>
+    <div class="action-why">At 42% it costs more than any investment can earn.</div>
+    <div class="action-how">Use Rs 60,000 from the FD this month and stop revolving.</div></div></li>
+  <li class="action"><span class="rank">2</span><div>
+    <div class="action-title">Top up the emergency fund</div>
+    <div class="action-why">Three months is thin for a single earner.</div>
+    <div class="action-how">Add Rs 10,000 a month into a liquid fund until you reach Rs 2.7L.</div></div></li>
+  <li class="action"><span class="rank">3</span><div>
+    <div class="action-title">Raise term cover to Rs 1.8Cr</div>
+    <div class="action-why">Your current cover replaces under three years of income.</div>
+    <div class="action-how">Add a separate term plan of about Rs 1.3Cr.</div></div></li>
+  <li class="action"><span class="rank">4</span><div>
+    <div class="action-title">Increase your SIP</div>
+    <div class="action-why">The gap to your target closes with a steady higher SIP.</div>
+    <div class="action-how">Step the SIP up by the amount shown under Needed.</div></div></li></ol></div>
+
+  
+  <h2>Direct stocks · not yet</h2>
+  <div class="card">
+    <p>Individual shares can fall 30-50% in a bad year. They are not part of your plan:</p>
+    <ul class="bad"><li>Direct stocks do not suit a Low-risk plan - equity exposure stays in diversified index funds.</li><li>Build your emergency fund to at least 3 months of expenses (₹1.05L) - you have 1.4 months today.</li><li>Get health insurance - one hospital bill could force you to sell shares at a loss.</li></ul>
+    <p class="ab-legend">The market screen suggested BAJFINANCE, MARUTI, EICHERMOT, HINDALCO, BEL - held back until then.</p>
+  </div>
+
+  <h2>Strengths and risks</h2>
+  <div class="card two-col">
+    <div><strong>Working in your favour</strong><ul class="good"><li>Essentials take well under half of your pay</li><li>You already invest every month through SIPs</li><li>Health cover is in place</li></ul></div>
+    <div><strong>Watch out for</strong><ul class="bad"><li>Credit card balance at 42% interest</li><li>Term cover is below 10x income</li><li>Emergency fund covers about 3 months</li></ul></div>
+  </div>
+
+  <details class="data"><summary>Show the numbers behind the charts</summary>
+    <div class="card" style="margin-top:8px"><div class="table-wrap"><table>
+      <thead><tr><th>Year</th><th class="num">At your current SIP</th><th class="num">At the required SIP</th></tr></thead>
+      <tbody><tr><td>Now</td>
+        <td class="num">₹15,10,000</td><td class="num">₹15,10,000</td></tr><tr><td>2027</td>
+        <td class="num">₹16,28,034</td><td class="num">₹21,08,251</td></tr><tr><td>2028</td>
+        <td class="num">₹17,55,294</td><td class="num">₹27,53,266</td></tr><tr><td>2029</td>
+        <td class="num">₹18,92,503</td><td class="num">₹34,48,700</td></tr><tr><td>2030</td>
+        <td class="num">₹20,40,436</td><td class="num">₹41,98,495</td></tr><tr><td>2031</td>
+        <td class="num">₹21,99,933</td><td class="num">₹50,06,901</td></tr><tr><td>2032</td>
+        <td class="num">₹23,71,898</td><td class="num">₹58,78,498</td></tr><tr><td>2033</td>
+        <td class="num">₹25,57,305</td><td class="num">₹68,18,226</td></tr><tr><td>2034</td>
+        <td class="num">₹27,57,205</td><td class="num">₹78,31,411</td></tr><tr><td>2035</td>
+        <td class="num">₹29,72,731</td><td class="num">₹89,23,795</td></tr><tr><td>2036</td>
+        <td class="num">₹31,85,064</td><td class="num">₹1,00,00,000</td></tr></tbody>
+    </table></div></div>
+  </details>
+
+  <div class="disclaimer">
+    <strong>Assumptions:</strong> 7.55% expected annual return (Low-risk mix: equity 11%, fixed income 7%, gold 8%, cash 4%) · 6% inflation · Dataset ends 26 Aug 2026<br><br>
+    This report is educational information generated from the figures you supplied and a historical
+    market dataset. It is not licensed financial advice, and past performance does not predict future
+    returns. Please consult a registered adviser before acting on it.
+  </div>
+</div></div></body></html>

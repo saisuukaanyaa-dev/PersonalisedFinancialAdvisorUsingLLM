@@ -1,0 +1,89 @@
+\documentclass[11pt,a4paper,fleqn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+% Set equation left-alignment with zero indent
+\setlength{\mathindent}{0pt}
+
+\title{\textbf{RAG Evaluation Metrics and System Architecture}}
+\author{\textbf{System Design \& Formulations}}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{1. System Architecture Diagram}
+
+Below is the schematic representation of the Retrieval-Augmented Generation (RAG) pipeline showing the query $Q$, document database $D$, retrieved contexts $(C_1, C_2, C_3)$, and generated answer $A$.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[
+    box/.style={draw, rectangle, minimum width=2.5cm, minimum height=2.2cm, thick, fill=gray!5, align=center},
+    arrow/.style={-{Stealth[scale=1.2]}, thick}
+]
+
+    % Nodes / Blocks
+    \node[box] (retriever) {\textbf{Retriever}};
+    \node[box, right=4.0cm of retriever] (generator) {\textbf{LLM / Generator}};
+
+    % Inputs on the left
+    \draw[arrow] ($(retriever.west)+( -2.0, 0.5 )$) -- ($(retriever.west)+( 0, 0.5 )$) 
+        node[pos=0, left] {\large $Q$};
+    \draw[arrow] ($(retriever.west)+( -2.0, -0.5 )$) -- ($(retriever.west)+( 0, -0.5 )$) 
+        node[pos=0, left] {\large $D$};
+
+    % Connection between Retriever and Generator: Context (C1, C2, C3)
+    \draw[arrow] ($(retriever.east)+( 0, -0.4 )$) -- ($(generator.west)+( 0, -0.4 )$) 
+        node[midway, above] {$(C_1, C_2, C_3)$};
+
+    % Tap/Feedback line sending Q directly to the second block
+    \draw[thick] ($(retriever.west)+( -1.0, 0.5 )$) -- ++(0, 1.3) coordinate (topcorner) -- ($(generator.west) + ( -0.8, 1.8 )$) -- ($(generator.west) + ( -0.8, 0.4 )$);
+    \draw[arrow] ($(generator.west) + ( -0.8, 0.4 )$) -- ($(generator.west) + ( 0, 0.4 )$);
+    \node[above] at ($(retriever.north)!0.5!(generator.north) + (0, 0.8)$) {\large $Q$};
+
+    % Output on the right
+    \draw[arrow] (generator.east) -- ++(2.0,0) 
+        node[right] {\large $A$};
+
+\end{tikzpicture}
+\caption{Retrieval-Augmented Generation (RAG) Data Flow Architecture}
+\end{figure}
+
+\vspace{0.5cm}
+
+\section*{2. Mathematical Formulations of RAG Metrics}
+
+\subsection*{2.1. Faithfulness}
+\hspace*{1em}%
+\[
+\text{Faithfulness}(A, C_{1:n}) = \frac{\text{Number of claims in } A \text{ that can be inferred from the context } C_{1:n}}{\text{Total number of claims in } A}
+\]
+
+\subsection*{2.2. Context Relevance}
+\hspace*{1em}%
+\[
+\text{ContextRelevance}(Q, C_{1:n}) = \frac{1}{n} \sum_{i=1}^{n} \left( \frac{Q \cdot C_i + 1}{2} \right) = \frac{1}{2} \left(\frac{1}{n}\left(Q \cdot \sum_{i=1}^{n} C_i\right) + 1 \right)
+\]
+
+\[
+\text{ContextRelevance}(Q, C_{1:n}, \beta) = \frac{\sum\limits_{i=1}^{n} \mathbb{I}(Q \cdot C_i > \beta)}{n} \quad \text{where } \beta \text{ is the bound on the semantic similarity}
+\]
+
+\subsection*{2.3. Answer Relevance}
+\hspace*{1em}%
+\[
+\text{AnswerRelevance}(Q, A) = \frac{1}{n} \sum_{i=1}^{n} \left( \frac{Q \cdot Q_i(A) + 1}{2} \right) = \frac{1}{2} \left(\frac{1}{n}\left(Q \cdot \sum_{i=1}^{n} Q_i(A)\right) + 1 \right)
+\]
+
+\subsection*{2.4. Context Recall}
+\hspace*{1em}%
+\[
+\text{ContextRecall}(GT, C_{1:n}) = \frac{1}{n} \sum_{i=1}^{n} \left( \frac{GT \cdot C_i + 1}{2} \right) = \frac{1}{2} \left(\frac{1}{n}\left(GT \cdot \sum_{i=1}^{n} C_i\right) + 1 \right)
+\]
+
+\end{document}

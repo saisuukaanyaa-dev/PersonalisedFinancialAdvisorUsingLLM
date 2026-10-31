@@ -1,0 +1,37 @@
+services:
+  bank-deposit-mcp:
+    build:
+      context: .
+      args:
+        SOURCE_DIR: ${SOURCE_DIR:-source}
+    image: bank-deposit-mcp
+    container_name: bank-deposit-mcp
+    ports:
+      - "${MCP_PORT:-8090}:8090"
+    # OPENAI_API_KEY and the other keys are read from .env
+    env_file:
+      - .env
+    volumes:
+      # deposit data created by source/DatabaseCreator.py on the host
+      - ./memory.db:/app/memory.db
+    restart: unless-stopped
+
+  # n8n reaches the MCP server at http://bank-deposit-mcp:8090/mcp
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      - TZ=Asia/Kolkata
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+    volumes:
+      # workflows, credentials and settings survive container restarts
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      - bank-deposit-mcp
+    restart: unless-stopped
+
+volumes:
+  n8n_data:

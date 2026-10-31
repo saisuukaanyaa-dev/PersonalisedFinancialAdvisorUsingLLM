@@ -1,0 +1,10 @@
+{
+  "dockerfile_lines": [],
+  "graphs": {
+    "OptimalBankDepositFinderAgent": "./source/OptimalBankDepositFinderAgent.py:graph"
+  },
+  "env": "./.env",
+  "dependencies": [
+    "."
+  ]
+}

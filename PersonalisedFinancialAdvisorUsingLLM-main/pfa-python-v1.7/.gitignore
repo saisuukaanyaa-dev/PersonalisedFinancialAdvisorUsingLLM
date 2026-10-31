@@ -1,0 +1,3 @@
+test-output/
+tests/local_test_account.txt
+.env

@@ -1,0 +1,205 @@
+{
+  "id": "pfaRagIngestion1",
+  "name": "PFA · RAG ingestion (run once)",
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "pinData": {},
+  "nodes": [
+    {
+      "parameters": {
+        "width": 460,
+        "height": 300,
+        "color": 5,
+        "content": "## 1. RAG INGESTION — run once, manually\n\nManual Trigger -> reads `/home/node/knowledge-base/*.md` -> chunks -> embeds -> stores in\nPostgres table `finance_kb_embeddings`.\n\nThis populates the vector store that **Investment Recommender Agent** and **Financial Q&A Agent**\nboth query. Re-run it whenever you edit the knowledge base."
+      },
+      "id": "dcfd4294-db39-4dc8-ba77-cfe7195a2e07",
+      "name": "Ingestion Notes",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        -120
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "5bbdc76a-c572-4f62-a6b6-60087b15ac5c",
+      "name": "Run RAG Ingestion (once)",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -560,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/knowledge-base/*.md",
+        "options": {}
+      },
+      "id": "d1c3fab0-10d3-4adf-a6d3-681510c0c8c3",
+      "name": "Read Knowledge Base Files",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -336,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "e3d6f188-3a3a-40da-947f-d68daf344b4d",
+      "name": "Extract Text From File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": "finance_kb_embeddings",
+        "options": {}
+      },
+      "id": "359fe0bc-1377-4d69-bda4-733277f917fb",
+      "name": "Store in Vector DB",
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePGVector",
+      "typeVersion": 1,
+      "position": [
+        112,
+        480
+      ],
+      "credentials": {
+        "postgres": {
+          "id": "DLigOZtLp73yVBeP",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chunkSize": 800,
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "id": "bf54ff86-d209-4613-b7b1-02ae40ec0c25",
+      "name": "Recursive Character Text Splitter",
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        64,
+        672
+      ]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "1293e20f-952d-426c-878e-b440dd6bf23b",
+      "name": "Default Data Loader",
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1,
+      "position": [
+        512,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "model": "text-embedding-3-small",
+        "options": {
+          "batchSize": 256
+        }
+      },
+      "id": "33310c9f-91d9-4b92-ad9b-63bc809fc65b",
+      "name": "Embeddings OpenAI (Ingestion)",
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        672
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "X8YO6z75FjdGlh8o",
+          "name": "OpenAI account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Run RAG Ingestion (once)": {
+      "main": [
+        [
+          {
+            "node": "Read Knowledge Base Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Knowledge Base Files": {
+      "main": [
+        [
+          {
+            "node": "Extract Text From File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Text From File": {
+      "main": [
+        [
+          {
+            "node": "Store in Vector DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Store in Vector DB",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI (Ingestion)": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Store in Vector DB",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

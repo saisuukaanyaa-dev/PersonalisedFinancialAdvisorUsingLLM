@@ -1,0 +1,15 @@
+.git
+.venv
+.env
+.langgraph_api
+__pycache__
+*.pyc
+memory.db
+chroma_dbBankDeposit
+chroma_dbMutualFund
+IndianBankDeposits
+IndianMutualFunds
+verification
+*.zip
+*.docx
+*.tex

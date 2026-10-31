@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Personal Finance Advisor{% endblock %}</title>
+<link rel="stylesheet" href="/static/app.css?v={{ v }}">
+{% block head %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+<header class="topbar">
+  <a class="brand" href="/start"><span class="logo" aria-hidden="true">₹</span> Finance Advisor</a>
+  {% if acct %}
+  <nav class="topnav">
+    <a href="/start">My plans</a>
+    <a href="/intake">Update answers</a>
+    <a href="/usage">Usage</a>
+    <button type="button" class="linkish" data-logout>Sign out</button>
+  </nav>
+  {% endif %}
+</header>
+<div class="kb-banner" id="kb-banner" role="status" hidden><span class="kb-dot" aria-hidden="true"></span><span id="kb-text"></span></div>
+{% block content %}{% endblock %}
+<script src="/static/common.js?v={{ v }}"></script>
+<script src="/static/voice.js?v={{ v }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

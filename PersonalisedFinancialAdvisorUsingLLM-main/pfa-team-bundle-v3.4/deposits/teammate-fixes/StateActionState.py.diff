@@ -1,0 +1,119 @@
+--- original/StateActionState.py
++++ fixed/StateActionState.py
+@@ -59,6 +59,8 @@
+     oA = OptimalActionFixedDeposit(s0, sg, inflation, deposits)
+     oA.printActionList()
+     actionStateList = oA.getActionList()
++    if not actionStateList:  # FIX: zip(*[]) crashed when nothing fits
++        return [], []
+     firsts, seconds = map(list, zip(*actionStateList))
+     return firsts, seconds
+ 
+@@ -108,9 +110,12 @@
+             ((self.sg.time - s.time).days / (365 * deposit.duration))))
+         if (0 == count):
+             count = 1
++        # FIX: deflate for every year the money is locked in (duration * count),
++        # compounded. The original divided by (1 + duration * inflation) once,
++        # so a 2-year FD renewed 5 times was only deflated for 2 years.
+         return (state(balance=(s.balance
+-                               / (1 + (deposit.duration
+-                                       * self.inflation / 100)))
++                               / ((1 + self.inflation / 100)
++                                  ** (deposit.duration * count)))
+                       * ((1 + (deposit.interestRate
+                                * deposit.compoundingDuration / 100))
+                          ** ((deposit.duration
+@@ -177,6 +182,8 @@
+     oA = OptimalActionRecurringDeposit(s0, sg, inflation, deposits)
+     oA.printActionList()
+     actionStateList = oA.getActionList()
++    if not actionStateList:  # FIX: zip(*[]) crashed when nothing fits
++        return [], []
+     firsts, seconds = map(list, zip(*actionStateList))
+     return firsts, seconds
+ 
+@@ -187,12 +194,16 @@
+         self.s0 = s0
+         self.sg = sg
+         self.inflation = inflation
++        # FIX: s0.balance is the monthly installment, not money saved. Keep it
++        # apart and search from "nothing saved yet", so a later step does not
++        # treat the previous maturity amount as its installment.
++        self.installment = s0.balance
+         self.deposits = sorted(
+             recurringDeposits, key=lambda x: self.sortBase(x), reverse=True)
+         self.actionStateList = []
+         gS = GoalSearch(self.sg, self.deposits,
+                         self._finalBalance, self._reached)
+-        gS.BestSearch(self.s0)
++        gS.BestSearch(state(balance=0, time=s0.time))
+         self.actionStateList = gS.getFinalList()
+ 
+     def getActionList(self):
+@@ -214,37 +225,39 @@
+             retVal = GOAL_NOT_REACHABLE
+         return retVal
+ 
++    def _maturityPerRupee(self, deposit):
++        # FIX: standard Indian bank RD maturity. Each monthly installment
++        # compounds (quarterly by default) from the month it is paid until
++        # maturity: M = sum over k of P * (1 + r*c/100) ** ((n - k + 1) * m / c)
++        # where n installments of m years each, compounding every c years.
++        # Rs 5,000 a month at 7% for 12 months -> about Rs 62,000. The original
++        # expression gave about Rs 10.4 lakh for the same RD.
++        n = max(1, round(deposit.duration / deposit.recurringDuration))
++        q = 1 + deposit.interestRate * deposit.compoundingDuration / 100
++        return sum(q ** ((n - k + 1) * deposit.recurringDuration
++                         / deposit.compoundingDuration)
++                   for k in range(1, n + 1))
++
+     def sortBase(self, deposit):
+-        return ((((1/deposit.recurringDuration
+-                   + 1/deposit.compoundingDuration)
+-                  * (100/deposit.interestRate - 0.5))
+-                 + (deposit.compoundingDuration
+-                    / deposit.compoundingDuration) + 1)
+-                * (((1 + (deposit.interestRate
+-                          * deposit.compoundingDuration / 100))
+-                    ** (deposit.duration / deposit.compoundingDuration))
+-                   - 1)) ** (math.floor(((self.sg.time - self.s0.time).days
+-                                         / (365 * deposit.duration))))
++        # FIX: rank by what Rs 1 a month grows to over the goal horizon
++        # (the old key used the wrong maturity expression).
++        count = math.floor((self.sg.time - self.s0.time).days
++                           / (365 * deposit.duration))
++        return self._maturityPerRupee(deposit) * count
+ 
+     def _finalBalance(self, s, deposit):
+         count = (math.floor(
+             ((self.sg.time - s.time).days / (365 * deposit.duration))))
+         if (0 == count):
+             count = 1
+-        return (state(balance=((s.balance
+-                                / (1 + (deposit.duration
+-                                        * self.inflation / 100)))
+-                               * ((1/deposit.recurringDuration
+-                                   + 1/deposit.compoundingDuration)
+-                                  * (100/deposit.interestRate - 0.5)
+-                                  + (((deposit.compoundingDuration
+-                                       / deposit.compoundingDuration) + 1)
+-                                     * (((1 + (deposit.interestRate
+-                                               * deposit.compoundingDuration
+-                                               / 100))
+-                                         ** (deposit.duration
+-                                             / deposit.compoundingDuration))
+-                                        - 1)) ** count)),
+-                      time=s.time + timedelta(
+-                          days=(deposit.duration * count * 365))),
++        end = s.time + timedelta(days=(deposit.duration * count * 365))
++        # Same RD renewed `count` times; matured amounts are kept (not
++        # reinvested) and added to what was saved before.
++        maturity = self.installment * self._maturityPerRupee(deposit) * count
++        # FIX: deflate by the whole time from the start to maturity,
++        # compounded (the original deflated one term only).
++        years = (end - self.s0.time).days / 365
++        return (state(balance=s.balance
++                      + maturity / ((1 + self.inflation / 100) ** years),
++                      time=end),
+                 count)

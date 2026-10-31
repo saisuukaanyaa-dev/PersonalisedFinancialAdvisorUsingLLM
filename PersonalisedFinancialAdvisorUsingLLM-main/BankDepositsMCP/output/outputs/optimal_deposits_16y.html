@@ -1,0 +1,88 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Optimal action diagrams</title></head><body><h1>Optimal action diagrams</h1>
+<h2>Optimal Fixed Deposit Actions (Lumpsum)</h2>
+<pre class="mermaid">graph TD;
+	n0[&quot;balance: 100000.00, date: 2026-10-11&quot;];
+	n1[&quot;balance: 207161.56, date: 2036-10-08&quot;];
+	n2[&quot;balance: 295291.48, date: 2041-09-12&quot;];
+	n3[&quot;balance: 317133.43, date: 2042-09-12&quot;];
+	n4[&quot;balance: 317726.39, date: 2042-10-04&quot;];
+	n5[&quot;balance: 317924.29, date: 2042-10-11&quot;];
+	n0 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n1;
+	n1 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n2;
+	n2 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n3;
+	n3 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x3&quot;| n4;
+	n4 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x1&quot;| n5;
+	classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+	class n5 leaf;
+	classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+	class n0,n1,n2,n3,n4 inner;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+	n0[&quot;balance: 100000.00, date: 2026-10-11&quot;];
+	n1[&quot;balance: 207161.56, date: 2036-10-08&quot;];
+	n2[&quot;balance: 295291.48, date: 2041-09-12&quot;];
+	n3[&quot;balance: 317133.43, date: 2042-09-12&quot;];
+	n4[&quot;balance: 317726.39, date: 2042-10-04&quot;];
+	n5[&quot;balance: 317924.29, date: 2042-10-11&quot;];
+	n0 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n1;
+	n1 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n2;
+	n2 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n3;
+	n3 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x3&quot;| n4;
+	n4 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x1&quot;| n5;
+	classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+	class n5 leaf;
+	classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+	class n0,n1,n2,n3,n4 inner;</pre></details>
+<h2>Optimal RD Actions (Installments)</h2>
+<pre class="mermaid">graph TD;
+	n0[&quot;balance: 1000.00, date: 2026-10-11&quot;];
+	n1[&quot;balance: 71459.95, date: 2031-10-10&quot;];
+	n2[&quot;balance: 71459.95, date: 2036-10-08&quot;];
+	n3[&quot;balance: 71459.95, date: 2041-10-07&quot;];
+	n4[&quot;balance: 148037.55, date: 2041-10-07&quot;];
+	n5[&quot;balance: 158987.51, date: 2042-10-07&quot;];
+	n6[&quot;balance: 101860.18, date: 2041-09-12&quot;];
+	n7[&quot;balance: 109394.52, date: 2042-09-12&quot;];
+	n8[&quot;balance: 109599.06, date: 2042-10-04&quot;];
+	n9[&quot;balance: 109667.32, date: 2042-10-11&quot;];
+	n10[&quot;balance: 76745.66, date: 2042-10-07&quot;];
+	n0 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| n1;
+	n1 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| n2;
+	n1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n4;
+	n2 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| n3;
+	n2 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n6;
+	n3 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n10;
+	n4 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n5;
+	n6 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n7;
+	n7 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x3&quot;| n8;
+	n8 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x1&quot;| n9;
+	classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+	class n5,n9,n10 leaf;
+	classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+	class n0,n1,n2,n3,n4,n6,n7,n8 inner;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+	n0[&quot;balance: 1000.00, date: 2026-10-11&quot;];
+	n1[&quot;balance: 71459.95, date: 2031-10-10&quot;];
+	n2[&quot;balance: 71459.95, date: 2036-10-08&quot;];
+	n3[&quot;balance: 71459.95, date: 2041-10-07&quot;];
+	n4[&quot;balance: 148037.55, date: 2041-10-07&quot;];
+	n5[&quot;balance: 158987.51, date: 2042-10-07&quot;];
+	n6[&quot;balance: 101860.18, date: 2041-09-12&quot;];
+	n7[&quot;balance: 109394.52, date: 2042-09-12&quot;];
+	n8[&quot;balance: 109599.06, date: 2042-10-04&quot;];
+	n9[&quot;balance: 109667.32, date: 2042-10-11&quot;];
+	n10[&quot;balance: 76745.66, date: 2042-10-07&quot;];
+	n0 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| n1;
+	n1 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| n2;
+	n1 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n4;
+	n2 --&gt;|&quot;State Bank of India Recurring Deposit (RD) — 36–60 months x1&quot;| n3;
+	n2 --&gt;|&quot;State Bank of India Amrit Vrishti (444 Days Special Scheme) — Promotional Variant x4&quot;| n6;
+	n3 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n10;
+	n4 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n5;
+	n6 --&gt;|&quot;Axis Bank Fixed Deposit Plus (Non-Callable Bulk Deposit) x1&quot;| n7;
+	n7 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x3&quot;| n8;
+	n8 --&gt;|&quot;Axis Bank Retail Domestic Fixed Deposits (Callable; Cumulative &amp; Non-Cumulative) x1&quot;| n9;
+	classDef leaf fill:#4caf50,stroke:#2e7d32,color:#ffffff;
+	class n5,n9,n10 leaf;
+	classDef inner fill:#2196f3,stroke:#0d47a1,color:#ffffff;
+	class n0,n1,n2,n3,n4,n6,n7,n8 inner;</pre></details>
+<script type='module'>import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad: true});</script></body></html>

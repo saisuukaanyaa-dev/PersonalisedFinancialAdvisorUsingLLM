@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Optimal action diagrams</title></head><body><h1>Optimal action diagrams</h1>
+<h2>Optimal Fixed and Recurring Deposit Actions (20 years)</h2>
+<pre class="mermaid">graph TD;
+  subgraph Fixed_Deposits
+    f0[&quot;Start: 2026-10-09\nBalance: 100000&quot;]
+    f1[&quot;End: 2046-10-04\nBalance: 416698.79&quot;]
+    f0 --&gt;|&quot;HDFC Bank Regular Fixed Deposit [120 months] x2\nRate: 7.20% p.a., Comp: Quarterly&quot;| f1
+  end
+  subgraph Recurring_Deposits
+    r0[&quot;Start: 2026-10-09\nInstallment: 1000/mo&quot;]
+    r1[&quot;2036-10-06\nMaturity: 174,663.57&quot;]
+    r2[&quot;2046-10-04\nCarry-forward: 174,663.57&quot;]
+    r3[&quot;2046-10-04\nFD Reinvest Maturity: 356,544.26&quot;]
+    r0 --&gt;|&quot;HDFC Bank Standard RD [120 months] x1\nRate: 7.10% p.a., Comp: Quarterly&quot;| r1
+    r1 --&gt;|&quot;Re-deposit to HDFC Standard RD [120 months] x1&quot;| r2
+    r1 --&gt;|&quot;Reinvest into HDFC Regular FD [120 months] x1\nRate: 7.20% p.a.&quot;| r3
+  end
+  f1 --&gt;|&quot;Combine with RD actions&quot;| r3
+  classDef title fill:#eef,stroke:#55f,stroke-width:1px;</pre>
+<details><summary>mermaid text</summary><pre>graph TD;
+  subgraph Fixed_Deposits
+    f0[&quot;Start: 2026-10-09\nBalance: 100000&quot;]
+    f1[&quot;End: 2046-10-04\nBalance: 416698.79&quot;]
+    f0 --&gt;|&quot;HDFC Bank Regular Fixed Deposit [120 months] x2\nRate: 7.20% p.a., Comp: Quarterly&quot;| f1
+  end
+  subgraph Recurring_Deposits
+    r0[&quot;Start: 2026-10-09\nInstallment: 1000/mo&quot;]
+    r1[&quot;2036-10-06\nMaturity: 174,663.57&quot;]
+    r2[&quot;2046-10-04\nCarry-forward: 174,663.57&quot;]
+    r3[&quot;2046-10-04\nFD Reinvest Maturity: 356,544.26&quot;]
+    r0 --&gt;|&quot;HDFC Bank Standard RD [120 months] x1\nRate: 7.10% p.a., Comp: Quarterly&quot;| r1
+    r1 --&gt;|&quot;Re-deposit to HDFC Standard RD [120 months] x1&quot;| r2
+    r1 --&gt;|&quot;Reinvest into HDFC Regular FD [120 months] x1\nRate: 7.20% p.a.&quot;| r3
+  end
+  f1 --&gt;|&quot;Combine with RD actions&quot;| r3
+  classDef title fill:#eef,stroke:#55f,stroke-width:1px;</pre></details>
+<script type='module'>import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad: true});</script></body></html>
